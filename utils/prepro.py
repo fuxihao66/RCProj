@@ -30,6 +30,6 @@ def get_word2vec_from_file(path_to_file):
     return word2vec_dict
 
 if __name__ == '__main__':
-    print(get_word2vec_from_file('''/home/zhangs/data/glove.6B.100d.txt''')['me'])
+    print(get_word2vec_from_file('''/home/zhangs/RC/data/glove.6B.100d.txt''')['me'])
     
 
