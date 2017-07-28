@@ -2,6 +2,7 @@
 import codecs
 import json
 import sys
+import nltk
 
 def read_data_as_a_passage(file_to_read, file_to_write):
     passage_list     =  []
@@ -38,7 +39,8 @@ def read_data_as_a_passage(file_to_read, file_to_write):
     # with open(file_to_write, 'w') as modified_data_file:
     #     modified_data_file.write(json.dumps(data_to_write)) 
 
-    
+def Tokenize(sentence):
+    return [token.replace("''", '"').replace("``", '"') for token in nltk.word_tokenize(sentence)]
 if __name__ == '__main__':
     if len(sys.argv) != 3:
         print('parameters error')

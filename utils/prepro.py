@@ -1,5 +1,5 @@
-
-def get_word2vec(args, word_counter):
+from tqdm import tqdm
+''' def get_word2vec(args, word_counter):
     glove_path = os.path.join(args.glove_dir, "glove.{}.{}d.txt".format(args.glove_corpus, args.glove_vec_size))
     sizes = {'6B': int(4e5), '42B': int(1.9e6), '840B': int(2.2e6), '2B': int(1.2e6)}
     total = sizes[args.glove_corpus]
@@ -19,4 +19,17 @@ def get_word2vec(args, word_counter):
                 word2vec_dict[word.upper()] = vector
 
     print("{}/{} of word vocab have corresponding vectors in {}".format(len(word2vec_dict), len(word_counter), glove_path))
+    return word2vec_dict '''
+
+def get_word2vec_from_file(path_to_file):
+    word2vec_dict = {}
+    with open(path_to_file, 'r') as vec_file:
+        for line in tqdm(vec_file):
+            list_of_line = line.split(' ')
+            word2vec_dict[list_of_line[0]] = list(map(float, list_of_line[1:]))
     return word2vec_dict
+
+if __name__ == '__main__':
+    print(get_word2vec_from_file('''/home/zhangs/data/glove.6B.100d.txt''')['me'])
+    
+
