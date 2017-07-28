@@ -55,4 +55,4 @@ if __name__ == '__main__':
         print('parameters error')
     else:
         dict_of_sentences = read_data_as_a_passage(sys.argv[1])
-        print(Tokenize((dict_of_sentences['queries'])[0]))
+        print(Tokenize((dict_of_sentences['passages'])[1]))
