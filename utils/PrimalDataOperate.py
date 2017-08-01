@@ -44,13 +44,24 @@ def read_data_as_a_passage(file_to_read):
     #     modified_data_file.write(json.dumps(data_to_write)) 
 
 
-
-
-
-
 def Tokenize(sentence):
     return [token.replace("''", '"').replace("``", '"') for token in nltk.word_tokenize(sentence)]
 
+
+def read_from_file(file_type):
+    if file_type == 'train':
+
+    elif file_type == 'dev':
+    
+    return dict_of_data
+def read_data_from_dict(batch_size, data):
+    exampels_num = len(data)
+    batch_num = exampels_num/batch_size
+    data_set = []
+    for _ in range(batch_num):
+
+    return data_set
+def generate_batch()
 
 if __name__ == '__main__':
     if len(sys.argv) != 2:
