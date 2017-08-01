@@ -50,6 +50,8 @@ def read_data_as_a_passage(file_to_read):
 
 def Tokenize(sentence):
     return [token.replace("''", '"').replace("``", '"') for token in nltk.word_tokenize(sentence)]
+
+
 if __name__ == '__main__':
     if len(sys.argv) != 2:
         print('parameters error')

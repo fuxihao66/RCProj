@@ -23,5 +23,4 @@ def read_data_from_dict(batch_size, data):
     for _ in range(batch_num):
 
     return data_set
-def get_batch(data_set, idx):
-    return data_set[idx]
+def generate_batch(7)
