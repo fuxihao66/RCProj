@@ -17,8 +17,7 @@ def process_tokens(temp_tokens):
 
 if __name__ == '__main__':
     sent_tokenize = nltk.sent_tokenize
-    context = ['aklsdjfiowenm,.vncxz,mfiweofucsdopmv.,zxm pokfzsl jkfweoprfkqwxzl  foasp ifwkfznl  weuri owr us oiwe kasljas lksfjalfj kjf alsfjwiofpoaksdf;asmfa.sdmf.,asdmfnaoierjhiojdsfkalsdjfgasjsnajknfskdjfhasdf',\
-    'asdkfjkasldjfklasdfj']
+    context = ['aklsdjfiowenm,.vncxz,mfiweofucsdopmv.,zxm pokfzsl jkfweoprfkqwxzl  foasp ifwkfznl  weuri owr us oiwe kasljas lksfjalfj kjf alsfjwiofpoaksdf;asmfa.sdmf.,asdmfnaoierjhiojdsfkalsdjfgasjsnajknfskdjfhasdf','asdkfjkasldjfklasdfj']
     xi = list(map(word_tokenize, sent_tokenize(context)))
     xi = [process_tokens(tokens) for tokens in xi]
     cxi = [[list(xijk) for xijk in xij] for xij in xi]
