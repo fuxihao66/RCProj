@@ -1,5 +1,4 @@
 import tensorflow as tf
-import tensorflow.contrib.rnn as rnn
 from model import Model
 class single_GPU_trainer:
     def __init__(self, config, model):
@@ -28,9 +27,7 @@ class single_GPU_trainer:
             loss, train_op = sess.run([self.loss, self.train_op], feed_dict=feed_dict)
             summary = None
         return loss, summary, train_op
-'''
-注意这里的batches是一次训练使用多个batch，不是说所有的batch
-'''
+
 
 def average_gradients(tower_grads):
     """Calculate the average gradient for each shared variable across all towers.
@@ -69,6 +66,10 @@ def average_gradients(tower_grads):
         grad_and_var = (grad, v)
         average_grads.append(grad_and_var)
     return average_grads
+
+'''
+注意这里的batches是一次训练使用多个batch，不是说所有的batch
+'''
 class MultiGPUTrainer(object):
     def __init__(self, config, models):
         model = models[0]

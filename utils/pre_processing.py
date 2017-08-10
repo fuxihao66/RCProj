@@ -11,30 +11,64 @@ class DataSet:
      x means the word level 
      cx means the char level
     '''
-    def __init__(self, data_dict):
+    def __init__(self, data_dict, batch_size):
 
+        self.batch_size = batch_size
         self.data = data_dict
         self.num_examples = len(data_dict['queries'])
-        # self.batches = []
+        self.batches = []
         self.w2v_dict, self.w2i_dict = get_word2vec_from_file()
         self.embed_mat = []
         for key in self.w2v_dict:
             self.embed_mat.append(w2v_dict[key])
         self.embed_mat = np.asarray(self.embed_mat)
+        
+        self.tokenize()
+        self.operate_answers()
+        self.generate_batch(self.batch_size, shuffle=False)
 
     def generate_batch(self, batch_size, shuffle=False):
         num_batch = int(math.ceil(self.num_examples/batch_size))     
 
-        if shuffle:
+        # if shuffle:
 
-        for _ in range(num_batch):
-            for xs in self.data['passages']:
-                
-                self.batches.append(batch)
-            for ans in self.data['answers']:
 
-            for qus in self.data['queries']:
+        for i in range(self.num_batch):
+            batch = {}
+            if (i+1)*batch_size <= self.num_examples:
+                batch['x']   = self.data['passages'][i*batch_size:(i+1)*batch_size]
+                batch['cx']  = self.data['char'][i*batch_size:(i+1)*batch_size]
+                batch['ans'] = self.data['ans_start_stop_idx'][i*batch_size:(i+1)*batch_size]
+                batch['q']   = self.data['queries'][i*batch_size:(i+1)*batch_size]
+            else :
+                batch['x']   = self.data['passages'][i*batch_size:num_examples]
+                batch['cx']  = self.data['char'][i*batch_size:num_examples]
+                batch['ans'] = self.data['ans_start_stop_idx'][i*batch_size:num_examples]
+                batch['q']   = self.data['queries'][i*batch_size:num_examples]
+            self.batches.append(batch)       
+        return batches
 
+    def get_batch(self, idx):
+        return batches[idx]
+
+    def tokenize(self):
+        self.data['char'] = []
+       
+        for key in self.data:
+            if key != 'answers':
+                self.data[key] = Tokenize(self.data[key])
+            if key == 'passages':
+                for passage in self.data[key]:
+                    cxi = [[list(xijk) for xijk in xij] for xij in passage]
+                    self.data['char'].append(cxi)
+    def operate_answers(self):
+        self.data['ans_start_stop_idx'] = []
+        for i in range(len(self.data['passages'])):
+            para = self.data['passages'][i]
+             ans  = self.data['answers'][i]
+            l = get_highest_rl_span(para, ans)
+            # l looks like: [[j1,k1],[j2,k2]]
+            self.data['ans_start_stop_idx'].append(l)
     '''
     ## the case should be considered when constructing the dict?????
     '''
@@ -51,30 +85,13 @@ if __name__ == '__main__':
 
     train_data_dict = read_data_as_a_passage(path_to_train)
     dev_data_dict   = read_data_as_a_passage(path_to_dev)
+
     
-    tokenized_train_data = {}
-    tokenized_dev_data   = {}
-    tokenized_train_data['char'] = []
-    tokenized_dev_data['char'] = []
-    for key in train_data_dict:
-        tokenized_train_data[key] = Tokenize(train_data_dict[key])
-        if key == 'passages':
-            for passage in tokenized_train_data[key]:
-                cxi = [[list(xijk) for xijk in xij] for xij in passage]
-                tokenized_train_data['char'].append(cxi)
-    for key in dev_data_dict:
-        tokenized_dev_data[key]   = Tokenize(dev_data_dict[key])
-        if key == 'passages':
-            for passage in tokenized_dev_data[key]:
-                cxi = [[list(xijk) for xijk in xij] for xij in passage]
-                tokenized_dev_data['char'].append(cxi)
-    #do some char level modification
 
-    data_set_train = DataSet(tokenized_train_data)
-    data_set_dev   = DataSet(tokenized_dev_data)
 
-    batch_train = data_set_train.generate_batch()
-    batch_dev   = data_set_dev.generate_batch()
+    data_set_train = DataSet(train_data_dict)
+    data_set_dev   = DataSet(dev_data_dict)
+
 
 
 

@@ -46,21 +46,31 @@ def read_data_as_a_passage(file_to_read):
 
 
 
+
+## signals are also regarded "words"
 def word_tokenize(tokens):
     return [token.replace("''", '"').replace("``", '"') for token in nltk.word_tokenize(tokens)]
 def Tokenize(para):
     
     if isinstance(para, list) and isinstance(para[0], str):
         l = []
+        # split a paragraph by sentences
         sent_tokenize = nltk.sent_tokenize
+
         for string in para:
-        # sent_tokeni1ze can split a para into sentences
-            l.append(list(map(word_tokenize, sent_tokenize(string))))
+            li_item = []
+            for item in list(map(word_tokenize, sent_tokenize(string))):
+                li_item.append(process_tokens(item))
+            l.append(li_item)
         return l
     
     else:
         raise Exception
 
+'''
+this method is used to split '/' or '-', 
+eg: It's 2017/09/06  or 1997-2017
+'''
 def process_tokens(temp_tokens):
     tokens = []
     for token in temp_tokens:
@@ -72,6 +82,11 @@ def process_tokens(temp_tokens):
         tokens.extend(re.split("([{}])".format("".join(l)), token))
     return tokens
 
+def get_rougel_score(summary, reference):
+    return 
+
+def get_highest_rl_span(tokenized_para, reference):
+    
 ## the case of words should be taken into consideration
 def get_word2vec_from_file(path_to_file):
     word2vec_dict = {}
@@ -88,6 +103,5 @@ def get_word2vec_from_file(path_to_file):
 
 if __name__ == '__main__':
 
-    print(Tokenize(['this is my love. And his sdfjs.', 'Du you love? yes id d.']))
 
     
