@@ -1,36 +1,36 @@
 import tensorflow as tf
 import numpy
 import tensorflow.contrib.rnn as rnn
-import tensorflow.nn as nn
-def get_cell_type(model):
-    if model == 'rnn':
-        cell_type = rnn.BasicRNNCell
-    elif model == 'lstm':
-        cell_type = rnn.BasicLSTMCell
-    elif model == 'gru':
-        cell_type = rnn.GRUCell
-    else:
-        raise Exception('model type not supported:{}'.format(model))
-    return cell_type
+import tensorflow.python.ops.rnn
+# def get_cell_type(model):
+#     if model == 'rnn':
+#         cell_type = rnn.BasicRNNCell
+#     elif model == 'lstm':
+#         cell_type = rnn.BasicLSTMCell
+#     elif model == 'gru':
+#         cell_type = rnn.GRUCell
+#     else:
+#         raise Exception('model type not supported:{}'.format(model))
+#     return cell_type
 
-def muliti_layers_init(rnn_size, layer_nums, cell_type):
-    #every element stands for a layer
-    cells = []
-    for _ in range(layer_nums):
-        cell = cell_type(rnn_size)
-        cells.append(cell)
-    return cells
-def single_layer_init(rnn_size, cell_type):
-    cell = cell_type(rnn_size)
-    return cell 
+# def muliti_layers_init(rnn_size, layer_nums, cell_type):
+#     #every element stands for a layer
+#     cells = []
+#     for _ in range(layer_nums):
+#         cell = cell_type(rnn_size)
+#         cells.append(cell)
+#     return cells
+# def single_layer_init(rnn_size, cell_type):
+#     cell = cell_type(rnn_size)
+#     return cell 
 
-def Rnn(extension=None, cell_fw, cell_bw=None, inputs, sequence_lengths=None, init_fw=None, init_bw=None, dtype=None):
-    if extension == 'bi':
-        return nn.bidirectional_dynamic_rnn(cell_fw, cell_bw, inputs, sequence_lengths, initial_state_fw=init_fw, initial_state_bw=init_bw dtype=dtype)
-    elif extension == None:
-        return nn.dynamic_rnn(cell_fw, inputs, sequence_lengths, initial_state=init_fw, dtype=dtype)
-    else :
-        raise Exception('Extension type error:{}'.format(extension))
+# def Rnn(extension=None, cell_fw, cell_bw=None, inputs, sequence_lengths=None, init_fw=None, init_bw=None, dtype=None):
+#     if extension == 'bi':
+#         return nn.bidirectional_dynamic_rnn(cell_fw, cell_bw, inputs, sequence_lengths, initial_state_fw=init_fw, initial_state_bw=init_bw dtype=dtype)
+#     elif extension == None:
+#         return nn.dynamic_rnn(cell_fw, inputs, sequence_lengths, initial_state=init_fw, dtype=dtype)
+#     else :
+#         raise Exception('Extension type error:{}'.format(extension))
 
 
 '''
@@ -65,6 +65,9 @@ class Model:
         self.y = tf.placeholder('bool', [config.batch_size, None, None])
         self.y2 = tf.placeholder('bool', [config.batch_size, None, None])
 
+        self.x_mask = tf.placeholder('bool', [N, None, None], name='x_mask')
+        self.q_mask = tf.placeholder('bool', [N, None], name='q_mask')
+        
         self.emb_mat = tf.placeholder('float', [None, word_emb_size])
 
         self.tensor_dict = {}
@@ -142,14 +145,14 @@ class Model:
 
         with tf.variable_scope("Encoding"):
             (fw_u, bw_u), ((_, fw_u_f), (_, bw_u_f)) = bidirectional_dynamic_rnn(d_cell, d_cell, qq, q_len, dtype='float', scope='u1')  # [N, J, d], [N, d]
-            u = tf.concat(2, [fw_u, bw_u])
+            u = tf.concat([fw_u, bw_u], 2)
             if config.share_lstm_weights:
                 tf.get_variable_scope().reuse_variables()
                 (fw_h, bw_h), _ = bidirectional_dynamic_rnn(cell, cell, xx, x_len, dtype='float', scope='u1')  # [N, M, JX, 2d]
-                h = tf.concat(3, [fw_h, bw_h])  # [N, M, JX, 2d]
+                h = tf.concat([fw_h, bw_h], 3)  # [N, M, JX, 2d]
             else:
                 (fw_h, bw_h), _ = bidirectional_dynamic_rnn(cell, cell, xx, x_len, dtype='float', scope='h1')  # [N, M, JX, 2d]
-                h = tf.concat(3, [fw_h, bw_h])  # [N, M, JX, 2d]
+                h = tf.concat([fw_h, bw_h], 3)  # [N, M, JX, 2d]
             self.tensor_dict['u'] = u
             self.tensor_dict['h'] = h
 
@@ -165,18 +168,18 @@ class Model:
                 first_cell = d_cell
 
             (fw_g0, bw_g0), _ = bidirectional_dynamic_rnn(first_cell, first_cell, p0, x_len, dtype='float', scope='g0')  # [N, M, JX, 2d]
-            g0 = tf.concat(3, [fw_g0, bw_g0])
+            g0 = tf.concat([fw_g0, bw_g0], 3)
             (fw_g1, bw_g1), _ = bidirectional_dynamic_rnn(first_cell, first_cell, g0, x_len, dtype='float', scope='g1')  # [N, M, JX, 2d]
-            g1 = tf.concat(3, [fw_g1, bw_g1])
+            g1 = tf.concat([fw_g1, bw_g1], 3)
 
             logits = get_logits([g1, p0], d, True, wd=config.wd, input_keep_prob=config.input_keep_prob,
                                 mask=self.x_mask, is_train=self.is_train, func=config.answer_func, scope='logits1')
             a1i = softsel(tf.reshape(g1, [N, M * JX, 2 * d]), tf.reshape(logits, [N, M * JX]))
             a1i = tf.tile(tf.expand_dims(tf.expand_dims(a1i, 1), 1), [1, M, JX, 1])
 
-            (fw_g2, bw_g2), _ = bidirectional_dynamic_rnn(d_cell, d_cell, tf.concat(3, [p0, g1, a1i, g1 * a1i]),
+            (fw_g2, bw_g2), _ = bidirectional_dynamic_rnn(d_cell, d_cell, tf.concat([p0, g1, a1i, g1 * a1i], 3),
                                                           x_len, dtype='float', scope='g2')  # [N, M, JX, 2d]
-            g2 = tf.concat(3, [fw_g2, bw_g2])
+            g2 = tf.concat([fw_g2, bw_g2], 3)
             logits2 = get_logits([g2, p0], d, True, wd=config.wd, input_keep_prob=config.input_keep_prob,
                                  mask=self.x_mask,
                                  is_train=self.is_train, func=config.answer_func, scope='logits2')
@@ -235,23 +238,23 @@ class Model:
         #     Note that this optimization results in variable GPU RAM usage (i.e. can cause OOM in the middle of training.)
         #     First test without len_opt and make sure no OOM, and use len_opt
         #     """
-        #     if sum(len(sent) for para in batch.data['x'] for sent in para) == 0:
+        #     if sum(len(sent) for para in batch['x'] for sent in para) == 0:
         #         new_JX = 1
         #     else:
-        #         new_JX = max(len(sent) for para in batch.data['x'] for sent in para)
+        #         new_JX = max(len(sent) for para in batch['x'] for sent in para)
         #     JX = min(JX, new_JX)
 
-        #     if sum(len(ques) for ques in batch.data['q']) == 0:
+        #     if sum(len(ques) for ques in batch['q']) == 0:
         #         new_JQ = 1
         #     else:
-        #         new_JQ = max(len(ques) for ques in batch.data['q'])
+        #         new_JQ = max(len(ques) for ques in batch['q'])
         #     JQ = min(JQ, new_JQ)
 
         # if config.cpu_opt:
-        #     if sum(len(para) for para in batch.data['x']) == 0:
+        #     if sum(len(para) for para in batch['x']) == 0:
         #         new_M = 1
         #     else:
-        #         new_M = max(len(para) for para in batch.data['x'])
+        #         new_M = max(len(para) for para in batch['x'])
         #     M = min(M, new_M)
 
         x = np.zeros([N, M, JX], dtype='int32')
@@ -271,8 +274,8 @@ class Model:
         
         feed_dict[self.emb_mat] = ##
 
-        X = batch.data['x']
-        CX = batch.data['cx']
+        X = batch['x']
+        CX = batch['cx']
 
         # if supervised:
         y = np.zeros([N, M, JX], dtype='bool')
@@ -280,12 +283,11 @@ class Model:
         feed_dict[self.y] = y
         feed_dict[self.y2] = y2
 
-        for i, yi in enumerate(batch.data['y']):
-            
+        for i, yi in enumerate(batch['y']):    
             [j, k] = yi[0]
             [j2, k2] = yi[1]
             y[i, j, k] = True
-            y2[i, j2, k2-1] = True
+            y2[i, j2, k2] = True
 
         def _get_word(word):
             d = batch.shared['word2idx']
@@ -333,12 +335,12 @@ class Model:
                             break
                         cx[i, j, k, l] = _get_char(cxijkl)
 
-        for i, qi in enumerate(batch.data['q']):
+        for i, qi in enumerate(batch['q']):
             for j, qij in enumerate(qi):
                 q[i, j] = _get_word(qij)
                 q_mask[i, j] = True
 
-        for i, cqi in enumerate(batch.data['cq']):
+        for i, cqi in enumerate(batch['cq']):
             for j, cqij in enumerate(cqi):
                 for k, cqijk in enumerate(cqij):
                     cq[i, j, k] = _get_char(cqijk)
@@ -389,9 +391,9 @@ def attention_layer(config, is_train, h, u, h_mask=None, u_mask=None, scope=None
         if not config.c2q_att:
             u_a = tf.tile(tf.expand_dims(tf.expand_dims(tf.reduce_mean(u, 1), 1), 1), [1, M, JX, 1])
         if config.q2c_att:
-            p0 = tf.concat(3, [h, u_a, h * u_a, h * h_a])
+            p0 = tf.concat([h, u_a, h * u_a, h * h_a], 3)
         else:
-            p0 = tf.concat(3, [h, u_a, h * u_a])
+            p0 = tf.concat([h, u_a, h * u_a], 3)
         return p0
 if __name__ == "__main__":
 

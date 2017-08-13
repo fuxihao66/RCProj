@@ -152,7 +152,9 @@ def trans_idx_1dto2d(idx_start, idx_stop, list2d):
             if end_flag == idx_stop:
                 end_idxs_2d = [i, j]
     return [start_idxs_2d, end_idxs_2d]
-def get_highest_rl_span(para, reference, score_type):
+
+# max_gap means the maximun length of gap for answer
+def get_highest_rl_span(para, reference, max_gap):
 
     max_rouge = 0
     signal_idxs = get_signal_idxs(para)
@@ -162,18 +164,28 @@ def get_highest_rl_span(para, reference, score_type):
     end_idxs = signal_idxs
     end_idxs.append(len(para))
 
-    for index_start in start_idxs:
-        for index_stop in end_idxs:
+    start = time.clock()
+    for j, index_start in enumerate(start_idxs):
+        if max_gap+j > len(end_idxs):
+            end_point = len(end_idxs)
+        else:
+            end_point = max_gap + j
+        for index_stop in end_idxs[j: end_point]:
             if index_start < index_stop:
-                temp_score = get_rougel_score(para[index_start: index_stop], reference, score_type)
+                temp_score = get_rougel_score(para[index_start: index_stop], reference, 'f')
                 if max_rouge < temp_score:
                     best_span_start = index_start
                     best_span_end   = index_stop
                     max_rouge = temp_score
+    elapsed = (time.clock() - start)
+    print("Time used:",elapsed)
+
     substring = Tokenize_string_word_level(para[best_span_start: best_span_end]) 
     word_token_para = Tokenize_string_word_level(para)
     sent_token_para = Tokenize(para)
+
     index_start, index_stop = get_idx_sublist(word_token_para, substring)
+    print(para[best_span_start: best_span_end])
     print(max_rouge)
     return trans_idx_1dto2d(index_start, index_stop, sent_token_para)
 if __name__ == '__main__':
@@ -199,11 +211,12 @@ if __name__ == '__main__':
     # li = [1, 3,4,6, 5]
     # sub = [3,4,6]
     # print(get_idx_sublist(li, sub))
-    string = '''The average Walgreens salary ranges from approximately $15,000 per year for Customer Service Associate / Cashier to $179,900 per year for District Manager. Average Walgreens hourly pay ranges from approximately $7.35 per hour for Laboratory Technician to $68.90 per hour for Pharmacy Manager. Salary information comes from 7,810 data points collected directly from employees, users, and jobs on Indeed. The average revenue in 2011 of a Starbuck Store was $1,078,000, up  from $1,011,000 in 2010.    The average ticket (total purchase) at domestic Starbuck stores in  No … vember 2007 was reported at $6.36.    In 2008, the average ticket was flat (0.0% change)."}, {"is_selected": 0, "url": "http://news.walgreens.com/fact-sheets/frequently-asked-questions.htm", "passage_text": "In fiscal 2014, Walgreens opened a total of 184 new locations and acquired 84 locations, for a net decrease of 273 after relocations and closings. How big are your stores? The average size for a typical Walgreens is about 14,500 square feet and the sales floor averages about 11,000 square feet. How do we select locations for new stores? There are several factors that Walgreens takes into account, such as major intersections, traffic patterns, demographics and locations near hospitals."}, {"is_selected": 0, "url": "http://www.babson.edu/executive-education/thought-leadership/retailing/Documents/walgreens-strategic-evolution.pdf", "passage_text": "th store in 1984, reaching $4 billion in sales in 1987, and $5 billion two years later. Walgreens ended the 1980s with 1,484 stores, $5.3 billion in revenues and $154 million in profits. However, profit margins remained just below 3 percent of sales, and returns on assets of less than 10 percent. The number of Walgreen stores has risen from 5,000 in 2005 to more than 8,000 at present. The average square footage per store stood at approximately 10,200 and we forecast the figure to remain constant over our review period. Walgreen earned $303 as average front-end revenue per store square foot in 2012. Your Walgreens Store. Select a store from the search results to make it Your Walgreens Store and save time getting what you need. Your Walgreens Store will be the default location for picking up prescriptions, photos, in store orders and finding deals in the Weekly Ad.'''
-    reference = '''Approximately $15,000 per year.'''
-    start = time.clock()
+    string = '''PRESCRIBED FOR: Ginkgo biloba is used for. 1  memory improvement, 2  dementia, 3  Alzheimer's disease, 4  anxiety, 5  multiple sclerosis, 6  tinnitus (ringing in the ears), 7  sexual dysfunction, 8  premenstrual syndrome, 9  dizziness, 10  headache, 11  glaucoma, 12  diabetic eye problems, and. 13  vertigo. DRUG CLASS AND MECHANISM: Ginkgo biloba is a natural herbal supplement. Ginkgo biloba may have antioxidant properties. Ginkgo biloba also slows down platelet binding in the body, which may increase bleeding risks. Ginkgo biloba is commonly used for memory improvement and dementia. It can cause some minor side effects such as stomach upset, headache, dizziness, constipation, forceful heartbeat, and allergic skin reactions. There is some concern that ginkgo leaf extract might increase the risk of liver and thyroid cancers. 1 For vertigo: dosages of 120-160 mg per day of ginkgo leaf extract, divided into two or three doses. 2  For premenstrual syndrome (PMS): 80 mg twice daily, starting on the sixteenth day of the menstrual cycle until the fifth day of the next cycle. Although ginkgo biloba is a natural product, it may still cause side effects. As with any medication or supplement, ginkgo biloba (ginkgo) can cause side effects. Although some people assume that natural products (such as ginkgo biloba) are automatically free of side effects, this is simply not the case. Remember, many poisons and toxins are also natural products. Ginkgo is a prescription herb in Germany. Ginkgo Biloba is especially good when combined with Panax Ginseng. Ginkgo extract has proven benefits to elderly persons. This ancient herb acts to enhance oxygen utilization and thus improves memory, concentration, and other mental faculties. In studies, Ginkgo biloba has been reported as demonstrating anti-oxidant abilities with improvements of the platelet and nerve cell functions and blood flow to the nervous system and brain. It has also been reported as reducing blood viscosity. Other uses for which ginkgo biloba extract is often recommended include depression, diabetes related nerve damage and poor circulation, allergies, vertigo, short-term memory loss, headache, atherosclerosis, tinnitus, cochlear deafness, macular degeneration, diabetic retinopathy, and PMS. In studies, Ginkgo biloba has been reported as demonstrating anti-oxidant abilities with improvements of the platelet and nerve cell functions and blood flow to the nervous system and brain. It has also been reported as reducing blood viscosity. If you suffer from vertigo, the conventional treatment is a drug called meclizine (Antivert, Bonine), which lessens nausea and may also relieve the sensation of spinning, but it doesn't always work and can cause drowsiness, among other side effects. Although ginkgo biloba can be effective in reducing dizziness, it can also cause dizziness as a side effect. Other possible side effects include headache, heart palpitations, gastrointestinal discomfort and skin rash. Consult your doctor before using ginkgo biloba. Ginkgo Biloba for Dizziness. Ginkgo biloba extracts can help alleviate dizziness. Photo Credit Comstock/Comstock/Getty Images. Dizziness -- a feeling that you or your surroundings are spinning -- can be an alarming sensation, but rarely signals a life-threatening condition. Also called vertigo, dizziness can be caused by benign paroxysmal positional vertigo, inner ear inflammations, Meniere's disease, and certain medications. Natural healers often recommend ginkgo biloba to alleviate dizziness. Consult your doctor before taking ginkgo biloba. Ginkgo Biloba for Dizziness. Ginkgo biloba extracts can help alleviate dizziness. Photo Credit Comstock/Comstock/Getty Images. Dizziness -- a feeling that you or your surroundings are spinning -- can be an alarming sensation, but rarely signals a life-threatening condition. Taking ginkgo along with some medications that are change by the liver can increase the effects and side effects of your medication. Before taking ginkgo talk to your healthcare provider if you take any medications that are changed by the liver. 1 For vertigo: dosages of 120-160 mg per day of ginkgo leaf extract, divided into two or three doses. 2  For premenstrual syndrome (PMS): 80 mg twice daily, starting on the sixteenth day of the menstrual cycle until the fifth day of the next cycle.'''
+    reference = 'Yes'
+    # print(get_highest_rl_span(string, reference, 30))
+    print(get_rougel_score(string, reference, 'f'))
+    # get_signal_idxs(string)
+    # p = Tokenize(string)
 
-    print(get_highest_rl_span(string, reference, 'f'))
 
-    elapsed = (time.clock() - start)
-    print("Time used:",elapsed)
+    

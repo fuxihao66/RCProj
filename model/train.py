@@ -33,7 +33,6 @@ def average_gradients(tower_grads):
     """Calculate the average gradient for each shared variable across all towers.
 
     Note that this function provides a synchronization point across all towers.
-
     Args:
       tower_grads: List of lists of (gradient, variabsts of (gradient, variable) tuples. The outer list
         is over individual gradients. The inner list is over the gradient
