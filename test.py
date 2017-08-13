@@ -1,3 +1,4 @@
+# -*- coding:utf8 -*-
 import nltk
 import re
 import numpy as np
