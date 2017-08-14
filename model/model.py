@@ -42,14 +42,20 @@ parameters{
     lr
 }
 '''
-class Model:
-    def __init(self, config, scope):
 
-        self.scope = scope
+def get_multi_gpu_models(config):
+    models = []
+    for gpu_idx in range(config.num_gpus):
+        with tf.name_scope("model_{}".format(gpu_idx)) as scope, tf.device("/{}:{}".format(config.device_type, gpu_idx)):
+            model = Model(config, scope, rep=gpu_idx == 0)
+            tf.get_variable_scope().reuse_variables()
+            models.append(model)
+    return models
+class Model:
+    def __init(self, config):
+
         self.config = config
-        
-        
-        
+        self.emb_mat = config.emb_mat
         # x means the indexes of words of para in the emb_dict
         '''
         x [index_in_batch, index_in_sentence, index_of_word_in_this_sent]
@@ -68,8 +74,8 @@ class Model:
         self.x_mask = tf.placeholder('bool', [N, None, None], name='x_mask')
         self.q_mask = tf.placeholder('bool', [N, None], name='q_mask')
         
-        self.emb_mat = tf.placeholder('float', [None, word_emb_size])
-
+        # self.emb_mat = tf.placeholder('float', [None, word_emb_size])
+        
         self.tensor_dict = {}
 
         self.build_forward()
@@ -225,7 +231,7 @@ class Model:
         tf.scalar_summary(self.loss.op.name, self.loss)
         tf.add_to_collection('ema/scalar', self.loss)
 
-    def get_feed_dict(self, batch):
+    def get_feed_dict(self, batch, word2idx_dict, char2idx_dict):
 
         config = self.config
         N, M, JX, JQ, VW, VC, d, W = \
@@ -272,7 +278,7 @@ class Model:
         feed_dict[self.q_mask] = q_mask
         # feed_dict[self.is_train] = is_train
         
-        feed_dict[self.emb_mat] = ##
+        # feed_dict[self.emb_mat] = emb_dict
 
         X = batch['x']
         CX = batch['cx']
@@ -290,22 +296,17 @@ class Model:
             y2[i, j2, k2] = True
 
         def _get_word(word):
-            d = batch.shared['word2idx']
+            d = word2idx_dict
             for each in (word, word.lower(), word.capitalize(), word.upper()):
                 if each in d:
                     return d[each]
-            if config.use_glove_for_unk:
-                d2 = batch.shared['new_word2idx']
-                for each in (word, word.lower(), word.capitalize(), word.upper()):
-                    if each in d2:
-                        return d2[each] + len(d)
-            return 1
+            return 0
 
         def _get_char(char):
-            d = batch.shared['char2idx']
+            d = char2idx_dict
             if char in d:
                 return d[char]
-            return 1
+            return 0
 
         for i, xi in enumerate(X):
             if self.config.squash:

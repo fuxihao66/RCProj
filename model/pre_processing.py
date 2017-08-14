@@ -2,6 +2,7 @@ import math
 from metadata_operation import *
 import numpy as np
 from tqdm import tqdm
+from rouge_operation import *
 class DataSet:
     '''
     the data_dict looks like:
@@ -52,8 +53,10 @@ class DataSet:
             print('batch data preparation finished')    
         return batches
 
-    def get_batch(self, idx):
-        return batches[idx]
+
+
+    def get_batch_list(self):
+        return batches
 
     def tokenize(self):
         self.data['char_x'] = []
@@ -73,23 +76,27 @@ class DataSet:
 
     def operate_answers(self):
         self.data['ans_start_stop_idx'] = []
+
         for i in range(len(self.data['passages'])):
             para = self.data['passages'][i]
-            ans  = self.data['answers'][i]
-            l = get_highest_rl_span(para, ans)
-            # l looks like: [[j1,k1],[j2,k2]]
+            ans  = del_signal(self.data['answers'][i])
+            
+            l, flag = get_highest_rl_span(para, ans, 30)
+            if  flag == False:
+                l = get_selected_span(para, data['passage_selected'][0])
+                # l looks like: [[j1,k1],[j2,k2]]
             self.data['ans_start_stop_idx'].append(l)
     '''
     ## the case should be considered when constructing the dict?????
     '''
-    def get_word_idx_in_dict(self, word):
-        for key in self.w2i_dict:
-            if word == key:
-                return w2i_dict[key]
-            elif word == key.capitalize():
-                return w2i_dict[key]
-            elif word == key.upper():
-            elif word == key.lower():
+    # def get_word_idx_in_dict(self, word):
+    #     for key in self.w2i_dict:
+    #         if word == key:
+    #             return w2i_dict[key]
+    #         elif word == key.capitalize():
+    #             return w2i_dict[key]
+    #         elif word == key.upper():
+    #         elif word == key.lower():
 
 if __name__ == '__main__':
 

@@ -154,6 +154,11 @@ def trans_idx_1dto2d(idx_start, idx_stop, list2d):
     return [start_idxs_2d, end_idxs_2d]
 
 # max_gap means the maximun length of gap for answer
+'''
+1. 答案要做处理： 首字母小写，去标点
+2. 对于rouge值为0的要做特殊处理
+'''
+
 def get_highest_rl_span(para, reference, max_gap):
 
     max_rouge = 0
@@ -164,7 +169,6 @@ def get_highest_rl_span(para, reference, max_gap):
     end_idxs = signal_idxs
     end_idxs.append(len(para))
 
-    start = time.clock()
     for j, index_start in enumerate(start_idxs):
         if max_gap+j > len(end_idxs):
             end_point = len(end_idxs)
@@ -177,8 +181,6 @@ def get_highest_rl_span(para, reference, max_gap):
                     best_span_start = index_start
                     best_span_end   = index_stop
                     max_rouge = temp_score
-    elapsed = (time.clock() - start)
-    print("Time used:",elapsed)
 
     substring = Tokenize_string_word_level(para[best_span_start: best_span_end]) 
     word_token_para = Tokenize_string_word_level(para)
@@ -212,7 +214,7 @@ if __name__ == '__main__':
     # sub = [3,4,6]
     # print(get_idx_sublist(li, sub))
     string = '''PRESCRIBED FOR: Ginkgo biloba is used for. 1  memory improvement, 2  dementia, 3  Alzheimer's disease, 4  anxiety, 5  multiple sclerosis, 6  tinnitus (ringing in the ears), 7  sexual dysfunction, 8  premenstrual syndrome, 9  dizziness, 10  headache, 11  glaucoma, 12  diabetic eye problems, and. 13  vertigo. DRUG CLASS AND MECHANISM: Ginkgo biloba is a natural herbal supplement. Ginkgo biloba may have antioxidant properties. Ginkgo biloba also slows down platelet binding in the body, which may increase bleeding risks. Ginkgo biloba is commonly used for memory improvement and dementia. It can cause some minor side effects such as stomach upset, headache, dizziness, constipation, forceful heartbeat, and allergic skin reactions. There is some concern that ginkgo leaf extract might increase the risk of liver and thyroid cancers. 1 For vertigo: dosages of 120-160 mg per day of ginkgo leaf extract, divided into two or three doses. 2  For premenstrual syndrome (PMS): 80 mg twice daily, starting on the sixteenth day of the menstrual cycle until the fifth day of the next cycle. Although ginkgo biloba is a natural product, it may still cause side effects. As with any medication or supplement, ginkgo biloba (ginkgo) can cause side effects. Although some people assume that natural products (such as ginkgo biloba) are automatically free of side effects, this is simply not the case. Remember, many poisons and toxins are also natural products. Ginkgo is a prescription herb in Germany. Ginkgo Biloba is especially good when combined with Panax Ginseng. Ginkgo extract has proven benefits to elderly persons. This ancient herb acts to enhance oxygen utilization and thus improves memory, concentration, and other mental faculties. In studies, Ginkgo biloba has been reported as demonstrating anti-oxidant abilities with improvements of the platelet and nerve cell functions and blood flow to the nervous system and brain. It has also been reported as reducing blood viscosity. Other uses for which ginkgo biloba extract is often recommended include depression, diabetes related nerve damage and poor circulation, allergies, vertigo, short-term memory loss, headache, atherosclerosis, tinnitus, cochlear deafness, macular degeneration, diabetic retinopathy, and PMS. In studies, Ginkgo biloba has been reported as demonstrating anti-oxidant abilities with improvements of the platelet and nerve cell functions and blood flow to the nervous system and brain. It has also been reported as reducing blood viscosity. If you suffer from vertigo, the conventional treatment is a drug called meclizine (Antivert, Bonine), which lessens nausea and may also relieve the sensation of spinning, but it doesn't always work and can cause drowsiness, among other side effects. Although ginkgo biloba can be effective in reducing dizziness, it can also cause dizziness as a side effect. Other possible side effects include headache, heart palpitations, gastrointestinal discomfort and skin rash. Consult your doctor before using ginkgo biloba. Ginkgo Biloba for Dizziness. Ginkgo biloba extracts can help alleviate dizziness. Photo Credit Comstock/Comstock/Getty Images. Dizziness -- a feeling that you or your surroundings are spinning -- can be an alarming sensation, but rarely signals a life-threatening condition. Also called vertigo, dizziness can be caused by benign paroxysmal positional vertigo, inner ear inflammations, Meniere's disease, and certain medications. Natural healers often recommend ginkgo biloba to alleviate dizziness. Consult your doctor before taking ginkgo biloba. Ginkgo Biloba for Dizziness. Ginkgo biloba extracts can help alleviate dizziness. Photo Credit Comstock/Comstock/Getty Images. Dizziness -- a feeling that you or your surroundings are spinning -- can be an alarming sensation, but rarely signals a life-threatening condition. Taking ginkgo along with some medications that are change by the liver can increase the effects and side effects of your medication. Before taking ginkgo talk to your healthcare provider if you take any medications that are changed by the liver. 1 For vertigo: dosages of 120-160 mg per day of ginkgo leaf extract, divided into two or three doses. 2  For premenstrual syndrome (PMS): 80 mg twice daily, starting on the sixteenth day of the menstrual cycle until the fifth day of the next cycle.'''
-    reference = 'Yes'
+    reference = '''is'''
     # print(get_highest_rl_span(string, reference, 30))
     print(get_rougel_score(string, reference, 'f'))
     # get_signal_idxs(string)

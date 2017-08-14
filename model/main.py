@@ -9,10 +9,10 @@ import tensorflow as tf
 from tqdm import tqdm
 import numpy as np
 
-from model import Model
+from model import *
 from train import MultiGPUTrainer
 from metadata_operation import get_word2vec_from_file
-
+from pre_processing import DataSet
 
 def main(config):
     set_dirs(config)
@@ -64,21 +64,20 @@ def _train(config):
     train_data_dict = read_data_as_a_passage(path_to_train)
     dev_data_dict   = read_data_as_a_passage(path_to_dev)
 
-    data_set_train = DataSet(train_data_dict)
-    data_set_dev   = DataSet(dev_data_dict)
+    train_data = DataSet(train_data_dict, config.batch_size)
+    dev_data   = DataSet(dev_data_dict, config.batch_size)
 
-    word2vec_dict, word2idx_dict = get_word2vec_from_file(glove_file_path)
-
-    emb_mat = np.asarray([word2vec_dict[key] for key in word2vec_dict])
+    emb_mat, word2idx_dict, vocabulary_size = get_word2idx_and_embmat(glove_file_path)
+    char2idx_dict, char_vocabulary_size = get_char2idx(train_data_dict)
 
     config.emb_mat = emb_mat
-
+    config.word_vocab_size = vocabulary_size
+    config.char_vocab_size = char_vocabulary_size
     # construct model graph and variables (using default graph)
     # pprint(config.__flags, indent=2)
-    # models = get_multi_gpu_models(config)
-    model = Model(config)
+    model = Model(config, word2idx_dict, char2idx_dict)
 
-    trainer = MultiGPUTrainer(config, model)
+    trainer = single_GPU_trainer(config, model)
     # evaluator = MultiGPUF1Evaluator(config, models, tensor_dict=model.tensor_dict if config.vis else None)
     # graph_handler = GraphHandler(config, model)  # controls all tensors and variables in the graph, including loading /saving
 
@@ -87,13 +86,14 @@ def _train(config):
     # graph_handler.initialize(sess)
 
     # Begin training
-    num_steps = config.num_steps or int(math.ceil(train_data.num_examples / (config.batch_size * config.num_gpus))) * config.num_epochs
+    # num_steps = config.num_steps or int(math.ceil(train_data.num_examples / (config.batch_size * config.num_gpus))) * config.num_epochs
+    num_steps = config.num_steps
     global_step = 0
-    for batches in tqdm(train_data.get_multi_batches(config.batch_size, config.num_gpus,
-                                                     num_steps=num_steps, shuffle=True, cluster=config.cluster), total=num_steps):
+
+    for batch in tqdm(train_data.get_batch_list()):
         global_step = sess.run(model.global_step) + 1  # +1 because all calculations are done after step
         get_summary = global_step % config.log_period == 0
-        loss, summary, train_op = trainer.step(sess, batches, get_summary=get_summary)
+        loss, summary, train_op = trainer.step(sess, batch, get_summary=get_summary)
         # if get_summary:
         #     graph_handler.add_summary(summary, global_step)
 
@@ -101,25 +101,25 @@ def _train(config):
         # if global_step % config.save_period == 0:
         #     graph_handler.save(sess, global_step=global_step)
 
-        if not config.eval:
-            continue
-        # Occasional evaluation
-        if global_step % config.eval_period == 0:
-            num_steps = math.ceil(dev_data.num_examples / (config.batch_size * config.num_gpus))
-            if 0 < config.val_num_batches < num_steps:
-                num_steps = config.val_num_batches
-            e_train = evaluator.get_evaluation_from_batches(
-                sess, tqdm(train_data.get_multi_batches(config.batch_size, config.num_gpus, num_steps=num_steps), total=num_steps)
-            )
-            graph_handler.add_summaries(e_train.summaries, global_step)
-            e_dev = evaluator.get_evaluation_from_batches(
-                sess, tqdm(dev_data.get_multi_batches(config.batch_size, config.num_gpus, num_steps=num_steps), total=num_steps))
-            graph_handler.add_summaries(e_dev.summaries, global_step)
+        # if not config.eval:
+        #     continue
+        # # Occasional evaluation
+        # if global_step % config.eval_period == 0:
+        #     num_steps = math.ceil(dev_data.num_examples / (config.batch_size * config.num_gpus))
+        #     if 0 < config.val_num_batches < num_steps:
+        #         num_steps = config.val_num_batches
+        #     e_train = evaluator.get_evaluation_from_batches(
+        #         sess, tqdm(train_data.get_multi_batches(config.batch_size, config.num_gpus, num_steps=num_steps), total=num_steps)
+        #     )
+        #     graph_handler.add_summaries(e_train.summaries, global_step)
+        #     e_dev = evaluator.get_evaluation_from_batches(
+        #         sess, tqdm(dev_data.get_multi_batches(config.batch_size, config.num_gpus, num_steps=num_steps), total=num_steps))
+        #     graph_handler.add_summaries(e_dev.summaries, global_step)
 
-            if config.dump_eval:
-                graph_handler.dump_eval(e_dev)
-            if config.dump_answer:
-                graph_handler.dump_answer(e_dev)
+        #     if config.dump_eval:
+        #         graph_handler.dump_eval(e_dev)
+        #     if config.dump_answer:
+        #         graph_handler.dump_answer(e_dev)
     # if global_step % config.save_period != 0:
     #     graph_handler.save(sess, global_step=global_step)
 

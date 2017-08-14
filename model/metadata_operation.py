@@ -11,6 +11,7 @@ def read_data_as_a_passage(file_to_read):
     answers_list     =  []
     query_list       =  []
     passage_sent_list=  []
+    selected_passage_list =  []
     # description_list =  []
     with open(file_to_read, 'r', encoding='utf8') as data_file:
         for line in data_file:
@@ -21,12 +22,16 @@ def read_data_as_a_passage(file_to_read):
                 continue
 
             passage = ''
-            passage_sent = []
+            selected_passage = []
+            # passage_sent = []
             for sentence in instance['passages']:
-                passage = passage + sentence['passage_text']
-                passage_sent.append(sentence)
+                passage += sentence['passage_text']
+                if sentence['is_selected'] == 1:
+                    selected_passage.append(sentence['passage_text'])
+                # passage_sent.append(sentence)
             passage_list.append(passage)
-            passage_sent_list.append(passage_sent)
+            selected_passage_list.append(selected_passage)
+            # passage_sent_list.append(passage_sent)
             
 
             ############# 答案去符号！！！！
@@ -42,7 +47,8 @@ def read_data_as_a_passage(file_to_read):
     data_dict['passages']     =  passage_list
     data_dict['answers']      =  answers_list
     data_dict['queries']      =  query_list
-    data_dict['passage_sent'] =  passage_sent_list
+    # data_dict['passage_sent'] =  passage_sent_list
+    data_dict['passage_selected'] = selected_passage_list
     # data_dict['descriptions'] =  description_list
     
     return data_dict
@@ -93,77 +99,8 @@ def process_tokens(temp_tokens):
         tokens.extend(re.split("([{}])".format("".join(l)), token))
     return tokens
 
-
-def get_signal_idxs(string):
-    pattern = re.compile(r'''[ -/~\u00B0\u2212\u2014\u2013\u201C\u2019\u201D\u2018]''')    
-    signal_idx = 0
-    list_of_signal_idxs = []
-    while signal_idx < len(string):
-        m = pattern.search(string[signal_idx+1:])
-        if m:
-            temp_idx = m.start()
-            signal_idx = signal_idx+temp_idx+1
-            list_of_signal_idxs.append(signal_idx)
-        else:
-            break
-    return list_of_signal_idxs
-def get_rougel_score(summary, reference, score_type):
-    rouge = Rouge()
-    scores = rouge.get_scores(reference, summary)
-    return scores[0]['rouge-l'][score_type]
-
-def get_idx_sublist(li, subli):
-    for idx_li in range(len(li)):
-        flag = 1
-        for idx_subli in range(len(subli)):
-            if subli[idx_subli] != li[idx_li+idx_subli]:
-                flag = 0
-                break
-        if flag == 1:
-            return idx_li, idx_li+len(subli)-1
-        else:
-            continue
-    return -1, -1
-
-def trans_idx_1dto2d(idx_start, idx_stop, list2d):
-    start_flag = -1
-    end_flag = -1
-
-    for i, ele in enumerate(list2d):
-        for j, item in enumerate(ele):
-            start_flag += 1
-            end_flag += 1
-            if start_flag == idx_start:
-                start_idxs_2d = [i, j]
-            if end_flag == idx_stop:
-                end_idxs_2d = [i, j]
-    return [start_idxs_2d, end_idxs_2d]
-def get_highest_rl_span(para, reference, score_type):
-
-    max_rouge = 0
-    signal_idxs = get_signal_idxs(para)
-    start_idxs = [0]
-    for item in signal_idxs:
-        start_idxs.append(item+1)
-    end_idxs = signal_idxs
-    end_idxs.append(len(para))
-    for index_start in start_idxs:
-        for index_stop in end_idxs:
-            if index_start < index_stop:
-                temp_score = get_rougel_score(para[index_start: index_stop], reference, score_type)
-                if max_rouge < temp_score:
-                    best_span_start = index_start
-                    best_span_end   = index_stop
-                    max_rouge = temp_score
-    substring = Tokenize_string_word_level(para[best_span_start: best_span_end]) 
-    word_token_para = Tokenize_string_word_level(para)
-    sent_token_para = Tokenize(para)
-    index_start, index_stop = get_idx_sublist(word_token_para, substring)
-
-    return trans_idx_1dto2d(index_start, index_stop, sent_token_para)
-
 ## the case of words should be taken into consideration
-def get_word2vec_from_file(path_to_file):
+def get_word2idx_and_embmat(path_to_file):
     word2vec_dict = {}
     word2idx_dict = {}
     i = 0
@@ -171,12 +108,31 @@ def get_word2vec_from_file(path_to_file):
         for line in tqdm(vec_file):
             list_of_line = line.split(' ')
             word2vec_dict[list_of_line[0]] = list(map(float, list_of_line[1:]))
+            i += 1
             word2idx_dict[list_of_line[0]] = i
-            i = i+1
-    return word2vec_dict, word2idx_dict
+    emb_mat = []
+    emb_mat.append([0 for i in range(100)])
+    for key in word2vec_dict:
+        emb_mat.append(word2vec_dict[key])
+    emb_mat = np.asarray(emb_mat)
+    vacabulary_size = i
+    return word2idx_dict, emb_mat, vacabulary_size
+def get_char2idx(data_dict):
+    char2idx_dict = {}
+    i = 0
+    for key in data_dict:
+        if key == 'passaes' or key == 'queries':
+            for string in data_dict[key]:
+                for char in string:
+                    if char not in char2idx_dict:
+                        char2idx_dict[char] = i
+                        i+=1
+    char_vocabulary_size = len(char2idx_dict)
+    return char2idx_dict, char_vocabulary_size
 
+def del_signal(sentence):
 
-if __name__ == '__main__':
+# if __name__ == '__main__':
 
 
     
