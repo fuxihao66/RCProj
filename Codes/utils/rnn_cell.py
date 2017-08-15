@@ -1,7 +1,7 @@
 import tensorflow as tf
 from tensorflow.python.ops.rnn_cell import DropoutWrapper, RNNCell, LSTMStateTuple
 
-from general import exp_mask, flatten
+from utils.general import exp_mask, flatten
 from nn import linear, softsel, double_linear_logits
 
 
