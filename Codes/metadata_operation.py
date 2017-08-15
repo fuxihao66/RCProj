@@ -25,7 +25,7 @@ def read_data_as_a_passage(file_to_read):
             selected_passage = []
             # passage_sent = []
             for sentence in instance['passages']:
-                passage += sentence['passage_text']
+                passage = passage + ' ' + sentence['passage_text']
                 if sentence['is_selected'] == 1:
                     selected_passage.append(sentence['passage_text'])
                 # passage_sent.append(sentence)
