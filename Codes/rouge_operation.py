@@ -77,14 +77,15 @@ def get_highest_rl_span(para, reference, max_gap):
 
     index_start, index_stop = get_idx_sublist(word_token_para, substring)
     # print(para[best_span_start: best_span_end])
-    # print(max_rouge)
+    print(max_rouge)
     return trans_idx_1dto2d(index_start, index_stop, sent_token_para), True
 
 def get_selected_span(para, selected_span):
-    print(selected_span)
-    print(para)
+    
     substring = Tokenize_string_word_level(selected_span)
     word_token_para = Tokenize_string_word_level(para)
+    print(substring)
+    print(word_token_para)
     sent_token_para = Tokenize(para)
     index_start, index_stop = get_idx_sublist(word_token_para, substring)
     
