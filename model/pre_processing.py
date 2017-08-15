@@ -99,15 +99,11 @@ class DataSet:
     #         elif word == key.lower():
 
 if __name__ == '__main__':
-
     train_data_dict = read_data_as_a_passage(path_to_train)
     dev_data_dict   = read_data_as_a_passage(path_to_dev)
 
-    
-
-
-    data_set_train = DataSet(train_data_dict)
-    data_set_dev   = DataSet(dev_data_dict)
+    train_data = DataSet(train_data_dict, config.batch_size)
+    dev_data   = DataSet(dev_data_dict, config.batch_size)
 
 
 
