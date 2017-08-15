@@ -130,7 +130,7 @@ def get_char2idx(data_dict):
     char_vocabulary_size = len(char2idx_dict)
     return char2idx_dict, char_vocabulary_size
 
-def del_signal(sentence):
+# def del_signal(sentence):
 
 # if __name__ == '__main__':
 
