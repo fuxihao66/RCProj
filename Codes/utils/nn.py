@@ -2,7 +2,7 @@ from tensorflow.python.ops.rnn_cell_impl import _linear
 from tensorflow.python.util import nest
 import tensorflow as tf
 
-from utils import flatten, reconstruct, add_wd, exp_mask
+from utils.general import flatten, reconstruct, add_wd, exp_mask 
 
 
 def linear(args, output_size, bias, bias_start=0.0, scope=None, squeeze=False, wd=0.0, input_keep_prob=1.0,
