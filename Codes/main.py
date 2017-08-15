@@ -11,7 +11,7 @@ import numpy as np
 
 from model import *
 from train import MultiGPUTrainer
-from metadata_operation import get_word2vec_from_file
+from metadata_operation import *
 from pre_processing import DataSet
 
 def main(config):
@@ -61,13 +61,13 @@ def main(config):
 
 def _train(config):
     
-    train_data_dict = read_data_as_a_passage(path_to_train)
-    dev_data_dict   = read_data_as_a_passage(path_to_dev)
+    train_data_dict = read_data_as_a_passage('''/home/zhangs/RC/data/train_v1.1.json''')
+    dev_data_dict   = read_data_as_a_passage('''/home/zhangs/RC/data/dev_v1.1.json''')
 
     train_data = DataSet(train_data_dict, config.batch_size)
     dev_data   = DataSet(dev_data_dict, config.batch_size)
 
-    emb_mat, word2idx_dict, vocabulary_size = get_word2idx_and_embmat(glove_file_path)
+    emb_mat, word2idx_dict, vocabulary_size = get_word2idx_and_embmat('''glove.6B.100d.txt''')
     char2idx_dict, char_vocabulary_size = get_char2idx(train_data_dict)
 
     config.emb_mat = emb_mat
