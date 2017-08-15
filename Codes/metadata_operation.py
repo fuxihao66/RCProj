@@ -4,7 +4,7 @@ import json
 import sys
 import nltk
 import re
-import tqdm   
+from tqdm import tqdm   
 from rouge import Rouge
 def read_data_as_a_passage(file_to_read):
     passage_list     =  []
