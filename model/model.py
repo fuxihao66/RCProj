@@ -52,10 +52,13 @@ def get_multi_gpu_models(config):
             models.append(model)
     return models
 class Model:
-    def __init(self, config):
+    def __init(self, config, word2idx_dict, char2idx_dict):
 
         self.config = config
         self.emb_mat = config.emb_mat
+
+        self.word2idx_dict = word2idx_dict
+        self.char2idx_dict = char2idx_dict
         # x means the indexes of words of para in the emb_dict
         '''
         x [index_in_batch, index_in_sentence, index_of_word_in_this_sent]
@@ -296,14 +299,14 @@ class Model:
             y2[i, j2, k2] = True
 
         def _get_word(word):
-            d = word2idx_dict
+            d = self.word2idx_dict
             for each in (word, word.lower(), word.capitalize(), word.upper()):
                 if each in d:
                     return d[each]
             return 0
 
         def _get_char(char):
-            d = char2idx_dict
+            d = self.char2idx_dict
             if char in d:
                 return d[char]
             return 0

@@ -67,7 +67,7 @@ def average_gradients(tower_grads):
     return average_grads
 
 '''
-注意这里的batches是一次训练使用多个batch，不是说所有的batch
+注意这里的batches是一次训练使用多个batch
 '''
 class MultiGPUTrainer(object):
     def __init__(self, config, models):
