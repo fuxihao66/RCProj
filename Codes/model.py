@@ -88,8 +88,8 @@ class Model:
 
         self.build_forward()
         self.build_loss()
-        self.summary = tf.merge_all_summaries()
-        self.summary = tf.merge_summary(tf.get_collection("summaries", scope=self.scope)
+        # self.summary = tf.merge_all_summaries()
+        # self.summary = tf.merge_summary(tf.get_collection("summaries", scope=self.scope)
     
     def build_forward(self):
         
