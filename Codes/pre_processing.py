@@ -84,7 +84,7 @@ class DataSet:
             ans = self.data['answers'][i]
             l, flag = get_highest_rl_span(para, ans, 30)
             if  flag == False:
-                l = get_selected_span(para, self.data['passage_selected'][0])
+                l = get_selected_span(para, self.data['passage_selected'][i][0])
                 # l looks like: [[j1,k1],[j2,k2]]
             self.data['ans_start_stop_idx'].append(l)
     '''
