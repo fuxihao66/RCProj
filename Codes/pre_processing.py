@@ -28,7 +28,7 @@ class DataSet:
         self.operate_answers()
         self.tokenize() 
         self.generate_batch(self.batch_size, shuffle=False)
-
+        print('data processing succeeded')
     def generate_batch(self, batch_size, shuffle=False):
         num_batch = int(math.ceil(self.num_examples/batch_size))     
 
