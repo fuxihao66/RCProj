@@ -57,7 +57,7 @@ def get_highest_rl_span(para, reference, max_gap):
     end_idxs.append(len(para))
 
     for j, index_start in enumerate(start_idxs):
-        if get_rougel_score( reference, 'f') == 0.0:
+        if get_rougel_score(para, reference, 'f') == 0.0:
             return 1, False
         if max_gap+j > len(end_idxs):
             end_point = len(end_idxs)
