@@ -404,5 +404,5 @@ def attention_layer(config, is_train, h, u, h_mask=None, u_mask=None, scope=None
         else:
             p0 = tf.concat([h, u_a, h * u_a], 3)
         return p0
-if __name__ == "__main__":
+# if __name__ == "__main__":
 
