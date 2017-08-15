@@ -1,7 +1,12 @@
 import tensorflow as tf
-import numpy
-import tensorflow.contrib.rnn as rnn
-import tensorflow.python.ops.rnn
+from my.tensorflow import get_initializer
+from utils.nn import softsel, get_logits, highway_network, multi_conv1d
+from utils.rnn import bidirectional_dynamic_rnn
+from utils.rnn_cell import SwitchableDropoutWrapper, AttentionCell
+import numpy as np
+from  tensorflow.python.ops.rnn_cell_impl import BasicLSTMCell
+import itertools
+# import tensorflow.python.ops.rnn
 # def get_cell_type(model):
 #     if model == 'rnn':
 #         cell_type = rnn.BasicRNNCell
@@ -52,7 +57,7 @@ def get_multi_gpu_models(config):
             models.append(model)
     return models
 class Model:
-    def __init(self, config, word2idx_dict, char2idx_dict):
+    def __init__(self, config, word2idx_dict, char2idx_dict):
 
         self.config = config
         self.emb_mat = config.emb_mat
@@ -85,10 +90,10 @@ class Model:
         self.build_loss()
         self.summary = tf.merge_all_summaries()
         self.summary = tf.merge_summary(tf.get_collection("summaries", scope=self.scope)
-
+    
     def build_forward(self):
         
-        N, M, JX, JQ,  , VC, d, W = \
+        N, M, JX, JQ, VW , VC, d, W = \
             config.batch_size, config.max_num_sents, config.max_sent_size, \
             config.max_ques_size, config.word_vocab_size, config.char_vocab_size, config.hidden_size, \
             config.max_word_size
@@ -234,7 +239,7 @@ class Model:
         tf.scalar_summary(self.loss.op.name, self.loss)
         tf.add_to_collection('ema/scalar', self.loss)
 
-    def get_feed_dict(self, batch, word2idx_dict, char2idx_dict):
+    def get_feed_dict(self, batch):
 
         config = self.config
         N, M, JX, JQ, VW, VC, d, W = \

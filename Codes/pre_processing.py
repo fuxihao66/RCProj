@@ -19,7 +19,7 @@ class DataSet:
         self.data = data_dict
         self.num_examples = len(data_dict['queries'])
         self.batches = []
-        self.w2v_dict, self.w2i_dict = get_word2vec_from_file()
+        # self.w2v_dict, self.w2i_dict = get_word2vec_from_file()
         # self.embed_mat = []
         # for key in self.w2v_dict:
         #     self.embed_mat.append(w2v_dict[key])

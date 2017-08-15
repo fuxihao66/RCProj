@@ -15,7 +15,7 @@ from metadata_operation import get_word2vec_from_file
 from pre_processing import DataSet
 
 def main(config):
-    set_dirs(config)
+    # set_dirs(config)
     with tf.device(config.device):
         if config.mode == 'train':
             _train(config)
