@@ -24,8 +24,9 @@ class DataSet:
         # for key in self.w2v_dict:
         #     self.embed_mat.append(w2v_dict[key])
         # self.embed_mat = np.asarray(self.embed_mat)
-        
+        print('start operating answers')
         self.operate_answers()
+        print('operating answers successfully')
         self.tokenize() 
         self.generate_batch(self.batch_size, shuffle=False)
         print('data processing succeeded')
@@ -35,7 +36,7 @@ class DataSet:
         # if shuffle:
 
 
-        for i in tqdm(range(self.num_batch)):
+        for i in tqdm(range(num_batch)):
             batch = {}
             if (i+1)*batch_size <= self.num_examples:
                 batch['x']   = self.data['passages'][i*batch_size:(i+1)*batch_size]
@@ -44,19 +45,19 @@ class DataSet:
                 batch['q']   = self.data['queries'][i*batch_size:(i+1)*batch_size]
                 batch['cq']  = self.data['char_q'][i*batch_size:(i+1)*batch_size]
             else :
-                batch['x']   = self.data['passages'][i*batch_size:num_examples]
-                batch['cx']  = self.data['char_x'][i*batch_size:num_examples]
-                batch['y']   = self.data['ans_start_stop_idx'][i*batch_size:num_examples]
-                batch['q']   = self.data['queries'][i*batch_size:num_examples]
-                batch['cq']  = self.data['char_q'][i*batch_size:num_examples]
+                batch['x']   = self.data['passages'][i*batch_size:self.num_examples]
+                batch['cx']  = self.data['char_x'][i*batch_size:self.num_examples]
+                batch['y']   = self.data['ans_start_stop_idx'][i*batch_size:self.num_examples]
+                batch['q']   = self.data['queries'][i*batch_size:self.num_examples]
+                batch['cq']  = self.data['char_q'][i*batch_size:self.num_examples]
             self.batches.append(batch)   
             print('batch data preparation finished')    
-        return batches
+        
 
 
 
     def get_batch_list(self):
-        return batches
+        return self.batches
 
     def tokenize(self):
         self.data['char_x'] = []
@@ -77,13 +78,13 @@ class DataSet:
     def operate_answers(self):
         self.data['ans_start_stop_idx'] = []
 
-        for i in range(len(self.data['passages'])):
+        for i in tqdm(range(len(self.data['passages']))):
             para = self.data['passages'][i]
             # ans  = del_signal(self.data['answers'][i])
             ans = self.data['answers'][i]
             l, flag = get_highest_rl_span(para, ans, 30)
             if  flag == False:
-                l = get_selected_span(para, data['passage_selected'][0])
+                l = get_selected_span(para, self.data['passage_selected'][0])
                 # l looks like: [[j1,k1],[j2,k2]]
             self.data['ans_start_stop_idx'].append(l)
     '''
