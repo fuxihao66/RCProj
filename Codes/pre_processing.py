@@ -79,8 +79,8 @@ class DataSet:
 
         for i in range(len(self.data['passages'])):
             para = self.data['passages'][i]
-            ans  = del_signal(self.data['answers'][i])
-            
+            # ans  = del_signal(self.data['answers'][i])
+            ans = self.data['answers'][i]
             l, flag = get_highest_rl_span(para, ans, 30)
             if  flag == False:
                 l = get_selected_span(para, data['passage_selected'][0])
