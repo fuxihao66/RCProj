@@ -86,7 +86,7 @@ class DataSet:
                 l = get_selected_span(para, self.data['passage_selected'][i][0])
                 # l looks like: [[j1,k1],[j2,k2]]
             self.data['ans_start_stop_idx'].append(l)
-    def write_answers_to_file(path):
+    def write_answers_to_file(self, path):
         with open(path, 'w', encoding='utf8') as data_file:
             data_file.write(json.dumps(self.data['ans_start_stop_idx']))
         
@@ -94,7 +94,7 @@ class DataSet:
     #     with open(path, 'r', encoding='utf8') as data_file:
     #         # data_file.read()
 
-    def init_with_ans_file(path_to_answers):
+    def init_with_ans_file(self, path_to_answers):
         # self.read_operated_answers_from_file(path_to_answers)
         self.tokenize()
         self.generate_batch()
