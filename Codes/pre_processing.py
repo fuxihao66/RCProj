@@ -3,6 +3,7 @@ from metadata_operation import *
 import numpy as np
 from tqdm import tqdm
 from rouge_operation import *
+import threading
 class DataSet:
     '''
     the data_dict looks like:
@@ -61,8 +62,18 @@ class DataSet:
                     cqi = [list(qij) for qij in question]
                     self.data['char_q'].append(cqi)
 
-
-    def operate_answers(self):
+    def operate_answers_single_thread(self, start, end, temp_list):
+        for i in range(end)[start:]:
+            para = self.data['passages'][i]
+            # ans  = del_signal(self.data['answers'][i])
+            ans = self.data['answers'][i]
+            l, flag = get_highest_rl_span(para, ans, 30)
+            if  flag == False:
+                l = get_selected_span(para, self.data['passage_selected'][i][0])
+                # l looks like: [[j1,k1],[j2,k2]]
+            # self.data['ans_start_stop_idx'].append(l)
+            temp_list.append(l)
+    def operate_answers(self, num_threads):
         self.data['ans_start_stop_idx'] = []
         # word_dict, _, __ = get_word2idx_and_embmat('''/home/zhangs/RC/data/glove.6B.100d.txt''') 
 
@@ -76,23 +87,32 @@ class DataSet:
         #     if flag == 0:
         #         sentence[0] = sentence[0].lower()
         #     return sentence[:len(sentence)-1]
-
-        for i in tqdm(range(len(self.data['passages']))):
-            para = self.data['passages'][i]
-            # ans  = del_signal(self.data['answers'][i])
-            ans = self.data['answers'][i]
-            l, flag = get_highest_rl_span(para, ans, 30)
-            if  flag == False:
-                l = get_selected_span(para, self.data['passage_selected'][i][0])
-                # l looks like: [[j1,k1],[j2,k2]]
-            self.data['ans_start_stop_idx'].append(l)
+        temp = []
+        each_size = int(math.ceil(len(self.data['passages'])/num_threads)) 
+        thread_list = []
+        for thread_idx in tqdm(range(num_threads)):
+            temp.append([])
+            if thread_idx == (num_threads-1):
+                thread_list.append(threading.Thread(target=self.operate_answers_single_thread, args=(thread_idx*each_size,len(self.data['passages']) ,temp[thread_idx],)))
+            else:
+                thread_list.append(threading.Thread(target=self.operate_answers_single_thread, args=(thread_idx*each_size, (thread_idx+1)*each_size,temp[thread_idx],)))
+        for thr in thread_list:
+            thr.start()
+        for thr in thread_list:
+            thr.join()
+        for i in range(num_threads):
+            for l in temp[i]:
+                self.data['ans_start_stop_idx'].append(l)
+        # for i in tqdm(range(len(self.data['passages']))):
+          
     def write_answers_to_file(self, path):
         with open(path, 'w', encoding='utf8') as data_file:
             data_file.write(json.dumps(self.data['ans_start_stop_idx']))
         
     # def read_operated_answers_from_file(path):
     #     with open(path, 'r', encoding='utf8') as data_file:
-    #         # data_file.read()
+
+            # data_file.read()
 
     def init_with_ans_file(self, path_to_answers):
         # self.read_operated_answers_from_file(path_to_answers)
@@ -106,14 +126,14 @@ if __name__ == '__main__':
 
     train_data = DataSet(train_data_dict)
     dev_data   = DataSet(dev_data_dict)
-    # print('start operating answers')
-    # train_data.operate_answers()
-    # print('operating answers successfully')
-
     print('start operating answers')
-    dev_data.operate_answers()
+    train_data.operate_answers(20)
     print('operating answers successfully')
-    dev_data.write_answers_to_file('''/home/zhangs/RC/data/answers.json''')
+    train_data.write_answers_to_file('''/home/zhangs/RC/data/train_answers.json''')
+    print('start operating answers')
+    dev_data.operate_answers(20)
+    print('operating answers successfully')
+    dev_data.write_answers_to_file('''/home/zhangs/RC/data/dev_answers.json''')
 
 
 
