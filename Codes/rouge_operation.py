@@ -23,11 +23,14 @@ def get_rougel_score(summary, reference, score_type):
 def get_idx_sublist(li, subli):
     for idx_li in range(len(li)):
         flag = 1
+        if idx_li+len(subli) > len(li):
+            return -1, -1
         for idx_subli in range(len(subli)):
-            if idx_li+idx_subli < len(li):
-                if subli[idx_subli] != li[idx_li+idx_subli]:
-                    flag = 0
-                    break
+
+            if subli[idx_subli] != li[idx_li+idx_subli]:
+                flag = 0
+                break
+
         if flag == 1:
             return idx_li, idx_li+len(subli)-1
         else:
@@ -79,7 +82,8 @@ def get_highest_rl_span(para, reference, max_gap):
     sent_token_para = Tokenize(para)
 
     index_start, index_stop = get_idx_sublist(word_token_para, substring)
-    # print(para[best_span_start: best_span_end])
+    print(para[best_span_start: best_span_end])
+    print(para)
     print(max_rouge)
     # print(substring)
     # print(word_token_para)
