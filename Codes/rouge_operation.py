@@ -35,17 +35,16 @@ def get_idx_sublist(li, subli):
     return -1, -1
 
 def trans_idx_1dto2d(idx_start, idx_stop, list2d):
-    start_flag = -1
-    end_flag = -1
-
+    flag = -1
     for i, ele in enumerate(list2d):
         for j, item in enumerate(ele):
-            start_flag += 1
-            end_flag += 1
-            if start_flag == idx_start:
+            flag += 1
+
+            if flag == idx_start:
                 start_idxs_2d = [i, j]
-            if end_flag == idx_stop:
+            if flag == idx_stop:
                 end_idxs_2d = [i, j]
+    print(flag)
     print(idx_start)
     print(idx_stop)
 
