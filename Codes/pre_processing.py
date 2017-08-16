@@ -3,7 +3,7 @@ from metadata_operation import *
 import numpy as np
 from tqdm import tqdm
 from rouge_operation import *
-import threading
+from multiprocessing import Process
 class DataSet:
     '''
     the data_dict looks like:
@@ -93,9 +93,9 @@ class DataSet:
         for thread_idx in tqdm(range(num_threads)):
             temp.append([])
             if thread_idx == (num_threads-1):
-                thread_list.append(threading.Thread(target=self.operate_answers_single_thread, args=(thread_idx*each_size,len(self.data['passages']) ,temp[thread_idx],)))
+                thread_list.append(Process(target=self.operate_answers_single_thread, args=(thread_idx*each_size,len(self.data['passages']) ,temp[thread_idx],)))
             else:
-                thread_list.append(threading.Thread(target=self.operate_answers_single_thread, args=(thread_idx*each_size, (thread_idx+1)*each_size,temp[thread_idx],)))
+                thread_list.append(Process(target=self.operate_answers_single_thread, args=(thread_idx*each_size, (thread_idx+1)*each_size,temp[thread_idx],)))
         for thr in thread_list:
             print('thread start')
             thr.start()
