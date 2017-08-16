@@ -46,9 +46,8 @@ def trans_idx_1dto2d(idx_start, idx_stop, list2d):
                 start_idxs_2d = [i, j]
             if end_flag == idx_stop:
                 end_idxs_2d = [i, j]
-    print(start_idxs_2d)
-    
-    print(end_idxs_2d)
+    print(idx_start)
+    print(idx_stop)
 
     return [start_idxs_2d, end_idxs_2d]
 def get_highest_rl_span(para, reference, max_gap):
