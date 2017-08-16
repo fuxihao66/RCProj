@@ -80,6 +80,7 @@ def get_highest_rl_span(para, reference, max_gap):
     print(max_rouge)
     print(substring)
     print(word_token_para)
+    print(sent_token_para)
     return trans_idx_1dto2d(index_start, index_stop, sent_token_para), True
 
 def get_selected_span(para, selected_span):
