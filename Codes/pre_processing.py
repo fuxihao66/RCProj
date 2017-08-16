@@ -63,7 +63,7 @@ class DataSet:
                     self.data['char_q'].append(cqi)
 
     def operate_answers_single_thread(self, start, end, temp_list):
-        for i in range(end)[start:]:
+        for i in tqdm(range(end)[start:]):
             para = self.data['passages'][i]
             # ans  = del_signal(self.data['answers'][i])
             ans = self.data['answers'][i]
