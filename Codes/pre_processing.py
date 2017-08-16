@@ -97,6 +97,7 @@ class DataSet:
             else:
                 thread_list.append(threading.Thread(target=self.operate_answers_single_thread, args=(thread_idx*each_size, (thread_idx+1)*each_size,temp[thread_idx],)))
         for thr in thread_list:
+            print(thread start)
             thr.start()
         for thr in thread_list:
             thr.join()
