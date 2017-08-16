@@ -6,7 +6,8 @@ import nltk
 import re
 from tqdm import tqdm   
 from rouge import Rouge
-def read_data_as_a_passage(file_to_read):
+import numpy as np
+def read_metadata(file_to_read):
     passage_list     =  []
     answers_list     =  []
     query_list       =  []
@@ -33,11 +34,9 @@ def read_data_as_a_passage(file_to_read):
             selected_passage_list.append(selected_passage)
             # passage_sent_list.append(passage_sent)
             
-
-            ############# 答案去符号！！！！
             answer = ''
             for answer_str in instance['answers']:
-                answer = answer + answer_str
+                answer = answer + ' ' + answer_str
             answers_list.append(answer) 
     
             query_list.append(instance['query'])
@@ -130,9 +129,14 @@ def get_char2idx(data_dict):
     char_vocabulary_size = len(char2idx_dict)
     return char2idx_dict, char_vocabulary_size
 
-# def del_signal(sentence):
 
-# if __name__ == '__main__':
+    
+
+# def read_batch_data(path_to_file):
+    
+#     data_set = DataSet()
+#     return data_set
+
 
 
     

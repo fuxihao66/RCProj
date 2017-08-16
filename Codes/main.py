@@ -10,19 +10,19 @@ from tqdm import tqdm
 import numpy as np
 
 from model import *
-from train import MultiGPUTrainer
+from train import *
 from metadata_operation import *
-from pre_processing import DataSet
+from pre_processing import *
 
 def main(config):
     # set_dirs(config)
     with tf.device(config.device):
         if config.mode == 'train':
             _train(config)
-        elif config.mode == 'test':
-            _test(config)
-        elif config.mode == 'forward':
-            _forward(config)
+        # elif config.mode == 'test':
+        #     _test(config)
+        # elif config.mode == 'forward':
+        #     _forward(config)
         else:
             raise ValueError("invalid value for 'mode': {}".format(config.mode))
 
@@ -61,11 +61,14 @@ def main(config):
 
 def _train(config):
     
-    train_data_dict = read_data_as_a_passage('''/home/zhangs/RC/data/train_v1.1.json''')
-    dev_data_dict   = read_data_as_a_passage('''/home/zhangs/RC/data/dev_v1.1.json''')
+    train_data_dict = read_metadata('''/home/zhangs/RC/data/train_v1.1.json''')
+    dev_data_dict = read_metadata('''/home/zhangs/RC/data/dev_v1.1.json''')
 
-    train_data = DataSet(train_data_dict, config.batch_size)
-    dev_data   = DataSet(dev_data_dict, config.batch_size)
+    train_data = DataSet(train_data_dict)
+    dev_data   = DataSet(dev_data_dict)
+
+    train_data.init_with_ans_file(path)
+    dev_data.init_with_ans_file(path)
 
     emb_mat, word2idx_dict, vocabulary_size = get_word2idx_and_embmat('''glove.6B.100d.txt''')
     char2idx_dict, char_vocabulary_size = get_char2idx(train_data_dict)
@@ -124,85 +127,85 @@ def _train(config):
     #     graph_handler.save(sess, global_step=global_step)
 
 
-def _test(config):
-    test_data = read_data(config, 'test', True)
-    update_config(config, [test_data])
+# def _test(config):
+#     test_data = read_data(config, 'test', True)
+#     update_config(config, [test_data])
 
-    _config_debug(config)
+#     _config_debug(config)
 
-    if config.use_glove_for_unk:
-        word2vec_dict = test_data.shared['lower_word2vec'] if config.lower_word else test_data.shared['word2vec']
-        new_word2idx_dict = test_data.shared['new_word2idx']
-        idx2vec_dict = {idx: word2vec_dict[word] for word, idx in new_word2idx_dict.items()}
-        new_emb_mat = np.array([idx2vec_dict[idx] for idx in range(len(idx2vec_dict))], dtype='float32')
-        config.new_emb_mat = new_emb_mat
+#     if config.use_glove_for_unk:
+#         word2vec_dict = test_data.shared['lower_word2vec'] if config.lower_word else test_data.shared['word2vec']
+#         new_word2idx_dict = test_data.shared['new_word2idx']
+#         idx2vec_dict = {idx: word2vec_dict[word] for word, idx in new_word2idx_dict.items()}
+#         new_emb_mat = np.array([idx2vec_dict[idx] for idx in range(len(idx2vec_dict))], dtype='float32')
+#         config.new_emb_mat = new_emb_mat
 
-    pprint(config.__flags, indent=2)
-    models = get_multi_gpu_models(config)
-    model = models[0]
-    evaluator = MultiGPUF1Evaluator(config, models, tensor_dict=models[0].tensor_dict if config.vis else None)
-    graph_handler = GraphHandler(config, model)
+#     pprint(config.__flags, indent=2)
+#     models = get_multi_gpu_models(config)
+#     model = models[0]
+#     evaluator = MultiGPUF1Evaluator(config, models, tensor_dict=models[0].tensor_dict if config.vis else None)
+#     graph_handler = GraphHandler(config, model)
 
-    sess = tf.Session(config=tf.ConfigProto(allow_soft_placement=True))
-    graph_handler.initialize(sess)
-    num_steps = math.ceil(test_data.num_examples / (config.batch_size * config.num_gpus))
-    if 0 < config.test_num_batches < num_steps:
-        num_steps = config.test_num_batches
+#     sess = tf.Session(config=tf.ConfigProto(allow_soft_placement=True))
+#     graph_handler.initialize(sess)
+#     num_steps = math.ceil(test_data.num_examples / (config.batch_size * config.num_gpus))
+#     if 0 < config.test_num_batches < num_steps:
+#         num_steps = config.test_num_batches
 
-    e = None
-    for multi_batch in tqdm(test_data.get_multi_batches(config.batch_size, config.num_gpus, num_steps=num_steps, cluster=config.cluster), total=num_steps):
-        ei = evaluator.get_evaluation(sess, multi_batch)
-        e = ei if e is None else e + ei
-        if config.vis:
-            eval_subdir = os.path.join(config.eval_dir, "{}-{}".format(ei.data_type, str(ei.global_step).zfill(6)))
-            if not os.path.exists(eval_subdir):
-                os.mkdir(eval_subdir)
-            path = os.path.join(eval_subdir, str(ei.idxs[0]).zfill(8))
-            graph_handler.dump_eval(ei, path=path)
+#     e = None
+#     for multi_batch in tqdm(test_data.get_multi_batches(config.batch_size, config.num_gpus, num_steps=num_steps, cluster=config.cluster), total=num_steps):
+#         ei = evaluator.get_evaluation(sess, multi_batch)
+#         e = ei if e is None else e + ei
+#         if config.vis:
+#             eval_subdir = os.path.join(config.eval_dir, "{}-{}".format(ei.data_type, str(ei.global_step).zfill(6)))
+#             if not os.path.exists(eval_subdir):
+#                 os.mkdir(eval_subdir)
+#             path = os.path.join(eval_subdir, str(ei.idxs[0]).zfill(8))
+#             graph_handler.dump_eval(ei, path=path)
 
-    print(e)
-    if config.dump_answer:
-        print("dumping answer ...")
-        graph_handler.dump_answer(e)
-    if config.dump_eval:
-        print("dumping eval ...")
-        graph_handler.dump_eval(e)
+#     print(e)
+#     if config.dump_answer:
+#         print("dumping answer ...")
+#         graph_handler.dump_answer(e)
+#     if config.dump_eval:
+#         print("dumping eval ...")
+#         graph_handler.dump_eval(e)
 
 
-def _forward(config):
-    assert config.load
-    test_data = read_data(config, config.forward_name, True)
-    update_config(config, [test_data])
+# def _forward(config):
+#     assert config.load
+#     test_data = read_data(config, config.forward_name, True)
+#     update_config(config, [test_data])
 
-    _config_debug(config)
+#     _config_debug(config)
 
-    if config.use_glove_for_unk:
-        word2vec_dict = test_data.shared['lower_word2vec'] if config.lower_word else test_data.shared['word2vec']
-        new_word2idx_dict = test_data.shared['new_word2idx']
-        idx2vec_dict = {idx: word2vec_dict[word] for word, idx in new_word2idx_dict.items()}
-        new_emb_mat = np.array([idx2vec_dict[idx] for idx in range(len(idx2vec_dict))], dtype='float32')
-        config.new_emb_mat = new_emb_mat
+#     if config.use_glove_for_unk:
+#         word2vec_dict = test_data.shared['lower_word2vec'] if config.lower_word else test_data.shared['word2vec']
+#         new_word2idx_dict = test_data.shared['new_word2idx']
+#         idx2vec_dict = {idx: word2vec_dict[word] for word, idx in new_word2idx_dict.items()}
+#         new_emb_mat = np.array([idx2vec_dict[idx] for idx in range(len(idx2vec_dict))], dtype='float32')
+#         config.new_emb_mat = new_emb_mat
 
-    pprint(config.__flags, indent=2)
-    models = get_multi_gpu_models(config)
-    model = models[0]
-    evaluator = ForwardEvaluator(config, model)
-    graph_handler = GraphHandler(config, model)  # controls all tensors and variables in the graph, including loading /saving
+#     pprint(config.__flags, indent=2)
+#     models = get_multi_gpu_models(config)
+#     model = models[0]
+#     evaluator = ForwardEvaluator(config, model)
+#     graph_handler = GraphHandler(config, model)  # controls all tensors and variables in the graph, including loading /saving
 
-    sess = tf.Session(config=tf.ConfigProto(allow_soft_placement=True))
-    graph_handler.initialize(sess)
+#     sess = tf.Session(config=tf.ConfigProto(allow_soft_placement=True))
+#     graph_handler.initialize(sess)
 
-    num_batches = math.ceil(test_data.num_examples / config.batch_size)
-    if 0 < config.test_num_batches < num_batches:
-        num_batches = config.test_num_batches
-    e = evaluator.get_evaluation_from_batches(sess, tqdm(test_data.get_batches(config.batch_size, num_batches=num_batches), total=num_batches))
-    print(e)
-    if config.dump_answer:
-        print("dumping answer ...")
-        graph_handler.dump_answer(e, path=config.answer_path)
-    if config.dump_eval:
-        print("dumping eval ...")
-        graph_handler.dump_eval(e, path=config.eval_path)
+#     num_batches = math.ceil(test_data.num_examples / config.batch_size)
+#     if 0 < config.test_num_batches < num_batches:
+#         num_batches = config.test_num_batches
+#     e = evaluator.get_evaluation_from_batches(sess, tqdm(test_data.get_batches(config.batch_size, num_batches=num_batches), total=num_batches))
+#     print(e)
+#     if config.dump_answer:
+#         print("dumping answer ...")
+#         graph_handler.dump_answer(e, path=config.answer_path)
+#     if config.dump_eval:
+#         print("dumping eval ...")
+#         graph_handler.dump_eval(e, path=config.eval_path)
 
 
 def _get_args():

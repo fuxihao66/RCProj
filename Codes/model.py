@@ -61,7 +61,8 @@ class Model:
 
         self.config = config
         self.emb_mat = config.emb_mat
-
+        self.global_step = tf.get_variable('global_step', shape=[], dtype='int32',
+                                           initializer=tf.constant_initializer(0), trainable=False)
         self.word2idx_dict = word2idx_dict
         self.char2idx_dict = char2idx_dict
         # x means the indexes of words of para in the emb_dict
