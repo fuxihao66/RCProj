@@ -64,7 +64,7 @@ class DataSet:
 
     def operate_answers(self):
         self.data['ans_start_stop_idx'] = []
-        word_dict, _, __ = get_word2idx_and_embmat('''/home/zhangs/data/glove.6B.100d.txt''') 
+        word_dict, _, __ = get_word2idx_and_embmat('''/home/zhangs/RC/data/glove.6B.100d.txt''') 
 
         def del_signal(sentence):
             token_sent = Tokenize_string_word_level(sentence)
@@ -106,8 +106,6 @@ if __name__ == '__main__':
 
     train_data = DataSet(train_data_dict)
     dev_data   = DataSet(dev_data_dict)
-
-
     # print('start operating answers')
     # train_data.operate_answers()
     # print('operating answers successfully')

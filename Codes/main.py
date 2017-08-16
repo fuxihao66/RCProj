@@ -70,7 +70,7 @@ def _train(config):
     train_data.init_with_ans_file(path)
     dev_data.init_with_ans_file(path)
 
-    emb_mat, word2idx_dict, vocabulary_size = get_word2idx_and_embmat('''glove.6B.100d.txt''')
+    emb_mat, word2idx_dict, vocabulary_size = get_word2idx_and_embmat('''/home/zhangs/RC/data/glove.6B.100d.txt''')
     char2idx_dict, char_vocabulary_size = get_char2idx(train_data_dict)
 
     config.emb_mat = emb_mat
