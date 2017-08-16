@@ -24,9 +24,10 @@ def get_idx_sublist(li, subli):
     for idx_li in range(len(li)):
         flag = 1
         for idx_subli in range(len(subli)):
-            if subli[idx_subli] != li[idx_li+idx_subli]:
-                flag = 0
-                break
+            if idx_li+subli < len(li):
+                if subli[idx_subli] != li[idx_li+idx_subli]:
+                    flag = 0
+                    break
         if flag == 1:
             return idx_li, idx_li+len(subli)-1
         else:
