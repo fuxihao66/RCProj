@@ -17,7 +17,7 @@ def read_metadata(file_to_read):
     with open(file_to_read, 'r', encoding='utf8') as data_file:
         for i, line in enumerate(data_file):
 
-            if i == 30:
+            if i == 10:
                 break
 
             instance = json.loads(line)
