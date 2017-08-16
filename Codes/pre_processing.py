@@ -64,23 +64,23 @@ class DataSet:
 
     def operate_answers(self):
         self.data['ans_start_stop_idx'] = []
-        word_dict, _, __ = get_word2idx_and_embmat('''/home/zhangs/RC/data/glove.6B.100d.txt''') 
+        # word_dict, _, __ = get_word2idx_and_embmat('''/home/zhangs/RC/data/glove.6B.100d.txt''') 
 
-        def del_signal(sentence):
-            token_sent = Tokenize_string_word_level(sentence)
-            flag = 0
-            for word in word_dict:
-                if token_sent[0] in (word, word.lower(), word.capitalize(), word.upper()):
-                    flag = 1
-                    break
-            if flag == 0:
-                sentence[0] = sentence[0].lower()
-            return sentence[:len(sentence)-1]
+        # def del_signal(sentence):
+        #     token_sent = Tokenize_string_word_level(sentence)
+        #     flag = 0
+        #     for word in word_dict:
+        #         if token_sent[0] in (word, word.lower(), word.capitalize(), word.upper()):
+        #             flag = 1
+        #             break
+        #     if flag == 0:
+        #         sentence[0] = sentence[0].lower()
+        #     return sentence[:len(sentence)-1]
 
         for i in tqdm(range(len(self.data['passages']))):
             para = self.data['passages'][i]
-            ans  = del_signal(self.data['answers'][i])
-            # ans = self.data['answers'][i]
+            # ans  = del_signal(self.data['answers'][i])
+            ans = self.data['answers'][i]
             l, flag = get_highest_rl_span(para, ans, 30)
             if  flag == False:
                 l = get_selected_span(para, self.data['passage_selected'][i][0])
