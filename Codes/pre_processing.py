@@ -65,7 +65,7 @@ class DataSet:
     def operate_answers_single_thread(self, start, end, temp_list):
         for i in range(end)[start:]:
             para = self.data['passages'][i]
-            if i == 3207:
+            if i == 0:
                 print(para)
             
             # ans  = del_signal(self.data['answers'][i])
