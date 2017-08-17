@@ -48,8 +48,8 @@ def trans_idx_1dto2d(idx_start, idx_stop, list2d):
             if flag == idx_stop:
                 end_idxs_2d = [i, j]
     # print(flag)
-    # print(idx_start)
-    # print(idx_stop)
+    print(idx_start)
+    print(idx_stop)
 
     return [start_idxs_2d, end_idxs_2d]
 def get_highest_rl_span(para, reference, max_gap):
@@ -82,7 +82,7 @@ def get_highest_rl_span(para, reference, max_gap):
     sent_token_para = Tokenize(para)
 
     index_start, index_stop = get_idx_sublist(word_token_para, substring)
-    print(para[best_span_start: best_span_end])
+    # print(para[best_span_start: best_span_end])
     # print(para)
     print(max_rouge)
     # print(substring)
