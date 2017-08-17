@@ -82,7 +82,7 @@ def get_highest_rl_span(para, reference, max_gap):
     sent_token_para = Tokenize(para)
 
     index_start, index_stop = get_idx_sublist(word_token_para, substring)
-    # print(para[best_span_start: best_span_end])
+    print(para[best_span_start: best_span_end])
     # print(para)
     print(max_rouge)
     # print(substring)
