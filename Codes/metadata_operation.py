@@ -34,7 +34,8 @@ def read_metadata(file_to_read):
                 if sentence['is_selected'] == 1:
                     selected_passage.append(sentence['passage_text'])
 
-            # print(passage)
+            if selected_passage == []:
+                print('fuck you MS!!!!!!!!!')
 
             passage_list.append(passage)
             selected_passage_list.append(selected_passage)
