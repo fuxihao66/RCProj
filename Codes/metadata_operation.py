@@ -103,7 +103,7 @@ def process_tokens(temp_tokens):
             if len(item) > 1 and item[len(item)-1] == '.':
                 tokens.append(item[:len(item)-1])
                 tokens.append('.')
-            else:
+            elif len(item) > 0:
                 tokens.append(item)
     return tokens
 
