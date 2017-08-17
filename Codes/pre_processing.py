@@ -66,7 +66,7 @@ class DataSet:
         for i in range(end)[start:]:
             para = self.data['passages'][i]
 
-            print(para)
+            # print(para)
             # ans  = del_signal(self.data['answers'][i])
             ans = self.data['answers'][i]
             l, flag = get_highest_rl_span(para, ans, 30)
