@@ -26,8 +26,11 @@ def read_metadata(file_to_read):
             passage = ''
             selected_passage = []
      
-            for sentence in instance['passages']:
-                passage = passage + ' ' + sentence['passage_text']
+            for i, sentence in enumerate(instance['passages']):
+                if i != 0:
+                    passage = passage + ' ' + sentence['passage_text']
+                else:
+                    passage = passage + sentence['passage_text']
                 if sentence['is_selected'] == 1:
                     selected_passage.append(sentence['passage_text'])
 
@@ -38,8 +41,11 @@ def read_metadata(file_to_read):
             # passage_sent_list.append(passage_sent)
             
             answer = ''
-            for answer_str in instance['answers']:
-                answer = answer + ' ' + answer_str
+            for i, answer_str in enumerate(instance['answers']):
+                if i != 0:
+                    answer = answer + ' ' + answer_str
+                else:
+                    answer = answer + answer_str
             answers_list.append(answer) 
     
             query_list.append(instance['query'])
