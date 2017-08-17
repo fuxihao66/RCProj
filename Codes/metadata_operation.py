@@ -15,7 +15,7 @@ def read_metadata(file_to_read):
     selected_passage_list =  []
     # description_list =  []
     with open(file_to_read, 'r', encoding='utf8') as data_file:
-        for  line in data_file:
+        for  line in tqdm(data_file):
 
             instance = json.loads(line)
 
@@ -25,16 +25,19 @@ def read_metadata(file_to_read):
 
             passage = ''
             selected_passage = []
-     
+
+
+            for sentence in instance['passages']:
+                if sentence['is_selected'] == 1:
+                    selected_passage.append(sentence['passage_text'])
+            if selected_passage == []:
+                continue
+
             for i, sentence in enumerate(instance['passages']):
                 if i != 0:
                     passage = passage + ' ' + sentence['passage_text']
                 else:
-                    passage = passage + sentence['passage_text']
-                if sentence['is_selected'] == 1:
-                    selected_passage.append(sentence['passage_text'])
-
-            
+                    passage = passage + sentence['passage_text']   
 
             passage_list.append(passage)
             selected_passage_list.append(selected_passage)
@@ -48,9 +51,6 @@ def read_metadata(file_to_read):
                     answer = answer + answer_str
             answers_list.append(answer) 
 
-            if selected_passage == []:
-                print(answer)
-                
             query_list.append(instance['query'])
             # description_list.append(instance['query_type'])
 
