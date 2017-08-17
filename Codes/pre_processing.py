@@ -88,7 +88,7 @@ class DataSet:
         #         sentence[0] = sentence[0].lower()
         #     return sentence[:len(sentence)-1]
         temp = []
-        each_size = int(math.ceil(len(self.data['passages'])/num_threads)) 
+        each_size = int(math.ceil(self.num_examples/num_threads)) 
         thread_list = []
         for thread_idx in tqdm(range(num_threads)):
             temp.append([])
@@ -123,7 +123,7 @@ class DataSet:
 
 if __name__ == '__main__':
     train_data_dict = read_metadata('''/home/zhangs/RC/data/train_v1.1.json''')
-    dev_data_dict   = read_metadata('''/home/zhangs/RC/data/dev_v1.1.json''')
+    # dev_data_dict   = read_metadata('''/home/zhangs/RC/data/dev_v1.1.json''')
 
     train_data = DataSet(train_data_dict)
     dev_data   = DataSet(dev_data_dict)
@@ -131,10 +131,10 @@ if __name__ == '__main__':
     train_data.operate_answers(25)
     print('operating answers successfully')
     train_data.write_answers_to_file('''/home/zhangs/RC/data/train_answers.json''')
-    print('start operating answers')
-    dev_data.operate_answers(20)
-    print('operating answers successfully')
-    dev_data.write_answers_to_file('''/home/zhangs/RC/data/dev_answers.json''')
+    # print('start operating answers')
+    # dev_data.operate_answers(20)
+    # print('operating answers successfully')
+    # dev_data.write_answers_to_file('''/home/zhangs/RC/data/dev_answers.json''')
 
 
 
