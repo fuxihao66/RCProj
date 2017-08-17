@@ -126,7 +126,7 @@ if __name__ == '__main__':
     # dev_data_dict   = read_metadata('''/home/zhangs/RC/data/dev_v1.1.json''')
 
     train_data = DataSet(train_data_dict)
-    dev_data   = DataSet(dev_data_dict)
+    # dev_data   = DataSet(dev_data_dict)
     print('start operating answers')
     train_data.operate_answers(25)
     print('operating answers successfully')
