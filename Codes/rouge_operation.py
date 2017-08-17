@@ -72,7 +72,7 @@ def get_highest_rl_span(para, reference, max_gap):
         for index_stop in end_idxs[j: end_point]:
             if index_start < index_stop:
                 temp_score = get_rougel_score(para[index_start: index_stop], reference, 'f')
-                if max_rouge < temp_score:
+                if max_rouge < temp_score and para[index_start: index_stop]!='':
                     best_span_start = index_start
                     best_span_end   = index_stop
                     max_rouge = temp_score
