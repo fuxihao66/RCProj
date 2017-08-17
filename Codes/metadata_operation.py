@@ -15,7 +15,7 @@ def read_metadata(file_to_read):
     selected_passage_list =  []
     # description_list =  []
     with open(file_to_read, 'r', encoding='utf8') as data_file:
-        for i, line in enumerate(data_file):
+        for  line in data_file:
 
             instance = json.loads(line)
 
