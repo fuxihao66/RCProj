@@ -3,7 +3,7 @@ import re
 from metadata_operation import *
 
 def get_signal_idxs(string):
-    pattern = re.compile(r'''[ -/~\u00B0\u2212\u2014\u2013\u201C\u2019\u201D\u2018]''')    
+    pattern = re.compile(r'''[ ,()/~\u00B0\u2212\u2014\u2013\u201C\u2019\u201D\u2018-]''')
     signal_idx = 0
     list_of_signal_idxs = []
     while signal_idx < len(string):
