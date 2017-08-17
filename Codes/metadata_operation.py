@@ -52,7 +52,7 @@ def read_metadata(file_to_read):
     # data_dict['passage_sent'] =  passage_sent_list
     data_dict['passage_selected'] = selected_passage_list
     # data_dict['descriptions'] =  description_list
-    print(data_dict['passages'][3902])
+    print(data_dict['passages'][3801])
     return data_dict
 
     ### this method cannot encode some character very well
