@@ -78,13 +78,12 @@ def get_highest_rl_span(para, reference, max_gap):
                     max_rouge = temp_score
 
     substring = Tokenize_string_word_level(para[best_span_start: best_span_end]) 
-    print(para[0])
     word_token_para = Tokenize_string_word_level(para)
     sent_token_para = Tokenize(para)
 
     index_start, index_stop = get_idx_sublist(word_token_para, substring)
-    # print(para[best_span_start: best_span_end])
-    # print(para)
+    print(para[best_span_start: best_span_end])
+    print(para)
     # print(reference)
     print(max_rouge)
     # print(substring)
