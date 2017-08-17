@@ -89,8 +89,12 @@ def get_highest_rl_span(para, reference, max_gap):
     # print(substring)
     # print(word_token_para)
     # print(sent_token_para)
-    return trans_idx_1dto2d(index_start, index_stop, sent_token_para), True
-
+    try:
+        return trans_idx_1dto2d(index_start, index_stop, sent_token_para), True
+    except:
+        print(substring)
+        print(para)
+        
 def get_selected_span(para, selected_span):
     
     substring = Tokenize_string_word_level(selected_span)
