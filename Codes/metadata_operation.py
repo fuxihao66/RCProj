@@ -34,8 +34,7 @@ def read_metadata(file_to_read):
                 if sentence['is_selected'] == 1:
                     selected_passage.append(sentence['passage_text'])
 
-            if selected_passage == []:
-                print('fuck you MS!!!!!!!!!')
+            
 
             passage_list.append(passage)
             selected_passage_list.append(selected_passage)
@@ -48,7 +47,10 @@ def read_metadata(file_to_read):
                 else:
                     answer = answer + answer_str
             answers_list.append(answer) 
-    
+
+            if selected_passage == []:
+                print(answer)
+                
             query_list.append(instance['query'])
             # description_list.append(instance['query_type'])
 
