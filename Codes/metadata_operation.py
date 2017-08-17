@@ -25,12 +25,14 @@ def read_metadata(file_to_read):
 
             passage = ''
             selected_passage = []
-            # passage_sent = []
+     
             for sentence in instance['passages']:
                 passage = passage + ' ' + sentence['passage_text']
                 if sentence['is_selected'] == 1:
                     selected_passage.append(sentence['passage_text'])
-                # passage_sent.append(sentence)
+
+            print(passage)
+
             passage_list.append(passage)
             selected_passage_list.append(selected_passage)
             # passage_sent_list.append(passage_sent)
