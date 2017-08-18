@@ -11,7 +11,12 @@ def get_signal_idxs(string):
         if m:
             temp_idx = m.start()
             signal_idx = signal_idx+temp_idx+1
-            list_of_signal_idxs.append(signal_idx)
+            
+            if string[signal_idx] == ',' and signal_idx < len(string)-1:
+                if string[signal_idx+1] == ' ':
+                    list_of_signal_idxs.append(signal_idx)
+            else:
+                list_of_signal_idxs.append(signal_idx)
         else:
             break
     return list_of_signal_idxs
@@ -73,9 +78,15 @@ def get_highest_rl_span(para, reference, max_gap):
             if index_start < index_stop:
                 temp_score = get_rougel_score(para[index_start: index_stop], reference, 'f')
                 if max_rouge < temp_score and para[index_start: index_stop]!='':
-                    best_span_start = index_start
-                    best_span_end   = index_stop
-                    max_rouge = temp_score
+                    flag = 0
+                    for ch in para[index_start: index_stop]:
+                        if ch != ' ':
+                            flag = 1
+                            break
+                    if flag == 1
+                        best_span_start = index_start
+                        best_span_end   = index_stop
+                        max_rouge = temp_score
 
     substring = Tokenize_string_word_level(para[best_span_start: best_span_end]) 
     word_token_para = Tokenize_string_word_level(para)
@@ -94,7 +105,7 @@ def get_highest_rl_span(para, reference, max_gap):
     except:
         print(substring)
         print(para)
-        
+
 def get_selected_span(para, selected_span):
     
     substring = Tokenize_string_word_level(selected_span)
