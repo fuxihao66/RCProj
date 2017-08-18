@@ -83,7 +83,7 @@ def get_highest_rl_span(para, reference, max_gap):
                         if ch != ' ':
                             flag = 1
                             break
-                    if flag == 1
+                    if flag == 1:
                         best_span_start = index_start
                         best_span_end   = index_stop
                         max_rouge = temp_score
