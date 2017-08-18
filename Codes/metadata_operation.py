@@ -49,6 +49,9 @@ def read_metadata(file_to_read):
                     answer = answer + ' ' + answer_str
                 else:
                     answer = answer + answer_str
+            if answer == ' 888-989-4473 ':
+                answer = '888-989-4473'
+                print(answer)
             answers_list.append(answer) 
 
             query_list.append(instance['query'])
