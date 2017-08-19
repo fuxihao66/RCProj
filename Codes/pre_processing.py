@@ -126,9 +126,9 @@ class DataSet:
         
     def read_operated_answers_from_file(self, path):
         with open(path, 'r', encoding='utf8') as data_file:
-
-            instance = json.loads(data_file)
-            self.data['ans_start_stop_idx'] = instance
+            for line in tqdm(data_file):
+                instance = json.loads(line)
+                self.data['ans_start_stop_idx'] = instance
 
     def init_with_ans_file(self, path_to_answers, batch_size):
         self.read_operated_answers_from_file(path_to_answers)
