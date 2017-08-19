@@ -93,7 +93,7 @@ class Model:
         # self.summary = tf.merge_summary(tf.get_collection("summaries", scope=self.scope)
     
     def build_forward(self):
-        
+        config = self.config
         N, M, JX, JQ, VW , VC, d, W = \
             config.batch_size, config.max_num_sents, config.max_sent_size, \
             config.max_ques_size, config.word_vocab_size, config.char_vocab_size, config.hidden_size, \
