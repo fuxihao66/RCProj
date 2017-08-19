@@ -18,6 +18,7 @@ class DataSet:
         
         self.data = data_dict
         self.data['ans_start_stop_idx'] = []
+        self.temp = []
         self.num_examples = len(data_dict['passages'])
         self.batches = []
         
@@ -89,7 +90,7 @@ class DataSet:
         #     if flag == 0:
         #         sentence[0] = sentence[0].lower()
         #     return sentence[:len(sentence)-1]
-        self.temp = []
+        
         each_size = int(math.ceil(self.num_examples/num_threads)) 
         thread_list = []
         for thread_idx in tqdm(range(num_threads)):
