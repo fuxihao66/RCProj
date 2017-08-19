@@ -74,7 +74,6 @@ class DataSet:
                 # l looks like: [[j1,k1],[j2,k2]]
             # self.data['ans_start_stop_idx'].append(l)
             temp_list.append(l)
-            print(l)
     def operate_answers(self, num_threads):
         
         # word_dict, _, __ = get_word2idx_and_embmat('''/home/zhangs/RC/data/glove.6B.100d.txt''') 
@@ -103,6 +102,7 @@ class DataSet:
             thr.start()
         for thr in thread_list:
             thr.join()
+        print(temp)
         for i in range(num_threads):
             for l in temp[i]:
                 self.data['ans_start_stop_idx'].append(l)
