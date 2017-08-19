@@ -64,11 +64,7 @@ def _train(config):
     train_data_dict = read_metadata('''/home/zhangs/RC/data/train_v1.1.json''')
     # dev_data_dict = read_metadata('''/home/zhangs/RC/data/dev_v1.1.json''')
     char2idx_dict, char_vocabulary_size = get_char2idx(train_data_dict)
-    train_data = DataSet(train_data_dict)
-    # dev_data   = DataSet(dev_data_dict)
-
-    train_data.init_with_ans_file('''/home/zhangs/RC/data/gen_ans.json''', config.batch_size)
-    # dev_data.init_with_ans_file(path)
+    
 
     emb_mat, word2idx_dict, vocabulary_size = get_word2idx_and_embmat('''/home/zhangs/RC/data/glove.6B.100d.txt''')
     
@@ -96,6 +92,14 @@ def _train(config):
     # num_steps = config.num_steps or int(math.ceil(train_data.num_examples / (config.batch_size * config.num_gpus))) * config.num_epochs
     num_steps = config.num_steps
     global_step = 0
+
+
+    train_data = DataSet(train_data_dict)
+    # dev_data   = DataSet(dev_data_dict)
+
+    train_data.init_with_ans_file('''/home/zhangs/RC/data/gen_ans.json''', config.batch_size)
+    # dev_data.init_with_ans_file(path)
+
 
     for batch in tqdm(train_data.get_batch_list()):
         global_step = sess.run(model.global_step) + 1  # +1 because all calculations are done after step

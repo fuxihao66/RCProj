@@ -80,8 +80,8 @@ class Model:
         self.y = tf.placeholder('bool', [config.batch_size, None, None])
         self.y2 = tf.placeholder('bool', [config.batch_size, None, None])
 
-        self.x_mask = tf.placeholder('bool', [N, None, None], name='x_mask')
-        self.q_mask = tf.placeholder('bool', [N, None], name='q_mask')
+        self.x_mask = tf.placeholder('bool', [config.batch_size, None, None], name='x_mask')
+        self.q_mask = tf.placeholder('bool', [config.batch_size, None], name='q_mask')
         
         # self.emb_mat = tf.placeholder('float', [None, word_emb_size])
         
