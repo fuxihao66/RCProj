@@ -218,7 +218,7 @@ def get_char2idx(data_dict):
         if key == 'passages' or key == 'queries':
             for string in data_dict[key]:
                 for char in string:
-                    if char == '砂':
+                    if char == '肛':
                         print(string)
                     if char not in char2idx_dict:
                         char2idx_dict[char] = i
