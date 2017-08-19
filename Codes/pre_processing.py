@@ -4,6 +4,7 @@ import numpy as np
 from tqdm import tqdm
 from rouge_operation import *
 from multiprocessing import Process
+from multiprocessing import Pool
 class DataSet:
     '''
     the data_dict looks like:
@@ -76,7 +77,7 @@ class DataSet:
                 # l looks like: [[j1,k1],[j2,k2]]
             # self.data['ans_start_stop_idx'].append(l)
             temp.append(l)
-
+        return temp
     def operate_answers(self, num_threads):
         
         # word_dict, _, __ = get_word2idx_and_embmat('''/home/zhangs/RC/data/glove.6B.100d.txt''') 
@@ -94,22 +95,30 @@ class DataSet:
         
         each_size = int(math.ceil(self.num_examples/num_threads)) 
         thread_list = []
+
+        pool = Pool(processes=num_threads)
         for thread_idx in tqdm(range(num_threads)):
             # self.temp.append([])
+            # if thread_idx == (num_threads-1):
+            #     thread_list.append(Process(target=self.operate_answers_single_thread, args=(thread_idx*each_size,len(self.data['passages']),)))
+            # else:
+            #     thread_list.append(Process(target=self.operate_answers_single_thread, args=(thread_idx*each_size, (thread_idx+1)*each_size,)))
             if thread_idx == (num_threads-1):
-                thread_list.append(Process(target=self.operate_answers_single_thread, args=(thread_idx*each_size,len(self.data['passages']),)))
+                thread_list.append(pool.apply_async(self.operate_answers_single_thread, args=(thread_idx*each_size,len(self.data['passages']),)))
             else:
-                thread_list.append(Process(target=self.operate_answers_single_thread, args=(thread_idx*each_size, (thread_idx+1)*each_size,)))
-        for thr in thread_list:
-            print('thread start')
-            thr.start()
-        for thr in thread_list:
-            thr.join()
-
+                thread_list.append(pool.apply_async(self.operate_answers_single_thread, args=(thread_idx*each_size, (thread_idx+1)*each_size,)))
+        # for thr in thread_list:
+        #     print('thread start')
+        #     thr.start()
+        # for thr in thread_list:
+        #     thr.join()
+        print('pool')
+        pool.join()
+        
         for pro in thread_list:
             for l in pro.get():
                 self.data['ans_start_stop_idx'].append(l)
-                
+
         print(self.data['ans_start_stop_idx'])
         # for i in tqdm(range(len(self.data['passages']))):
           
