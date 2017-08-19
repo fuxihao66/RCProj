@@ -15,8 +15,9 @@ class DataSet:
      cx means the char level
     '''
     def __init__(self, data_dict):
-
+        
         self.data = data_dict
+        self.data['ans_start_stop_idx'] = []
         self.num_examples = len(data_dict['passages'])
         self.batches = []
         
@@ -74,7 +75,7 @@ class DataSet:
             # self.data['ans_start_stop_idx'].append(l)
             temp_list.append(l)
     def operate_answers(self, num_threads):
-        self.data['ans_start_stop_idx'] = []
+        
         # word_dict, _, __ = get_word2idx_and_embmat('''/home/zhangs/RC/data/glove.6B.100d.txt''') 
 
         # def del_signal(sentence):
