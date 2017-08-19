@@ -77,7 +77,7 @@ class DataSet:
                 # l looks like: [[j1,k1],[j2,k2]]
             # self.data['ans_start_stop_idx'].append(l)
             temp.append(l)
-        print(temp)
+
         q.put(temp)
         
     def operate_answers(self, num_threads):
@@ -113,10 +113,9 @@ class DataSet:
             thr.join()
 
         while  q.qsize() > 0:  
-            print(q.get())
-        # for pro in thread_list:
-        #     for l in pro.get():
-        #         self.data['ans_start_stop_idx'].append(l)
+            l = q.get()
+            for item in l:
+                self.data['ans_start_stop_idx'].append(item)
 
         print(self.data['ans_start_stop_idx'])
         # for i in tqdm(range(len(self.data['passages']))):
