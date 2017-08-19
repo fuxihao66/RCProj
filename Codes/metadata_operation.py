@@ -17,9 +17,6 @@ def read_metadata(file_to_read):
     with open(file_to_read, 'r', encoding='utf8') as data_file:
         for i, line in enumerate(tqdm(data_file)):
 
-            if i == 6:
-                break
-
             instance = json.loads(line)
 
             #some answers are blank

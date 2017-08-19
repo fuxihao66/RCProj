@@ -142,7 +142,7 @@ if __name__ == '__main__':
     train_data = DataSet(train_data_dict)
     # dev_data   = DataSet(dev_data_dict)
     print('start operating answers')
-    train_data.operate_answers(3)
+    train_data.operate_answers(25)
     print('operating answers successfully')
     train_data.write_answers_to_file('''/home/zhangs/RC/data/train_answers.json''')
     # print('start operating answers')
