@@ -395,7 +395,7 @@ def bi_attention(config, is_train, h, u, h_mask=None, u_mask=None, scope=None, t
 
 
 def attention_layer(config, is_train, h, u, h_mask=None, u_mask=None, scope=None, tensor_dict=None):
-    with tf.variable_scope(scope or "attention_layer"):
+    with tf.variable_scope(scope or "attention_layer", reuse=False):
         JX = tf.shape(h)[2]
         M = tf.shape(h)[1]
         JQ = tf.shape(u)[1]
