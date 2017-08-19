@@ -82,7 +82,7 @@ class Model:
 
         self.x_mask = tf.placeholder('bool', [config.batch_size, None, None], name='x_mask')
         self.q_mask = tf.placeholder('bool', [config.batch_size, None], name='q_mask')
-        
+        self.is_train = tf.placeholder('bool', [], name='is_train')
         # self.emb_mat = tf.placeholder('float', [None, word_emb_size])
         
         self.tensor_dict = {}
@@ -240,7 +240,7 @@ class Model:
         tf.scalar_summary(self.loss.op.name, self.loss)
         tf.add_to_collection('ema/scalar', self.loss)
 
-    def get_feed_dict(self, batch):
+    def get_feed_dict(self, batch, is_train):
 
         config = self.config
         N, M, JX, JQ, VW, VC, d, W = \
@@ -285,7 +285,7 @@ class Model:
         feed_dict[self.q] = q
         feed_dict[self.cq] = cq
         feed_dict[self.q_mask] = q_mask
-        # feed_dict[self.is_train] = is_train
+        feed_dict[self.is_train] = is_train
         
         # feed_dict[self.emb_mat] = emb_dict
 
