@@ -124,15 +124,16 @@ class DataSet:
         with open(path, 'w', encoding='utf8') as data_file:
             data_file.write(json.dumps(self.data['ans_start_stop_idx']))
         
-    # def read_operated_answers_from_file(path):
-    #     with open(path, 'r', encoding='utf8') as data_file:
+    def read_operated_answers_from_file(self, path):
+        with open(path, 'r', encoding='utf8') as data_file:
 
-            # data_file.read()
+            instance = json.loads(data_file)
+            self.data['ans_start_stop_idx'] = instance
 
-    def init_with_ans_file(self, path_to_answers):
-        # self.read_operated_answers_from_file(path_to_answers)
+    def init_with_ans_file(self, path_to_answers, batch_size):
+        self.read_operated_answers_from_file(path_to_answers)
         self.tokenize()
-        self.generate_batch()
+        self.generate_batch(batch_size)
 
 
 if __name__ == '__main__':
