@@ -66,7 +66,7 @@ def _train(config):
     char2idx_dict, char_vocabulary_size = get_char2idx(train_data_dict)
     
 
-    emb_mat, word2idx_dict, vocabulary_size = get_word2idx_and_embmat('''/home/zhangs/RC/data/glove.6B.100d.txt''')
+    word2idx_dict, emb_mat, vocabulary_size = get_word2idx_and_embmat('''/home/zhangs/RC/data/glove.6B.100d.txt''')
     
     config.max_num_sents = 20
     config.max_sent_size = 80
