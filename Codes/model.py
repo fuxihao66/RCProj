@@ -363,7 +363,7 @@ class Model:
         return feed_dict
 
 def bi_attention(config, is_train, h, u, h_mask=None, u_mask=None, scope=None, tensor_dict=None):
-    with tf.variable_scope(scope or "bi_attention"):
+    with tf.variable_scope(scope or "bi_attention", reuse=False):
         JX = tf.shape(h)[2]
         M = tf.shape(h)[1]
         JQ = tf.shape(u)[1]
