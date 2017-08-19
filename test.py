@@ -218,6 +218,8 @@ def get_char2idx(data_dict):
         if key == 'passages' or key == 'queries':
             for string in data_dict[key]:
                 for char in string:
+                    if char == '砂':
+                        print(string)
                     if char not in char2idx_dict:
                         char2idx_dict[char] = i
                         i+=1
@@ -285,4 +287,4 @@ if __name__ == '__main__':
     # print(get_signal_idxs2('''this is 5,500 feet long, you're talling about'''))
     train_data_dict = read_metadata('''/home/zhangs/RC/data/train_v1.1.json''')
     c2i, _ = get_char2idx(train_data_dict)
-    print(c2i)
+    # print(c2i)
