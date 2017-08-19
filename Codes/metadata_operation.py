@@ -136,6 +136,7 @@ def get_word2idx_and_embmat(path_to_file):
     for key in word2vec_dict:
         emb_mat.append(word2vec_dict[key])
     emb_mat = np.asarray(emb_mat)
+    emb_mat = emb_mat.astype(dtype='float32')
     vacabulary_size = i
     return word2idx_dict, emb_mat, vacabulary_size
 def get_char2idx(data_dict):
