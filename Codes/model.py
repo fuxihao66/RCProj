@@ -135,7 +135,7 @@ class Model:
             #         word_emb_mat = tf.get_variable("word_emb_mat", shape=[VW, dw], dtype='float')
             #     if config.use_glove_for_unk:
             #         word_emb_mat = tf.concat(0, [word_emb_mat, self.new_emb_mat])
-
+            print('start word embedding')
             with tf.name_scope("word"):
                 Ax = tf.nn.embedding_lookup(self.emb_mat, self.x)  # [N, M, JX, d]
                 Aq = tf.nn.embedding_lookup(self.emb_mat, self.q)  # [N, JQ, d]
