@@ -72,6 +72,10 @@ def _train(config):
 
     emb_mat, word2idx_dict, vocabulary_size = get_word2idx_and_embmat('''/home/zhangs/RC/data/glove.6B.100d.txt''')
     
+    config.max_num_sents = 20
+    config.max_sent_size = 80
+    config.max_ques_size = 30
+    config.max_word_size = 15
 
     config.emb_mat = emb_mat
     config.word_vocab_size = vocabulary_size

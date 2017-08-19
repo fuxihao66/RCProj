@@ -65,7 +65,7 @@ class DataSet:
                 for question in self.data[key]:
                     cqi = [list(qij) for qij in question]
                     self.data['char_q'].append(cqi)
-
+    
     def operate_answers_single_thread(self, start, end, q):
         temp = []
         for i in range(end)[start:]:
