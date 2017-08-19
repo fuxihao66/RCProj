@@ -104,6 +104,7 @@ class DataSet:
         for i in range(num_threads):
             for l in temp[i]:
                 self.data['ans_start_stop_idx'].append(l)
+        print(self.data['ans_start_stop_idx'])
         # for i in tqdm(range(len(self.data['passages']))):
           
     def write_answers_to_file(self, path):
