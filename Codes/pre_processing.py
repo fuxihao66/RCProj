@@ -63,7 +63,7 @@ class DataSet:
                     cqi = [list(qij) for qij in question]
                     self.data['char_q'].append(cqi)
 
-    def operate_answers_single_thread(self, start, end, temp_list):
+    def operate_answers_single_thread(self, start, end, idx):
         for i in range(end)[start:]:
             para = self.data['passages'][i]         
             # ans  = del_signal(self.data['answers'][i])
@@ -73,7 +73,7 @@ class DataSet:
                 l = get_selected_span(para, self.data['passage_selected'][i][0])
                 # l looks like: [[j1,k1],[j2,k2]]
             # self.data['ans_start_stop_idx'].append(l)
-            temp_list.append(l)
+            self.temp[idx].append(l)
     def operate_answers(self, num_threads):
         
         # word_dict, _, __ = get_word2idx_and_embmat('''/home/zhangs/RC/data/glove.6B.100d.txt''') 
@@ -88,23 +88,23 @@ class DataSet:
         #     if flag == 0:
         #         sentence[0] = sentence[0].lower()
         #     return sentence[:len(sentence)-1]
-        temp = []
+        self.temp = []
         each_size = int(math.ceil(self.num_examples/num_threads)) 
         thread_list = []
         for thread_idx in tqdm(range(num_threads)):
-            temp.append([])
+            self.temp.append([])
             if thread_idx == (num_threads-1):
-                thread_list.append(Process(target=self.operate_answers_single_thread, args=(thread_idx*each_size,len(self.data['passages']) ,temp[thread_idx],)))
+                thread_list.append(Process(target=self.operate_answers_single_thread, args=(thread_idx*each_size,len(self.data['passages']) ,thread_idx,)))
             else:
-                thread_list.append(Process(target=self.operate_answers_single_thread, args=(thread_idx*each_size, (thread_idx+1)*each_size,temp[thread_idx],)))
+                thread_list.append(Process(target=self.operate_answers_single_thread, args=(thread_idx*each_size, (thread_idx+1)*each_size,thread_idx,)))
         for thr in thread_list:
             print('thread start')
             thr.start()
         for thr in thread_list:
             thr.join()
-        print(temp)
+
         for i in range(num_threads):
-            for l in temp[i]:
+            for l in self.temp[i]:
                 self.data['ans_start_stop_idx'].append(l)
         print(self.data['ans_start_stop_idx'])
         # for i in tqdm(range(len(self.data['passages']))):
