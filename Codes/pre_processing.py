@@ -42,7 +42,7 @@ class DataSet:
                 batch['q']   = self.data['queries'][i*batch_size:self.num_examples]
                 batch['cq']  = self.data['char_q'][i*batch_size:self.num_examples]
             self.batches.append(batch)   
-            print('batch data preparation finished')    
+        print('batch data preparation finished')    
         
 
 

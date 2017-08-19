@@ -31,20 +31,20 @@ import time
 #                 li_item.append(process_tokens(item))
 #             l.append(li_item)
 #         return l
-# def Tokenize_string_sent_level(para):
-#     li_item = []
-#     sent_tokenize = nltk.sent_tokenize
-#     for item in list(map(word_tokenize, sent_tokenize(para))):
-#         li_item.append(process_tokens(item))
-#     return li_item
-# def Tokenize_string_sent_level_without_process(para):
-#     sent_tokenize = nltk.sent_tokenize
-#     return list(map(word_tokenize, sent_tokenize(para)))
-# def Tokenize_string_word_level(para):
+def Tokenize_string_sent_level(para):
+    li_item = []
+    sent_tokenize = nltk.sent_tokenize
+    for item in list(map(word_tokenize, sent_tokenize(para))):
+        li_item.append(process_tokens(item))
+    return li_item
+def Tokenize_string_sent_level_without_process(para):
+    sent_tokenize = nltk.sent_tokenize
+    return list(map(word_tokenize, sent_tokenize(para)))
+def Tokenize_string_word_level(para):
 
-#     l = process_tokens(word_tokenize(para))
+    l = process_tokens(word_tokenize(para))
+    return l
 
-#     return l
 
 
 # def get_rougel_score(summary, reference, score_type):
@@ -100,27 +100,22 @@ def process_tokens(temp_tokens):
     tokens = []
     for token in temp_tokens:
         flag = False
-        l = ("-", "\u2212", "\u2014", "\u2013", "/", "~", "\u201C", "\u2019", "\u201D", "\u2018", "\u00B0")
+        l = ("-", "\u2212", "\u2014", "\u2013", "/", "~", "\u201C", "\u2019", "\u201D", "\u2018", "\u00B0", "\*")
         # \u2013 is en-dash. Used for number to nubmer
         # l = ("-", "\u2212", "\u2014", "\u2013")
         # l = ("\u2013",)
-        tokens.extend(re.split("([{}])".format("".join(l)), token))
+        
+        # tokens.extend(re.split("([{}])".format("".join(l)), token))
+        temp = re.split("([{}])".format("".join(l)), token)
+        for item in temp:
+            if len(item) > 1 and item[len(item)-1] == '.':
+                tokens.append(item[:len(item)-1])
+                tokens.append('.')
+            elif len(item) > 0:
+                tokens.append(item)
     return tokens
 
 
-def get_signal_idxs(string):
-    pattern = re.compile(r'''[ -/~\u00B0\u2212\u2014\u2013\u201C\u2019\u201D\u2018]''')    
-    signal_idx = 0
-    list_of_signal_idxs = []
-    while signal_idx < len(string):
-        m = pattern.search(string[signal_idx+1:])
-        if m:
-            temp_idx = m.start()
-            signal_idx = signal_idx+temp_idx+1
-            list_of_signal_idxs.append(signal_idx)
-        else:
-            break
-    return list_of_signal_idxs
 def get_rougel_score(summary, reference, score_type):
     rouge = Rouge()
     scores = rouge.get_scores(reference, summary)
@@ -190,35 +185,102 @@ def get_highest_rl_span(para, reference, max_gap):
     print(para[best_span_start: best_span_end])
     print(max_rouge)
     return trans_idx_1dto2d(index_start, index_stop, sent_token_para)
+
+
+'''
+进一步修改  增加 .
+'''
+def get_signal_idxs(string):
+    pattern = re.compile(r'''[ ,()/~\u00B0\u2212\u2014\u2013\u201C\u2019\u201D\u2018-]''')
+    signal_idx = 0
+    list_of_signal_idxs = []
+    while signal_idx < len(string):
+        m = pattern.search(string[signal_idx+1:])
+        if m:
+            temp_idx = m.start()
+            signal_idx = signal_idx+temp_idx+1
+            
+            if string[signal_idx] == ',' and signal_idx < len(string)-1:
+                if string[signal_idx+1] == ' ':
+                    list_of_signal_idxs.append(signal_idx)
+            else:
+                list_of_signal_idxs.append(signal_idx)
+        else:
+            break
+    return list_of_signal_idxs
+
+def get_char2idx(data_dict):
+    char2idx_dict = {}
+    i = 0
+    for key in data_dict:
+        if key == 'passages' or key == 'queries':
+            for string in data_dict[key]:
+                for char in string:
+                    if char not in char2idx_dict:
+                        char2idx_dict[char] = i
+                        i+=1
+    char_vocabulary_size = len(char2idx_dict)
+    return char2idx_dict, char_vocabulary_size  
+def read_metadata(file_to_read):
+    passage_list     =  []
+    answers_list     =  []
+    query_list       =  []
+    passage_sent_list=  []
+    selected_passage_list =  []
+    # description_list =  []
+    with open(file_to_read, 'r', encoding='utf8') as data_file:
+        for i, line in enumerate(tqdm(data_file)):
+
+            instance = json.loads(line)
+
+            #some answers are blank
+            if instance['answers'] == []:
+                continue
+
+            passage = ''
+            selected_passage = []
+
+
+            for sentence in instance['passages']:
+                if sentence['is_selected'] == 1:
+                    selected_passage.append(sentence['passage_text'])
+            if selected_passage == []:
+                continue
+
+            for i, sentence in enumerate(instance['passages']):
+                if i != 0:
+                    passage = passage + ' ' + sentence['passage_text']
+                else:
+                    passage = passage + sentence['passage_text']   
+
+            passage_list.append(passage)
+            selected_passage_list.append(selected_passage)
+            # passage_sent_list.append(passage_sent)
+            
+            answer = ''
+            for i, answer_str in enumerate(instance['answers']):
+                if i != 0:
+                    answer = answer + ' ' + answer_str
+                else:
+                    answer = answer + answer_str
+            if answer == ' 888-989-4473 ':
+                answer = '888-989-4473'
+                print(answer)
+            answers_list.append(answer) 
+
+            query_list.append(instance['query'])
+            # description_list.append(instance['query_type'])
+
+    data_dict = {}
+    data_dict['passages']     =  passage_list
+    data_dict['answers']      =  answers_list
+    data_dict['queries']      =  query_list
+    # data_dict['passage_sent'] =  passage_sent_list
+    data_dict['passage_selected'] = selected_passage_list
+    # data_dict['descriptions'] =  description_list
+    return data_dict
 if __name__ == '__main__':
-    # string = 'this is not a test-text, but an amazing story! What do you want to do? It''s 2017/06. From 1997-2017'
-    # # test = {}
-    # # test['char'] = []
-    # # ll = Tokenize(string)
-    # # for passage in ll:
-    # #     cxi = [[list(xijk) for xijk in xij] for xij in passage]
-    # #     test['char'].append(cxi)
-    # # print(test)
-    # li = Tokenize_string_word_level(string)
-    # print(enumerate(li))
-    # l = {'word':[1.2, 2.2, 3.3], 'key': [2.3, 3.3, 1.6]}
-    # emb_mat = np.asarray([l[key] for key in l])
-    # string = 'this is my love. he said, "this is my life."'
-    # l = Tokenize_string_sent_level_without_process(string)
-    # k = Tokenize_string_sent_level(string)
-    # print(l)
-    # print(k)
-    # li = get_word_idx('''this is my l-if~e. 1997/2/3 that is your life''')
-    # print(li)
-    # li = [1, 3,4,6, 5]
-    # sub = [3,4,6]
-    # print(get_idx_sublist(li, sub))
-    string = '''PRESCRIBED FOR: Ginkgo biloba is used for. 1  memory improvement, 2  dementia, 3  Alzheimer's disease, 4  anxiety, 5  multiple sclerosis, 6  tinnitus (ringing in the ears), 7  sexual dysfunction, 8  premenstrual syndrome, 9  dizziness, 10  headache, 11  glaucoma, 12  diabetic eye problems, and. 13  vertigo. DRUG CLASS AND MECHANISM: Ginkgo biloba is a natural herbal supplement. Ginkgo biloba may have antioxidant properties. Ginkgo biloba also slows down platelet binding in the body, which may increase bleeding risks. Ginkgo biloba is commonly used for memory improvement and dementia. It can cause some minor side effects such as stomach upset, headache, dizziness, constipation, forceful heartbeat, and allergic skin reactions. There is some concern that ginkgo leaf extract might increase the risk of liver and thyroid cancers. 1 For vertigo: dosages of 120-160 mg per day of ginkgo leaf extract, divided into two or three doses. 2  For premenstrual syndrome (PMS): 80 mg twice daily, starting on the sixteenth day of the menstrual cycle until the fifth day of the next cycle. Although ginkgo biloba is a natural product, it may still cause side effects. As with any medication or supplement, ginkgo biloba (ginkgo) can cause side effects. Although some people assume that natural products (such as ginkgo biloba) are automatically free of side effects, this is simply not the case. Remember, many poisons and toxins are also natural products. Ginkgo is a prescription herb in Germany. Ginkgo Biloba is especially good when combined with Panax Ginseng. Ginkgo extract has proven benefits to elderly persons. This ancient herb acts to enhance oxygen utilization and thus improves memory, concentration, and other mental faculties. In studies, Ginkgo biloba has been reported as demonstrating anti-oxidant abilities with improvements of the platelet and nerve cell functions and blood flow to the nervous system and brain. It has also been reported as reducing blood viscosity. Other uses for which ginkgo biloba extract is often recommended include depression, diabetes related nerve damage and poor circulation, allergies, vertigo, short-term memory loss, headache, atherosclerosis, tinnitus, cochlear deafness, macular degeneration, diabetic retinopathy, and PMS. In studies, Ginkgo biloba has been reported as demonstrating anti-oxidant abilities with improvements of the platelet and nerve cell functions and blood flow to the nervous system and brain. It has also been reported as reducing blood viscosity. If you suffer from vertigo, the conventional treatment is a drug called meclizine (Antivert, Bonine), which lessens nausea and may also relieve the sensation of spinning, but it doesn't always work and can cause drowsiness, among other side effects. Although ginkgo biloba can be effective in reducing dizziness, it can also cause dizziness as a side effect. Other possible side effects include headache, heart palpitations, gastrointestinal discomfort and skin rash. Consult your doctor before using ginkgo biloba. Ginkgo Biloba for Dizziness. Ginkgo biloba extracts can help alleviate dizziness. Photo Credit Comstock/Comstock/Getty Images. Dizziness -- a feeling that you or your surroundings are spinning -- can be an alarming sensation, but rarely signals a life-threatening condition. Also called vertigo, dizziness can be caused by benign paroxysmal positional vertigo, inner ear inflammations, Meniere's disease, and certain medications. Natural healers often recommend ginkgo biloba to alleviate dizziness. Consult your doctor before taking ginkgo biloba. Ginkgo Biloba for Dizziness. Ginkgo biloba extracts can help alleviate dizziness. Photo Credit Comstock/Comstock/Getty Images. Dizziness -- a feeling that you or your surroundings are spinning -- can be an alarming sensation, but rarely signals a life-threatening condition. Taking ginkgo along with some medications that are change by the liver can increase the effects and side effects of your medication. Before taking ginkgo talk to your healthcare provider if you take any medications that are changed by the liver. 1 For vertigo: dosages of 120-160 mg per day of ginkgo leaf extract, divided into two or three doses. 2  For premenstrual syndrome (PMS): 80 mg twice daily, starting on the sixteenth day of the menstrual cycle until the fifth day of the next cycle.'''
-    reference = '''is'''
-    # print(get_highest_rl_span(string, reference, 30))
-    print(get_rougel_score(string, reference, 'f'))
-    # get_signal_idxs(string)
-    # p = Tokenize(string)
-
-
-    
+    # print(get_signal_idxs2('''this is 5,500 feet long, you're talling about'''))
+    train_data_dict = read_metadata('''/home/zhangs/RC/data/train_v1.1.json''')
+    c2i, _ = get_char2idx(train_data_dict)
+    print(c2i)
