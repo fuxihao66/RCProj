@@ -1,8 +1,8 @@
 import tensorflow as tf
 # from my.tensorflow import get_initializer
 from utils.nn import softsel, get_logits, highway_network, multi_conv1d
-# from utils.rnn import bidirectional_dynamic_rnn
-from tensorflow.python.ops.rnn import bidirectional_dynamic_rnn 
+from utils.rnn import bidirectional_dynamic_rnn
+# from tensorflow.python.ops.rnn import bidirectional_dynamic_rnn 
 from utils.rnn_cell import SwitchableDropoutWrapper, AttentionCell
 import numpy as np
 from tensorflow.python.ops.rnn_cell import BasicLSTMCell
