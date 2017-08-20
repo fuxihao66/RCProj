@@ -194,7 +194,9 @@ class Model:
             (fw_g0, bw_g0), _ = bidirectional_dynamic_rnn(first_cell, first_cell, p0, x_len, dtype='float', scope='g0')  # [N, M, JX, 2d]
             g0 = tf.concat([fw_g0, bw_g0], 3)
 
-            tf.get_variable_scope().reuse_variables()
+            ttcell = BasicLSTMCell(d, state_is_tuple=True)
+            first_cell = SwitchableDropoutWrapper(ttcell, self.is_train, input_keep_prob=config.input_keep_prob)
+
             (fw_g1, bw_g1), _ = bidirectional_dynamic_rnn(first_cell, first_cell, g0, x_len, dtype='float', scope='g1')  # [N, M, JX, 2d]
             g1 = tf.concat([fw_g1, bw_g1], 3)
 
