@@ -184,7 +184,7 @@ class Model:
                                            input_keep_prob=self.config.input_keep_prob, is_train=self.is_train)
             else:
                 p0 = attention_layer(config, self.is_train, h, u, h_mask=self.x_mask, u_mask=self.q_mask, scope="p0", tensor_dict=self.tensor_dict)
-                
+                print(d_cell.weights)
                 first_cell = d_cell
 
 
