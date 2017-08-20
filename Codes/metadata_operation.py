@@ -18,10 +18,10 @@ def read_metadata(file_to_read):
         for i, line in enumerate(tqdm(data_file)):
 
 
-            if i == 10:
+            if i == 33:
                 break
 
-            
+
             instance = json.loads(line)
 
             #some answers are blank
