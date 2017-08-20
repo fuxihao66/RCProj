@@ -205,6 +205,10 @@ class Model:
             a1i = softsel(tf.reshape(g1, [N, M * JX, 2 * d]), tf.reshape(logits, [N, M * JX]))
             a1i = tf.tile(tf.expand_dims(tf.expand_dims(a1i, 1), 1), [1, M, JX, 1])
 
+
+            ttcell = BasicLSTMCell(d, state_is_tuple=True)
+            d_cell = SwitchableDropoutWrapper(ttcell, self.is_train, input_keep_prob=config.input_keep_prob)
+
             (fw_g2, bw_g2), _ = bidirectional_dynamic_rnn(d_cell, d_cell, tf.concat([p0, g1, a1i, g1 * a1i], 3),
                                                           x_len, dtype='float', scope='g2')  # [N, M, JX, 2d]
             g2 = tf.concat([fw_g2, bw_g2], 3)
