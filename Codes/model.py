@@ -88,7 +88,7 @@ class Model:
         # self.emb_mat = tf.placeholder('float', [None, word_emb_size])
         
         self.tensor_dict = {}
-
+        self.var_list = None
         self.build_forward()
         self.build_loss()
         # self.summary = tf.merge_all_summaries()
@@ -243,6 +243,9 @@ class Model:
 
     def get_global_step(self):
         return self.global_step
+
+    def get_var_list(self):
+        return self.var_list
     def build_loss(self):
         config = self.config
         JX = tf.shape(self.x)[2]
