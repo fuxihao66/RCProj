@@ -238,7 +238,11 @@ class Model:
         # with tf.variable_scope('interaction'):
 
         # with tf.variable_scope('answer'):
+    def get_loss(self):
+        return self.loss
 
+    def get_global_step(self):
+        return self.global_step
     def build_loss(self):
         config = self.config
         JX = tf.shape(self.x)[2]
