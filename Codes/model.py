@@ -156,8 +156,8 @@ class Model:
 
 
         cell = BasicLSTMCell(d, state_is_tuple=True)
-        # d_cell = SwitchableDropoutWrapper(cell, self.is_train, input_keep_prob=config.input_keep_prob)
-        d_cell = DropoutWrapper(cell, input_keep_prob=config.input_keep_prob)
+        d_cell = SwitchableDropoutWrapper(cell, self.is_train, input_keep_prob=config.input_keep_prob)
+        # d_cell = DropoutWrapper(cell, input_keep_prob=config.input_keep_prob)
         x_len = tf.reduce_sum(tf.cast(self.x_mask, 'int32'), 2)  # [N, M]
         q_len = tf.reduce_sum(tf.cast(self.q_mask, 'int32'), 1)  # [N]
 
@@ -184,9 +184,8 @@ class Model:
                                            input_keep_prob=self.config.input_keep_prob, is_train=self.is_train)
             else:
                 p0 = attention_layer(config, self.is_train, h, u, h_mask=self.x_mask, u_mask=self.q_mask, scope="p0", tensor_dict=self.tensor_dict)
-                print(d_cell.weights)
                 first_cell = d_cell
-
+                print(first_cell.state_size)
 
             (fw_g0, bw_g0), _ = bidirectional_dynamic_rnn(first_cell, first_cell, p0, x_len, dtype='float', scope='g0')  # [N, M, JX, 2d]
             g0 = tf.concat([fw_g0, bw_g0], 3)
