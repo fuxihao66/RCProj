@@ -183,6 +183,7 @@ class Model:
                 p0 = attention_layer(config, self.is_train, h, u, h_mask=self.x_mask, u_mask=self.q_mask, scope="p0", tensor_dict=self.tensor_dict)
                 
                 first_cell = d_cell
+                print(first_cell)
 
             # tf.get_variable_scope().reuse_variables()
 
@@ -364,7 +365,7 @@ class Model:
         return feed_dict
 
 def bi_attention(config, is_train, h, u, h_mask=None, u_mask=None, scope=None, tensor_dict=None):
-    with tf.variable_scope(scope or "bi_attention", reuse=False):
+    with tf.variable_scope(scope or "bi_attention"):
         JX = tf.shape(h)[2]
         M = tf.shape(h)[1]
         JQ = tf.shape(u)[1]
@@ -396,7 +397,7 @@ def bi_attention(config, is_train, h, u, h_mask=None, u_mask=None, scope=None, t
 
 
 def attention_layer(config, is_train, h, u, h_mask=None, u_mask=None, scope=None, tensor_dict=None):
-    with tf.variable_scope(scope or "attention_layer", reuse=False):
+    with tf.variable_scope(scope or "attention_layer"):
         JX = tf.shape(h)[2]
         M = tf.shape(h)[1]
         JQ = tf.shape(u)[1]
