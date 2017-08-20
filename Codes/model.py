@@ -253,7 +253,8 @@ class Model:
             logits=self.logits2, labels=tf.cast(tf.reshape(self.y2, [-1, M * JX]), 'float')))
         tf.add_to_collection("losses", ce_loss2)
 
-        self.loss = tf.add_n(tf.get_collection('losses', scope=self.scope), name='loss')
+        # self.loss = tf.add_n(tf.get_collection('losses', scope=self.scope), name='loss')
+        self.loss = tf.add_n(tf.get_collection('losses'), name='loss')
         tf.scalar_summary(self.loss.op.name, self.loss)
         tf.add_to_collection('ema/scalar', self.loss)
 
