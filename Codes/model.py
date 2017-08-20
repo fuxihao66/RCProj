@@ -184,9 +184,7 @@ class Model:
                 p0 = attention_layer(config, self.is_train, h, u, h_mask=self.x_mask, u_mask=self.q_mask, scope="p0", tensor_dict=self.tensor_dict)
                 
                 first_cell = d_cell
-                print(first_cell)
-
-            # tf.get_variable_scope().reuse_variables()
+                print(first_cell.output_size, first_cell.scope_name, first_cell.state_size, first_cell.trainable_variables, first_cell.trainable_weights)
 
             (fw_g0, bw_g0), _ = bidirectional_dynamic_rnn(first_cell, first_cell, p0, x_len, dtype='float', scope='g0')  # [N, M, JX, 2d]
             g0 = tf.concat([fw_g0, bw_g0], 3)
