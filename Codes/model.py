@@ -1,7 +1,8 @@
 import tensorflow as tf
 # from my.tensorflow import get_initializer
 from utils.nn import softsel, get_logits, highway_network, multi_conv1d
-from utils.rnn import bidirectional_dynamic_rnn
+# from utils.rnn import bidirectional_dynamic_rnn
+from tensorflow.python.ops.rnn import bidirectional_dynamic_rnn 
 from utils.rnn_cell import SwitchableDropoutWrapper, AttentionCell
 import numpy as np
 from tensorflow.python.ops.rnn_cell import BasicLSTMCell
@@ -153,7 +154,7 @@ class Model:
 
 
 
-        cell = BasicLSTMCell(d, state_is_tuple=True, reuse=False)
+        cell = BasicLSTMCell(d, state_is_tuple=True)
         d_cell = SwitchableDropoutWrapper(cell, self.is_train, input_keep_prob=config.input_keep_prob)
         x_len = tf.reduce_sum(tf.cast(self.x_mask, 'int32'), 2)  # [N, M]
         q_len = tf.reduce_sum(tf.cast(self.q_mask, 'int32'), 1)  # [N]
