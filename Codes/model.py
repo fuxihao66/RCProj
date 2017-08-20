@@ -255,7 +255,7 @@ class Model:
 
         # self.loss = tf.add_n(tf.get_collection('losses', scope=self.scope), name='loss')
         self.loss = tf.add_n(tf.get_collection('losses'), name='loss')
-        tf.scalar_summary(self.loss.op.name, self.loss)
+        tf.summary.scalar(self.loss.op.name, self.loss)
         tf.add_to_collection('ema/scalar', self.loss)
 
     def get_feed_dict(self, batch, is_train):
