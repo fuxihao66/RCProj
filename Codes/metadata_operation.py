@@ -17,11 +17,6 @@ def read_metadata(file_to_read):
     with open(file_to_read, 'r', encoding='utf8') as data_file:
         for i, line in enumerate(tqdm(data_file)):
 
-
-            if i == 33:
-                break
-
-
             instance = json.loads(line)
 
             #some answers are blank
@@ -158,7 +153,9 @@ def get_char2idx(data_dict):
     return char2idx_dict, char_vocabulary_size
 
 
-    
+def write_to_file( path, data):
+        with open(path, 'a+', encoding='utf8') as data_file:
+            data_file.write(json.dumps(data))  
 
 # def read_batch_data(path_to_file):
     
