@@ -153,7 +153,7 @@ class Model:
 
 
 
-        cell = BasicLSTMCell(d, state_is_tuple=True)
+        cell = BasicLSTMCell(d, state_is_tuple=True, reuse=False)
         d_cell = SwitchableDropoutWrapper(cell, self.is_train, input_keep_prob=config.input_keep_prob)
         x_len = tf.reduce_sum(tf.cast(self.x_mask, 'int32'), 2)  # [N, M]
         q_len = tf.reduce_sum(tf.cast(self.q_mask, 'int32'), 1)  # [N]
