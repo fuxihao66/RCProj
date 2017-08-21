@@ -94,12 +94,12 @@ class Model:
         self.build_forward()
         self.build_loss()
         self.var_ema = None
-        self._build_var_ema()
+        self.build_var_ema()
         if config.mode == 'train':
-            self._build_ema()
+            self.build_ema()
 
-        self.summary = tf.merge_all_summaries()
-        self.summary = tf.merge_summary(tf.get_collection("summaries"))
+        self.summary = tf.summary.merge_all()
+
     
     def build_forward(self):
         config = self.config
@@ -253,6 +253,7 @@ class Model:
 
     def get_var_list(self):
         return self.var_list
+
     def build_loss(self):
         config = self.config
         JX = tf.shape(self.x)[2]
@@ -271,7 +272,7 @@ class Model:
         self.loss = tf.add_n(tf.get_collection('losses'), name='loss')
         tf.summary.scalar(self.loss.op.name, self.loss)
         tf.add_to_collection('ema/scalar', self.loss)
-    def _build_ema(self):
+    def build_ema(self):
         self.ema = tf.train.ExponentialMovingAverage(self.config.decay)
         ema = self.ema
         tensors = tf.get_collection("ema/scalar") + tf.get_collection("ema/vector")
