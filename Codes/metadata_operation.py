@@ -94,6 +94,16 @@ def Tokenize(para_list):
         return li_item
     else:
         raise Exception
+def Tokenize_without_sent(para_list):
+    if isinstance(para_list, list) and isinstance(para_list[0], str):
+        l = []
+        for string in para_list:
+            l.append(Tokenize_string_word_level(string))
+        return l
+    elif isinstance(para_list, str):
+        return Tokenize_string_word_level(para_list)
+    else:
+        raise Exception
 def Tokenize_string_word_level(para):
     l = process_tokens(word_tokenize(para))
     return l

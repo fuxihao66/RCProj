@@ -55,13 +55,13 @@ class DataSet:
         self.data['char_q'] = []
         for key in self.data:
             print(key)
-            if key not in ('answers', 'ans_start_stop_idx', 'passage_selected', 'char_x','char_q'):
-                self.data[key] = Tokenize(self.data[key])
             if key == 'passages':
+                self.data[key] = Tokenize(self.data[key])
                 for passage in self.data[key]:
                     cxi = [[list(xijk) for xijk in xij] for xij in passage]
                     self.data['char_x'].append(cxi)
             elif key == 'queries':
+                self.data[key] = Tokenize_without_sent(self.data[key])
                 for question in self.data[key]:
                     cqi = [list(qij) for qij in question]
                     self.data['char_q'].append(cqi)
