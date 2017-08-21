@@ -80,6 +80,12 @@ def _train(config):
     # pprint(config.__flags, indent=2)
     model = Model(config, word2idx_dict, char2idx_dict)
 
+
+
+    model.global_step = tf.global_variables_initializer()
+
+
+    
     trainer = single_GPU_trainer(config, model)
     # evaluator = MultiGPUF1Evaluator(config, models, tensor_dict=model.tensor_dict if config.vis else None)
     # graph_handler = GraphHandler(config, model)  # controls all tensors and variables in the graph, including loading /saving
@@ -99,7 +105,8 @@ def _train(config):
 
     train_data.init_with_ans_file('''/home/zhangs/RC/data/gen_ans.json''', config.batch_size)
     # dev_data.init_with_ans_file(path)
-
+    init = tf.global_variables_initializer()
+    sess.run(init)
 
     for batch in tqdm(train_data.get_batch_list()):
         global_step = sess.run(model.global_step) + 1  # +1 because all calculations are done after step
