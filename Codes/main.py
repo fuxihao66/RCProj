@@ -79,12 +79,6 @@ def _train(config):
     # construct model graph and variables (using default graph)
     # pprint(config.__flags, indent=2)
     model = Model(config, word2idx_dict, char2idx_dict)
-
-
-
-    model.global_step = tf.global_variables_initializer()
-
-
     
     trainer = single_GPU_trainer(config, model)
     # evaluator = MultiGPUF1Evaluator(config, models, tensor_dict=model.tensor_dict if config.vis else None)
