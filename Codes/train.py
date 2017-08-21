@@ -20,7 +20,7 @@ class single_GPU_trainer:
 
     def step(self, sess, batch, get_summary=False):
         assert isinstance(sess, tf.Session)
-        _, ds = batch
+        ds = batch
         feed_dict = self.model.get_feed_dict(ds, True)
         if get_summary:
             loss, summary, train_op = \
