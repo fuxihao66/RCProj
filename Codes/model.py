@@ -282,7 +282,7 @@ class Model:
             tf.summary.scalar(ema_var.op.name, ema_var)
         for var in tf.get_collection("ema/vector"):
             ema_var = ema.average(var)
-            tf.histogram_summary(ema_var.op.name, ema_var)
+            tf.summary.histogram(ema_var.op.name, ema_var)
 
         with tf.control_dependencies([ema_op]):
             self.loss = tf.identity(self.loss)
