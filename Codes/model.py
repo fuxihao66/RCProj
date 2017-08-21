@@ -279,7 +279,7 @@ class Model:
         ema_op = ema.apply(tensors)
         for var in tf.get_collection("ema/scalar"):
             ema_var = ema.average(var)
-            tf.scalar_summary(ema_var.op.name, ema_var)
+            tf.summary.scalar(ema_var.op.name, ema_var)
         for var in tf.get_collection("ema/vector"):
             ema_var = ema.average(var)
             tf.histogram_summary(ema_var.op.name, ema_var)
