@@ -99,6 +99,11 @@ def _train(config):
 
     train_data.init_with_ans_file('''/home/zhangs/RC/data/gen_ans.json''', config.batch_size)
     # dev_data.init_with_ans_file(path)
+
+
+
+    train_writer = tf.summary.FileWriter('/home/zhangs/RC/data/', sess.graph)
+
     init = tf.global_variables_initializer()
     sess.run(init)
 
@@ -106,6 +111,8 @@ def _train(config):
         global_step = sess.run(model.global_step) + 1  # +1 because all calculations are done after step
         get_summary = global_step % config.log_period == 0
         loss, summary, train_op = trainer.step(sess, batch, get_summary=get_summary)
+
+        train_writer.add_summary(summary, global_step)
         # if get_summary:
         #     graph_handler.add_summary(summary, global_step)
 

@@ -89,11 +89,17 @@ class Model:
         # self.emb_mat = tf.placeholder('float', [None, word_emb_size])
         
         self.tensor_dict = {}
+        self.loss = None
         self.var_list = None
         self.build_forward()
         self.build_loss()
-        # self.summary = tf.merge_all_summaries()
-        # self.summary = tf.merge_summary(tf.get_collection("summaries", scope=self.scope)
+        self.var_ema = None
+        self._build_var_ema()
+        if config.mode == 'train':
+            self._build_ema()
+            
+        self.summary = tf.merge_all_summaries()
+        self.summary = tf.merge_summary(tf.get_collection("summaries")
     
     def build_forward(self):
         config = self.config
@@ -265,7 +271,27 @@ class Model:
         self.loss = tf.add_n(tf.get_collection('losses'), name='loss')
         tf.summary.scalar(self.loss.op.name, self.loss)
         tf.add_to_collection('ema/scalar', self.loss)
+    def _build_ema(self):
+        self.ema = tf.train.ExponentialMovingAverage(self.config.decay)
+        ema = self.ema
+        tensors = tf.get_collection("ema/scalar") + tf.get_collection("ema/vector")
+        ema_op = ema.apply(tensors)
+        for var in tf.get_collection("ema/scalar"):
+            ema_var = ema.average(var)
+            tf.scalar_summary(ema_var.op.name, ema_var)
+        for var in tf.get_collection("ema/vector"):
+            ema_var = ema.average(var)
+            tf.histogram_summary(ema_var.op.name, ema_var)
 
+        with tf.control_dependencies([ema_op]):
+            self.loss = tf.identity(self.loss)
+
+    def build_var_ema(self):
+        self.var_ema = tf.train.ExponentialMovingAverage(self.config.var_decay)
+        ema = self.var_ema
+        ema_op = ema.apply(tf.trainable_variables())
+        with tf.control_dependencies([ema_op]):
+            self.loss = tf.identity(self.loss)
     def get_feed_dict(self, batch, is_train):
 
         config = self.config
