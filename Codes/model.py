@@ -97,9 +97,9 @@ class Model:
         self._build_var_ema()
         if config.mode == 'train':
             self._build_ema()
-            
+
         self.summary = tf.merge_all_summaries()
-        self.summary = tf.merge_summary(tf.get_collection("summaries")
+        self.summary = tf.merge_summary(tf.get_collection("summaries"))
     
     def build_forward(self):
         config = self.config
