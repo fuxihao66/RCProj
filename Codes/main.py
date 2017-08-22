@@ -16,15 +16,15 @@ from pre_processing import *
 
 def main(config):
     # set_dirs(config)
-    with tf.device(config.device):
-        if config.mode == 'train':
-            _train(config)
-        # elif config.mode == 'test':
-        #     _test(config)
-        # elif config.mode == 'forward':
-        #     _forward(config)
-        else:
-            raise ValueError("invalid value for 'mode': {}".format(config.mode))
+    # with tf.device(config.device):
+    if config.mode == 'train':
+        _train(config)
+    # elif config.mode == 'test':
+    #     _test(config)
+    # elif config.mode == 'forward':
+    #     _forward(config)
+    else:
+        raise ValueError("invalid value for 'mode': {}".format(config.mode))
 
 
 # def set_dirs(config):
@@ -78,9 +78,10 @@ def _train(config):
     config.char_vocab_size = char_vocabulary_size
     # construct model graph and variables (using default graph)
     # pprint(config.__flags, indent=2)
-    model = Model(config, word2idx_dict, char2idx_dict)
-    
-    trainer = single_GPU_trainer(config, model)
+    with tf.name_scope("model"), tf.device("/{}:{}".format(config.device_type, 0)):
+        model = Model(config, word2idx_dict, char2idx_dict)
+    with tf.name_scope("model"), tf.device("/{}:{}".format(config.device_type, 0)):
+        trainer = single_GPU_trainer(config, model)
     # evaluator = MultiGPUF1Evaluator(config, models, tensor_dict=model.tensor_dict if config.vis else None)
     # graph_handler = GraphHandler(config, model)  # controls all tensors and variables in the graph, including loading /saving
 
