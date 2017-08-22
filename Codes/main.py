@@ -103,6 +103,7 @@ def _train(config):
 
 
     train_writer = tf.summary.FileWriter('/home/zhangs/RC/data/', sess.graph)
+    merged = tf.summary.merge_all()
 
     init = tf.global_variables_initializer()
     sess.run(init)
@@ -114,7 +115,8 @@ def _train(config):
         loss, summary, train_op = trainer.step(sess, batch, get_summary=get_summary)
 
         train_writer.add_summary(summary, global_step)
-    print(loss)
+        print(summary)
+        print(loss)
         # if get_summary:
         #     graph_handler.add_summary(summary, global_step)
 
