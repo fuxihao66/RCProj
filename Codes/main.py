@@ -80,7 +80,7 @@ def _train(config):
     # pprint(config.__flags, indent=2)
     with tf.name_scope("model"):
         model = Model(config, word2idx_dict, char2idx_dict)
-    with tf.name_scope("trainer"), tf.device("/gpu:0"):
+    with tf.name_scope("trainer"):
         trainer = single_GPU_trainer(config, model)
     # evaluator = MultiGPUF1Evaluator(config, models, tensor_dict=model.tensor_dict if config.vis else None)
     # graph_handler = GraphHandler(config, model)  # controls all tensors and variables in the graph, including loading /saving
