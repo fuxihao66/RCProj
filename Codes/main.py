@@ -114,6 +114,7 @@ def _train(config):
         loss, summary, train_op = trainer.step(sess, batch, get_summary=get_summary)
 
         train_writer.add_summary(summary, global_step)
+    print(loss)
         # if get_summary:
         #     graph_handler.add_summary(summary, global_step)
 
