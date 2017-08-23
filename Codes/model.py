@@ -168,7 +168,7 @@ class Model:
         x_len = tf.reduce_sum(tf.cast(self.x_mask, 'int32'), 2)  # [N, M]
         q_len = tf.reduce_sum(tf.cast(self.q_mask, 'int32'), 1)  # [N]
 
-        with tf.variable_scope("Encoding"):
+        with tf.variable_scope("Encoding"),tf.device("/gpu:0"):
             (fw_u, bw_u), ((_, fw_u_f), (_, bw_u_f)) = bidirectional_dynamic_rnn(d_cell, d_cell, qq, q_len, dtype='float', scope='u1')  # [N, J, d], [N, d]
             u = tf.concat([fw_u, bw_u], 2)
             if config.share_lstm_weights:
@@ -181,7 +181,7 @@ class Model:
             self.tensor_dict['u'] = u
             self.tensor_dict['h'] = h
 
-        with tf.variable_scope("main"):
+        with tf.variable_scope("main"),tf.device("/gpu:0"):
             
             if config.dynamic_att:
                 p0 = h
@@ -255,23 +255,24 @@ class Model:
         return self.var_list
 
     def build_loss(self):
-        config = self.config
-        JX = tf.shape(self.x)[2]
-        M = tf.shape(self.x)[1]
-        JQ = tf.shape(self.q)[1]
-        loss_mask = tf.reduce_max(tf.cast(self.q_mask, 'float'), 1)
-        losses = tf.nn.softmax_cross_entropy_with_logits(
-            logits=self.logits, labels=tf.cast(tf.reshape(self.y, [-1, M * JX]), 'float'))
-        ce_loss = tf.reduce_mean(loss_mask * losses)
-        tf.add_to_collection('losses', ce_loss)
-        ce_loss2 = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(
-            logits=self.logits2, labels=tf.cast(tf.reshape(self.y2, [-1, M * JX]), 'float')))
-        tf.add_to_collection("losses", ce_loss2)
+        with tf.name_scope('loss'),tf.device("/gpu:0"):
+            config = self.config
+            JX = tf.shape(self.x)[2]
+            M = tf.shape(self.x)[1]
+            JQ = tf.shape(self.q)[1]
+            loss_mask = tf.reduce_max(tf.cast(self.q_mask, 'float'), 1)
+            losses = tf.nn.softmax_cross_entropy_with_logits(
+                logits=self.logits, labels=tf.cast(tf.reshape(self.y, [-1, M * JX]), 'float'))
+            ce_loss = tf.reduce_mean(loss_mask * losses)
+            tf.add_to_collection('losses', ce_loss)
+            ce_loss2 = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(
+                logits=self.logits2, labels=tf.cast(tf.reshape(self.y2, [-1, M * JX]), 'float')))
+            tf.add_to_collection("losses", ce_loss2)
 
-        # self.loss = tf.add_n(tf.get_collection('losses', scope=self.scope), name='loss')
-        self.loss = tf.add_n(tf.get_collection('losses'), name='loss')
-        tf.summary.scalar(self.loss.op.name, self.loss)
-        tf.add_to_collection('ema/scalar', self.loss)
+            # self.loss = tf.add_n(tf.get_collection('losses', scope=self.scope), name='loss')
+            self.loss = tf.add_n(tf.get_collection('losses'), name='loss')
+            tf.summary.scalar(self.loss.op.name, self.loss)
+            tf.add_to_collection('ema/scalar', self.loss)
     def build_ema(self):
         self.ema = tf.train.ExponentialMovingAverage(self.config.decay)
         ema = self.ema
