@@ -16,15 +16,15 @@ from pre_processing import *
 
 def main(config):
     # set_dirs(config)
-    # with tf.device(config.device):
-    if config.mode == 'train':
-        _train(config)
-    # elif config.mode == 'test':
-    #     _test(config)
-    # elif config.mode == 'forward':
-    #     _forward(config)
-    else:
-        raise ValueError("invalid value for 'mode': {}".format(config.mode))
+    with tf.device(config.device):
+        if config.mode == 'train':
+            _train(config)
+        # elif config.mode == 'test':
+        #     _test(config)
+        # elif config.mode == 'forward':
+        #     _forward(config)
+        else:
+            raise ValueError("invalid value for 'mode': {}".format(config.mode))
 
 
 # def set_dirs(config):
