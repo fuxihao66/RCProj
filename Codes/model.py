@@ -168,7 +168,7 @@ class Model:
         x_len = tf.reduce_sum(tf.cast(self.x_mask, 'int32'), 2)  # [N, M]
         q_len = tf.reduce_sum(tf.cast(self.q_mask, 'int32'), 1)  # [N]
 
-        with tf.variable_scope("Encoding"),tf.device("/gpu:0"):
+        with tf.variable_scope("Encoding"):
             (fw_u, bw_u), ((_, fw_u_f), (_, bw_u_f)) = bidirectional_dynamic_rnn(d_cell, d_cell, qq, q_len, dtype='float', scope='u1')  # [N, J, d], [N, d]
             u = tf.concat([fw_u, bw_u], 2)
             if config.share_lstm_weights:
@@ -181,7 +181,7 @@ class Model:
             self.tensor_dict['u'] = u
             self.tensor_dict['h'] = h
 
-        with tf.variable_scope("main"),tf.device("/gpu:0"):
+        with tf.variable_scope("main"):
             
             if config.dynamic_att:
                 p0 = h
@@ -255,7 +255,7 @@ class Model:
         return self.var_list
 
     def build_loss(self):
-        with tf.name_scope('loss'),tf.device("/gpu:0"):
+        with tf.name_scope('loss'):
             config = self.config
             JX = tf.shape(self.x)[2]
             M = tf.shape(self.x)[1]
