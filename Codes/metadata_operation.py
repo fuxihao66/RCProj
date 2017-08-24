@@ -18,7 +18,7 @@ def read_metadata(file_to_read):
         for i, line in enumerate(tqdm(data_file)):
             
 
-            if len(passage_list) == 300:
+            if len(passage_list) == 1000:
                 break
 
             instance = json.loads(line)
