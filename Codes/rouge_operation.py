@@ -103,8 +103,8 @@ def get_highest_rl_span(para, reference, max_gap):
     try:
         return trans_idx_1dto2d(index_start, index_stop, sent_token_para), True
     except:
-        write_to_file('''/home/zhangs/RC/data/error.json''',substring+para)
-        write_to_file('''/home/zhangs/RC/data/error.json''',para)
+        print(substring)
+        print(para)
 
 def get_selected_span(para, selected_span):
     

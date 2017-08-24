@@ -126,7 +126,7 @@ class Model:
                 filter_sizes = list(map(int, config.out_channel_dims.split(',')))
                 heights = list(map(int, config.filter_heights.split(',')))
                 assert sum(filter_sizes) == dco, (filter_sizes, dco)
-                with tf.variable_scope("conv"):
+                with tf.variable_scope("conv"),tf.device("/gpu:0"):
                     xx = multi_conv1d(Acx, filter_sizes, heights, "VALID",  self.is_train, config.keep_prob, scope="xx")
                     if config.share_cnn_weights:
                         tf.get_variable_scope().reuse_variables()
@@ -168,7 +168,7 @@ class Model:
         x_len = tf.reduce_sum(tf.cast(self.x_mask, 'int32'), 2)  # [N, M]
         q_len = tf.reduce_sum(tf.cast(self.q_mask, 'int32'), 1)  # [N]
 
-        with tf.variable_scope("Encoding"):
+        with tf.variable_scope("Encoding"),tf.device("/gpu:0") :
             (fw_u, bw_u), ((_, fw_u_f), (_, bw_u_f)) = bidirectional_dynamic_rnn(d_cell, d_cell, qq, q_len, dtype='float', scope='u1')  # [N, J, d], [N, d]
             u = tf.concat([fw_u, bw_u], 2)
             if config.share_lstm_weights:
@@ -181,7 +181,7 @@ class Model:
             self.tensor_dict['u'] = u
             self.tensor_dict['h'] = h
 
-        with tf.variable_scope("main"):
+        with tf.variable_scope("main"), tf.device("/gpu:0"):
             
             if config.dynamic_att:
                 p0 = h
