@@ -165,6 +165,8 @@ class Model:
         cell = BasicLSTMCell(d, state_is_tuple=True)
         d_cell = SwitchableDropoutWrapper(cell, self.is_train, input_keep_prob=config.input_keep_prob)
         # d_cell = DropoutWrapper(cell, input_keep_prob=config.input_keep_prob)
+
+        '''x_len means the length of sequences '''
         x_len = tf.reduce_sum(tf.cast(self.x_mask, 'int32'), 2)  # [N, M]
         q_len = tf.reduce_sum(tf.cast(self.q_mask, 'int32'), 1)  # [N]
 

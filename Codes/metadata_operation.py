@@ -16,10 +16,7 @@ def read_metadata(file_to_read):
     # description_list =  []
     with open(file_to_read, 'r', encoding='utf8') as data_file:
         for i, line in enumerate(tqdm(data_file)):
-            
 
-            if len(passage_list) == 1000:
-                break
 
             instance = json.loads(line)
 
