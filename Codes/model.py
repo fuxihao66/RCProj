@@ -263,6 +263,8 @@ class Model:
             M = tf.shape(self.x)[1]
             JQ = tf.shape(self.q)[1]
             loss_mask = tf.reduce_max(tf.cast(self.q_mask, 'float'), 1)
+
+            '''compute the cross entropy loss with y and logit'''
             losses = tf.nn.softmax_cross_entropy_with_logits(
                 logits=self.logits, labels=tf.cast(tf.reshape(self.y, [-1, M * JX]), 'float'))
             ce_loss = tf.reduce_mean(loss_mask * losses)
