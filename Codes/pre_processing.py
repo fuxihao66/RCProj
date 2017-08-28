@@ -119,7 +119,7 @@ class DataSet:
         each_size = int(math.ceil(self.num_examples/num_threads)) 
         thread_list = []
         q = Queue()
-        print(len(data['passages']))
+        print(len(self.data['passages']))
         for thread_idx in tqdm(range(num_threads)):
             # self.temp.append([])
             if thread_idx == (num_threads-1):
