@@ -116,7 +116,7 @@ class DataSet:
         #         sentence[0] = sentence[0].lower()
         #     return sentence[:len(sentence)-1]
         
-        each_size = int(math.ceil(self.num_examples/num_threads)) 
+        each_size = int(math.floor(self.num_examples/num_threads)) 
         thread_list = []
         q = Queue()
         print(len(self.data['passages']))
