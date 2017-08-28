@@ -88,6 +88,7 @@ class DataSet:
     def operate_answers_single_thread(self, start, end, q):
         temp = []
         for i in range(end)[start:]:
+            
             para = self.data['passages'][i]         
             # ans  = del_signal(self.data['answers'][i])
             ans = self.data['answers'][i]
