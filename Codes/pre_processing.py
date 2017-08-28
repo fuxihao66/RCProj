@@ -126,7 +126,9 @@ class DataSet:
                 thread_list.append(Process(target=self.operate_answers_single_thread, args=(thread_idx*each_size,len(self.data['passages']),q)))
             else:
                 thread_list.append(Process(target=self.operate_answers_single_thread, args=(thread_idx*each_size, (thread_idx+1)*each_size,q)))
-            
+
+        print(len(thread_list)) 
+
         for thr in thread_list:
             print('thread start')
             thr.start()
@@ -164,9 +166,10 @@ if __name__ == '__main__':
     train_data = DataSet(train_data_dict)
     # dev_data   = DataSet(dev_data_dict)
     print('start operating answers')
-    train_data.operate_answers(26)
+    # train_data.operate_answers(26)
     print('operating answers successfully')
-    train_data.write_answers_to_file('''/home/zhangs/RC/data/train_answers.json''')
+    print(len(train_data_dict['passages']))
+    # train_data.write_answers_to_file('''/home/zhangs/RC/data/train_answers.json''')
     # print('start operating answers')
     # dev_data.operate_answers(20)
     # print('operating answers successfully')
