@@ -120,6 +120,7 @@ class DataSet:
         thread_list = []
         q = Queue()
         print(len(self.data['passages']))
+        print(each_size)
         for thread_idx in tqdm(range(num_threads)):
             # self.temp.append([])
             if thread_idx == (num_threads-1):
