@@ -104,7 +104,9 @@ class DataSet:
         
     def operate_answers(self, num_threads):
         
-        # word_dict, _, __ = get_word2idx_and_embmat('''/home/zhangs/RC/data/glove.6B.100d.txt''') 
+        self.data['passages'].reverse()
+        self.data['answers'].reverse()
+        self.data['passage_selected'].reverse()
 
         # def del_signal(sentence):
         #     token_sent = Tokenize_string_word_level(sentence)
