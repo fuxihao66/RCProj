@@ -170,7 +170,7 @@ if __name__ == '__main__':
     train_data.operate_answers(25)
     print('operating answers successfully')
     # print(len(train_data_dict['passages']))
-    # train_data.write_answers_to_file('''/home/zhangs/RC/data/train_answers.json''')
+    train_data.write_answers_to_file('''/home/zhangs/RC/data/train_answers.json''')
     # print('start operating answers')
     # dev_data.operate_answers(20)
     # print('operating answers successfully')
