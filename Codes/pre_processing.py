@@ -87,6 +87,7 @@ class DataSet:
     
     def operate_answers_single_thread(self, start, end, q):
         temp = []
+        print((start, end))
         for i in range(end)[start:]:
 
             para = self.data['passages'][i]         
