@@ -87,7 +87,7 @@ class DataSet:
     
     def operate_answers_single_thread(self, start, end, q):
         temp = []
-        print((start, end))
+        
         for i in range(end)[start:]:
 
             para = self.data['passages'][i]         
@@ -101,6 +101,8 @@ class DataSet:
             temp.append(l)
 
         q.put(temp)
+        print('this process exited successfully')
+        print((start, end))
         
     def operate_answers(self, num_threads):
         
@@ -130,7 +132,6 @@ class DataSet:
             else:
                 thread_list.append(Process(target=self.operate_answers_single_thread, args=(thread_idx*each_size, (thread_idx+1)*each_size,q)))
 
-        print(len(thread_list)) 
 
         for thr in thread_list:
             print('thread start')
