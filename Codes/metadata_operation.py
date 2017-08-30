@@ -166,7 +166,7 @@ def get_char2idx(data_dict):
 
 
 def write_to_file( path, data):
-        with open(path, 'a+', encoding='utf8') as data_file:
+        with open(path, 'w', encoding='utf8') as data_file:
             data_file.write(json.dumps(data))  
 
 # def read_batch_data(path_to_file):

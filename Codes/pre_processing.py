@@ -85,7 +85,7 @@ class DataSet:
                     cqi = [list(qij) for qij in question]
                     self.data['char_q'].append(cqi)
     
-    def operate_answers_single_thread(self, start, end, q):
+    def operate_answers_single_thread(self, start, end, thread_idx):
         temp = []
         
         try:
@@ -109,7 +109,9 @@ class DataSet:
         except:
             print('error in a process')
 
-        q.put(temp)
+        path = '''/home/zhangs/RC/data/ans_train{}.json'''.format(thread_idx)
+        write_to_file(path, temp)
+
         print('this process exited successfully')
         print((start, end))
         
@@ -132,14 +134,14 @@ class DataSet:
         
         each_size = int(math.floor(self.num_examples/(num_threads-1))) 
         thread_list = []
-        q = Queue()
+        # q = Queue()
 
         for thread_idx in tqdm(range(num_threads)):
             # self.temp.append([])
             if thread_idx == (num_threads-1):
-                thread_list.append(Process(target=self.operate_answers_single_thread, args=(thread_idx*each_size,len(self.data['passages']),q)))
+                thread_list.append(Process(target=self.operate_answers_single_thread, args=(thread_idx*each_size,len(self.data['passages']),thread_idx,)))
             else:
-                thread_list.append(Process(target=self.operate_answers_single_thread, args=(thread_idx*each_size, (thread_idx+1)*each_size,q)))
+                thread_list.append(Process(target=self.operate_answers_single_thread, args=(thread_idx*each_size, (thread_idx+1)*each_size, thread_idx,)))
 
 
         for thr in thread_list:
@@ -148,13 +150,13 @@ class DataSet:
         for thr in thread_list:
             thr.join()
 
-        while  q.qsize() > 0:  
-            l = q.get()
-            for item in l:
-                self.data['ans_start_stop_idx'].append(item)
+        # while  q.qsize() > 0:  
+        #     l = q.get()
+        #     for item in l:
+        #         self.data['ans_start_stop_idx'].append(item)
 
-        print(self.data['ans_start_stop_idx'])
-        # for i in tqdm(range(len(self.data['passages']))):
+        # print(self.data['ans_start_stop_idx'])
+
           
     def write_answers_to_file(self, path):
         with open(path, 'w', encoding='utf8') as data_file:
