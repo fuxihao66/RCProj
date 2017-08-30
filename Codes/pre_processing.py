@@ -88,17 +88,26 @@ class DataSet:
     def operate_answers_single_thread(self, start, end, q):
         temp = []
         
-        for i in range(end)[start:]:
+        try:
+            for i in range(end)[start:]:
+                try:
+                    para = self.data['passages'][i]         
+                    # ans  = del_signal(self.data['answers'][i])
+                    ans = self.data['answers'][i]
+                except:
+                    print('index error')
 
-            para = self.data['passages'][i]         
-            # ans  = del_signal(self.data['answers'][i])
-            ans = self.data['answers'][i]
-            l, flag = get_highest_rl_span(para, ans, 40)
-            if  flag == False:
-                l = get_selected_span(para, self.data['passage_selected'][i][0])
-                # l looks like: [[j1,k1],[j2,k2]]
-            # self.data['ans_start_stop_idx'].append(l)
-            temp.append(l)
+                try:
+                    l, flag = get_highest_rl_span(para, ans, 30)
+                    if  flag == False:
+                        l = get_selected_span(para, self.data['passage_selected'][i][0])
+                except:
+                    print('get span error')
+                    # l looks like: [[j1,k1],[j2,k2]]
+                # self.data['ans_start_stop_idx'].append(l)
+                temp.append(l)
+        except:
+            print('error in a process')
 
         q.put(temp)
         print('this process exited successfully')
