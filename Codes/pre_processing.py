@@ -115,9 +115,9 @@ class DataSet:
         
     def operate_answers(self, num_threads):
         
-        self.data['passages'].reverse()
-        self.data['answers'].reverse()
-        self.data['passage_selected'].reverse()
+        # self.data['passages'].reverse()
+        # self.data['answers'].reverse()
+        # self.data['passage_selected'].reverse()
 
         # def del_signal(sentence):
         #     token_sent = Tokenize_string_word_level(sentence)
