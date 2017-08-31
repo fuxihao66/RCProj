@@ -356,9 +356,13 @@ class Model:
         feed_dict[self.y] = y
         feed_dict[self.y2] = y2
 
-        for i, yi in enumerate(batch['y']):    
-            [j, k] = yi[0]
-            [j2, k2] = yi[1]
+        for i, yi in enumerate(batch['y']):  
+            if yi[0][1] < JX and yi[1][1] < JX:  
+                [j, k] = yi[0]
+                [j2, k2] = yi[1]
+            else:
+                [j, k] = [0, 0]
+                [j2, k2] = [0,0]
             y[i, j, k] = True
             y2[i, j2, k2] = True
 
