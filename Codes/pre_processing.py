@@ -188,7 +188,7 @@ if __name__ == '__main__':
         for ins in fi:
             data = json.loads(ins)
             for i in data:
-                if i[1][0] > 100:
+                if i[1][0] > 80:
                     print(i)
 
 
