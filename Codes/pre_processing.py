@@ -176,7 +176,7 @@ class DataSet:
 
 if __name__ == '__main__':
 
-    # dev_ans = []
+    dev_ans = []
     # for i in range(24):
     #     with open('''/home/zhangs/RC/data/ans_dev{}.json'''.format(i), 'r') as ans:
     #         for line in tqdm(ans):
