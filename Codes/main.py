@@ -97,7 +97,7 @@ def _train(config):
 
     train_data = DataSet(train_data_dict)
     # dev_data   = DataSet(dev_data_dict)
-    train_data.init_with_ans_file('''/home/zhangs/RC/data/gen_ans.json''', config.batch_size, 'train')
+    train_data.init_with_ans_file('''/home/zhangs/RC/data/train_answers.json''', config.batch_size, 'train')
     # dev_data.init_with_ans_file(path)
 
 
@@ -121,6 +121,16 @@ def _train(config):
     for batch in tqdm(dev_data.get_batch_list()):
         sess.run(model.yp, model.yp2, feed_dict=model.get_feed_dict(batch, is_train=False))
         # print(yp, yp2)
+
+
+
+
+
+
+
+
+
+        
         # if get_summary:
         #     graph_handler.add_summary(summary, global_step)
 
