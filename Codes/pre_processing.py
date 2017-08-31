@@ -176,15 +176,20 @@ class DataSet:
 
 if __name__ == '__main__':
 
-    dev_ans = []
-    for i in range(24):
-        with open('''/home/zhangs/RC/data/ans_dev{}.json'''.format(i), 'r') as ans:
-            for line in tqdm(ans):
-                instance = json.loads(line)
-                dev_ans.extend(instance)
-    write_to_file('''/home/zhangs/RC/data/dev_answers.json''', dev_ans)
-    print(len(dev_ans))
-
+    # dev_ans = []
+    # for i in range(24):
+    #     with open('''/home/zhangs/RC/data/ans_dev{}.json'''.format(i), 'r') as ans:
+    #         for line in tqdm(ans):
+    #             instance = json.loads(line)
+    #             dev_ans.extend(instance)
+    # write_to_file('''/home/zhangs/RC/data/dev_answers.json''', dev_ans)
+    # print(len(dev_ans))
+    with open('''/home/zhangs/RC/data/train_answers.json''', 'r') as fi:
+        for ins in fi:
+            data = json.loads(ins)
+            for i in data:
+                if i[1][0] > 100:
+                    print(i)
 
 
     # train_data_dict = read_metadata('''/home/zhangs/RC/data/train_v1.1.json''')
