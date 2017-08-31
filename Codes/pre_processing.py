@@ -176,9 +176,9 @@ class DataSet:
 
 if __name__ == '__main__':
 
-    # train_ans = []
+    # dev_ans = []
     # for i in range(25):
-    #     with open('''/home/zhangs/RC/data/ans_train{}.json'''.format(i), 'r') as ans:
+    #     with open('''/home/zhangs/RC/data/ans_dev{}.json'''.format(i), 'r') as ans:
     #         for line in tqdm(ans):
     #             instance = json.loads(line)
     #             train_ans.extend(instance)
