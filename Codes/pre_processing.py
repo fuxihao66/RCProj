@@ -188,14 +188,14 @@ if __name__ == '__main__':
         for ins in fi:
             data = json.loads(ins)
             for i in data:
-                if i[0][1] > 80 or i[1][1] > 80:
+                if i[0][1] > 600 or i[1][1] > 600:
                     print(i)
 
     with open('''/home/zhangs/RC/data/dev_answers.json''', 'r') as fi:
         for ins in fi:
             data = json.loads(ins)
             for i in data:
-                if i[0][1] > 80 or i[1][1] > 80:
+                if i[0][1] > 600 or i[1][1] > 600:
                     print(i)
     # train_data_dict = read_metadata('''/home/zhangs/RC/data/train_v1.1.json''')
     # dev_data_dict   = read_metadata('''/home/zhangs/RC/data/dev_v1.1.json''')
