@@ -109,7 +109,7 @@ class DataSet:
         except:
             print('error in a process')
 
-        path = '''/home/zhangs/RC/data/ans_train{}.json'''.format(thread_idx)
+        path = '''/home/zhangs/RC/data/ans_dev{}.json'''.format(thread_idx)
         write_to_file(path, temp)
 
         print('this process exited successfully')
@@ -166,7 +166,7 @@ class DataSet:
         with open(path, 'r', encoding='utf8') as data_file:
             for line in tqdm(data_file):
                 instance = json.loads(line)
-                self.data['ans_start_stop_idx'] = instance[0:1000]
+                self.data['ans_start_stop_idx'] = instance
 
     def init_with_ans_file(self, path_to_answers, batch_size, set_type):
         self.read_operated_answers_from_file(path_to_answers)
@@ -175,16 +175,31 @@ class DataSet:
 
 
 if __name__ == '__main__':
-    train_data_dict = read_metadata('''/home/zhangs/RC/data/train_v1.1.json''')
+
+    train_ans = []
+    for i in range(25):
+        with open('ans_train{}.json'.format(i), 'r') as ans:
+            for line in tqdm(ans):
+                instance = json.loads(line)
+                train_ans.extend(instance)
+    print(len(train_ans))
+    write_to_file('''/home/zhangs/RC/data/train_answers.json''', train_ans)
+
+
+
+    # # train_data_dict = read_metadata('''/home/zhangs/RC/data/train_v1.1.json''')
     # dev_data_dict   = read_metadata('''/home/zhangs/RC/data/dev_v1.1.json''')
 
-    train_data = DataSet(train_data_dict)
+    # # train_data = DataSet(train_data_dict)
     # dev_data   = DataSet(dev_data_dict)
-    print('start operating answers')
-    train_data.operate_answers(25)
-    print('operating answers successfully')
+    # print('start operating answers')
+    # dev_data.operate_answers(25)
+    # print('operating answers successfully')
+
+
+
     # print(len(train_data_dict['passages']))
-    train_data.write_answers_to_file('''/home/zhangs/RC/data/train_answers.json''')
+    # train_data.write_answers_to_file('''/home/zhangs/RC/data/train_answers.json''')
     # print('start operating answers')
     # dev_data.operate_answers(20)
     # print('operating answers successfully')
