@@ -40,15 +40,8 @@ import itertools
 #         raise Exception('Extension type error:{}'.format(extension))
 
 
-'''
-parameters{
-    batch_size,
-    learning_rate,
-    dropout_rate,
-    dtype,
-    lr
-}
-'''
+
+
 
 # def get_multi_gpu_models(config):
 #     models = []

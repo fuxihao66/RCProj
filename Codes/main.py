@@ -108,15 +108,17 @@ def _train(config):
     init = tf.global_variables_initializer()
     sess.run(init)
 
-    for batch in tqdm(train_data.get_batch_list()):
-        global_step = sess.run(model.global_step) + 1  # +1 because all calculations are done after step
-        # get_summary = global_step % config.log_period == 0
-        get_summary = True
-        print(global_step)
-        loss, summary, train_op = trainer.step(sess, batch, get_summary=get_summary)
+    for i in range(config.num_epochs):
+    
+        for batch in tqdm(train_data.get_batch_list()):
+            global_step = sess.run(model.global_step) + 1  # +1 because all calculations are done after step
+            # get_summary = global_step % config.log_period == 0
+            get_summary = True
+            print(global_step)
+            loss, summary, train_op = trainer.step(sess, batch, get_summary=get_summary)
 
-        train_writer.add_summary(summary, global_step)
-        print(loss)
+            train_writer.add_summary(summary, global_step)
+            print(loss)
     
     for batch in tqdm(dev_data.get_batch_list()):
         sess.run(model.yp, model.yp2, feed_dict=model.get_feed_dict(batch, is_train=False))
