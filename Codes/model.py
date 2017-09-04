@@ -8,49 +8,7 @@ from tensorflow.python.ops.rnn_cell import DropoutWrapper
 import numpy as np
 from tensorflow.python.ops.rnn_cell import BasicLSTMCell
 import itertools
-# import tensorflow.python.ops.rnn
-# def get_cell_type(model):
-#     if model == 'rnn':
-#         cell_type = rnn.BasicRNNCell
-#     elif model == 'lstm':
-#         cell_type = rnn.BasicLSTMCell
-#     elif model == 'gru':
-#         cell_type = rnn.GRUCell
-#     else:
-#         raise Exception('model type not supported:{}'.format(model))
-#     return cell_type
 
-# def muliti_layers_init(rnn_size, layer_nums, cell_type):
-#     #every element stands for a layer
-#     cells = []
-#     for _ in range(layer_nums):
-#         cell = cell_type(rnn_size)
-#         cells.append(cell)
-#     return cells
-# def single_layer_init(rnn_size, cell_type):
-#     cell = cell_type(rnn_size)
-#     return cell 
-
-# def Rnn(extension=None, cell_fw, cell_bw=None, inputs, sequence_lengths=None, init_fw=None, init_bw=None, dtype=None):
-#     if extension == 'bi':
-#         return nn.bidirectional_dynamic_rnn(cell_fw, cell_bw, inputs, sequence_lengths, initial_state_fw=init_fw, initial_state_bw=init_bw dtype=dtype)
-#     elif extension == None:
-#         return nn.dynamic_rnn(cell_fw, inputs, sequence_lengths, initial_state=init_fw, dtype=dtype)
-#     else :
-#         raise Exception('Extension type error:{}'.format(extension))
-
-
-
-
-
-# def get_multi_gpu_models(config):
-#     models = []
-#     for gpu_idx in range(config.num_gpus):
-#         with tf.name_scope("model_{}".format(gpu_idx)) as scope, tf.device("/{}:{}".format(config.device_type, gpu_idx)):
-#             model = Model(config, scope, rep=gpu_idx == 0)
-#             tf.get_variable_scope().reuse_variables()
-#             models.append(model)
-#     return models
 class Model:
     def __init__(self, config, word2idx_dict, char2idx_dict):
 
@@ -129,14 +87,6 @@ class Model:
                     xx = tf.reshape(xx, [-1, M, JX, dco])
                     qq = tf.reshape(qq, [-1, JQ, dco])
 
-           
-            # with tf.variable_scope("emb_var"), tf.device("/cpu:0"):
-            #     if config.mode == 'train':
-            #         word_emb_mat = tf.get_variable("word_emb_mat", dtype='float', shape=[VW, dw], initializer=get_initializer(config.emb_mat))
-            #     else:
-            #         word_emb_mat = tf.get_variable("word_emb_mat", shape=[VW, dw], dtype='float')
-            #     if config.use_glove_for_unk:
-            #         word_emb_mat = tf.concat(0, [word_emb_mat, self.new_emb_mat])
             print('start word embedding')
             with tf.name_scope("word"):
                 Ax = tf.nn.embedding_lookup(self.emb_mat, self.x)  # [N, M, JX, d]
@@ -155,16 +105,17 @@ class Model:
 
 
 
-        cell = BasicLSTMCell(d, state_is_tuple=True)
-        d_cell = SwitchableDropoutWrapper(cell, self.is_train, input_keep_prob=config.input_keep_prob)
-        # d_cell = DropoutWrapper(cell, input_keep_prob=config.input_keep_prob)
+        
 
         '''x_len means the length of sequences '''
         x_len = tf.reduce_sum(tf.cast(self.x_mask, 'int32'), 2)  # [N, M]
         q_len = tf.reduce_sum(tf.cast(self.q_mask, 'int32'), 1)  # [N]
 
         with tf.variable_scope("Encoding"):
-            (fw_u, bw_u), ((_, fw_u_f), (_, bw_u_f)) = bidirectional_dynamic_rnn(d_cell, d_cell, qq, q_len, dtype='float', scope='u1')  # [N, J, d], [N, d]
+            cell = BasicLSTMCell(d, state_is_tuple=True)
+            encoding_cell = SwitchableDropoutWrapper(cell, self.is_train, input_keep_prob=config.input_keep_prob)
+
+            (fw_u, bw_u), ((_, fw_u_f), (_, bw_u_f)) = bidirectional_dynamic_rnn(encoding_cell, encoding_cell, qq, q_len, dtype='float', scope='u1')  # [N, J, d], [N, d]
             u = tf.concat([fw_u, bw_u], 2)
             if config.share_lstm_weights:
                 tf.get_variable_scope().reuse_variables()
@@ -185,35 +136,42 @@ class Model:
                 first_cell = AttentionCell(cell, u, mask=q_mask, mapper='sim',
                                            input_keep_prob=self.config.input_keep_prob, is_train=self.is_train)
             else:
+                ## G
                 p0 = attention_layer(config, self.is_train, h, u, h_mask=self.x_mask, u_mask=self.q_mask, scope="p0", tensor_dict=self.tensor_dict)
+                cell = BasicLSTMCell(d, state_is_tuple=True)
+                first_cell = SwitchableDropoutWrapper(cell, self.is_train, input_keep_prob=config.input_keep_prob)
+    
 
-
-                tcell = BasicLSTMCell(d, state_is_tuple=True)
-                first_cell = SwitchableDropoutWrapper(tcell, self.is_train, input_keep_prob=config.input_keep_prob)
-                # first_cell = d_cell
-
-            
+            '''the following can be simplified, by using multi-layer rnn'''
+            ## 2 layers of bi rnn
             (fw_g0, bw_g0), _ = bidirectional_dynamic_rnn(first_cell, first_cell, p0, x_len, dtype='float', scope='g0')  # [N, M, JX, 2d]
             g0 = tf.concat([fw_g0, bw_g0], 3)
 
-            ttcell = BasicLSTMCell(d, state_is_tuple=True)
-            first_cell = SwitchableDropoutWrapper(ttcell, self.is_train, input_keep_prob=config.input_keep_prob)
+            cell = BasicLSTMCell(d, state_is_tuple=True)
+            first_cell = SwitchableDropoutWrapper(cell, self.is_train, input_keep_prob=config.input_keep_prob)
 
             (fw_g1, bw_g1), _ = bidirectional_dynamic_rnn(first_cell, first_cell, g0, x_len, dtype='float', scope='g1')  # [N, M, JX, 2d]
+            ##M
             g1 = tf.concat([fw_g1, bw_g1], 3)
 
             logits = get_logits([g1, p0], d, True, wd=config.wd, input_keep_prob=config.input_keep_prob,
                                 mask=self.x_mask, is_train=self.is_train, func=config.answer_func, scope='logits1')
+
+
+
+
+
             a1i = softsel(tf.reshape(g1, [N, M * JX, 2 * d]), tf.reshape(logits, [N, M * JX]))
             a1i = tf.tile(tf.expand_dims(tf.expand_dims(a1i, 1), 1), [1, M, JX, 1])
 
+            cell = BasicLSTMCell(d, state_is_tuple=True)
+            M2_operate_cell = SwitchableDropoutWrapper(cell, self.is_train, input_keep_prob=config.input_keep_prob)
 
-            ttcell = BasicLSTMCell(d, state_is_tuple=True)
-            d_cell = SwitchableDropoutWrapper(ttcell, self.is_train, input_keep_prob=config.input_keep_prob)
-
-            (fw_g2, bw_g2), _ = bidirectional_dynamic_rnn(d_cell, d_cell, tf.concat([p0, g1, a1i, g1 * a1i], 3),
+            (fw_g2, bw_g2), _ = bidirectional_dynamic_rnn(M2_operate_cell, M2_operate_cell, tf.concat([p0, g1, a1i, g1 * a1i], 3),
                                                           x_len, dtype='float', scope='g2')  # [N, M, JX, 2d]
+            ## M^2
             g2 = tf.concat([fw_g2, bw_g2], 3)
+
             logits2 = get_logits([g2, p0], d, True, wd=config.wd, input_keep_prob=config.input_keep_prob,
                                  mask=self.x_mask,
                                  is_train=self.is_train, func=config.answer_func, scope='logits2')
@@ -233,13 +191,6 @@ class Model:
             self.yp = yp
             self.yp2 = yp2
 
-            
-        # with tf.variable_scope('encoding'):
-        #     cell_type = get_cell_type(config.encoding_cell_type)
-        #     cell = cell_type(config.hidden_size_encoding, state_is_tuple=True)
-        # with tf.variable_scope('interaction'):
-
-        # with tf.variable_scope('answer'):
     def get_loss(self):
         return self.loss
 
@@ -291,6 +242,15 @@ class Model:
         ema_op = ema.apply(tf.trainable_variables())
         with tf.control_dependencies([ema_op]):
             self.loss = tf.identity(self.loss)
+
+    
+    '''
+    given a batch, generate a feed dict to training
+    Format:
+    {
+        x: [[ [1,2,..],[3,4,..],[5,6,..] ], [], [], []]  
+    }
+    '''
     def get_feed_dict(self, batch, is_train):
 
         config = self.config
@@ -298,30 +258,6 @@ class Model:
             config.batch_size, config.max_num_sents, config.max_sent_size, \
             config.max_ques_size, config.word_vocab_size, config.char_vocab_size, config.hidden_size, config.max_word_size
         feed_dict = {}
-
-        # if config.len_opt:
-        #     """
-        #     Note that this optimization results in variable GPU RAM usage (i.e. can cause OOM in the middle of training.)
-        #     First test without len_opt and make sure no OOM, and use len_opt
-        #     """
-        #     if sum(len(sent) for para in batch['x'] for sent in para) == 0:
-        #         new_JX = 1
-        #     else:
-        #         new_JX = max(len(sent) for para in batch['x'] for sent in para)
-        #     JX = min(JX, new_JX)
-
-        #     if sum(len(ques) for ques in batch['q']) == 0:
-        #         new_JQ = 1
-        #     else:
-        #         new_JQ = max(len(ques) for ques in batch['q'])
-        #     JQ = min(JQ, new_JQ)
-
-        # if config.cpu_opt:
-        #     if sum(len(para) for para in batch['x']) == 0:
-        #         new_M = 1
-        #     else:
-        #         new_M = max(len(para) for para in batch['x'])
-        #     M = min(M, new_M)
 
         x = np.zeros([N, M, JX], dtype='int32')
         cx = np.zeros([N, M, JX, W], dtype='int32')
@@ -337,13 +273,10 @@ class Model:
         feed_dict[self.cq] = cq
         feed_dict[self.q_mask] = q_mask
         feed_dict[self.is_train] = is_train
-        
-        # feed_dict[self.emb_mat] = emb_dict
 
         X = batch['x']
         CX = batch['cx']
 
-        # if supervised:
         y = np.zeros([N, M, JX], dtype='bool')
         y2 = np.zeros([N, M, JX], dtype='bool')
         feed_dict[self.y] = y
@@ -414,6 +347,10 @@ class Model:
 
         return feed_dict
 
+
+'''
+the functions below are implemented with the method mentioned in the paper
+'''
 def bi_attention(config, is_train, h, u, h_mask=None, u_mask=None, scope=None, tensor_dict=None):
     with tf.variable_scope(scope or "bi_attention"):
         JX = tf.shape(h)[2]
@@ -460,5 +397,5 @@ def attention_layer(config, is_train, h, u, h_mask=None, u_mask=None, scope=None
         else:
             p0 = tf.concat([h, u_a, h * u_a], 3)
         return p0
-# if __name__ == "__main__":
+
 
