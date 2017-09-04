@@ -166,7 +166,7 @@ class DataSet:
         with open(path, 'r', encoding='utf8') as data_file:
             for line in tqdm(data_file):
                 instance = json.loads(line)
-                self.data['ans_start_stop_idx'] = instance[:200]
+                self.data['ans_start_stop_idx'] = instance[:1000]
 
     def init_with_ans_file(self, path_to_answers, batch_size, set_type):
         self.read_operated_answers_from_file(path_to_answers)
