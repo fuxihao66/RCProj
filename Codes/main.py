@@ -120,8 +120,8 @@ def _train(config):
             train_writer.add_summary(summary, global_step)
             print(loss)
     
-    for batch in tqdm(dev_data.get_batch_list()):
-        sess.run(model.yp, model.yp2, feed_dict=model.get_feed_dict(batch, is_train=False))
+    # for batch in tqdm(dev_data.get_batch_list()):
+    #     sess.run(model.yp, model.yp2, feed_dict=model.get_feed_dict(batch, is_train=False))
         # print(yp, yp2)
 
 
