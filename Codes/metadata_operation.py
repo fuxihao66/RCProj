@@ -7,6 +7,7 @@ import re
 from tqdm import tqdm   
 from rouge import Rouge
 import numpy as np
+import random
 def read_metadata(file_to_read):
     passage_list     =  []
     answers_list     =  []
@@ -17,7 +18,10 @@ def read_metadata(file_to_read):
     with open(file_to_read, 'r', encoding='utf8') as data_file:
         for i, line in enumerate(tqdm(data_file)):
 
+            if passage_list == 1000:
+                break
 
+            
             instance = json.loads(line)
 
             #some answers are blank
@@ -168,6 +172,8 @@ def write_to_file( path, data):
         with open(path, 'w', encoding='utf8') as data_file:
             data_file.write(json.dumps(data))  
 
+def get_random_eles_from_list(list_to_select, num_ele):
+    return random.sample(list_to_select, num_ele)
 # def read_batch_data(path_to_file):
     
 #     data_set = DataSet()
