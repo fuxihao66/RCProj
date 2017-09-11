@@ -10,15 +10,18 @@ class single_GPU_trainer:
         self.var_list = model.get_var_list()
         self.global_step = model.get_global_step()
         self.summary = model.summary
-        # self.summary = None
-        # with tf.device('/gpu:0'):
+
         self.loss = model.get_loss()
         self.grads = self.opt.compute_gradients(self.loss, var_list=self.var_list)
         self.train_op = self.opt.apply_gradients(self.grads, global_step=self.global_step)
 
     def get_train_op(self):
         return self.train_op
-
+    
+    def change_lr(self, new_lr):
+        self.opt = tf.train.AdadeltaOptimizer(new_lr)
+        self.grads = self.opt.compute_gradients(self.loss, var_list=self.var_list)
+        self.train_op = self.opt.apply_gradients(self.grads, global_step=self.global_step)
     def step(self, sess, batch, get_summary=False):
         assert isinstance(sess, tf.Session)
         ds = batch

@@ -79,8 +79,9 @@ def _train(config):
     batch_list_length = len(batch_list)
     batch_num = 10
 
+    new_lr = 0.25
     for i in range(config.num_epochs):
-        
+
         for i in range(int(math.ceil(batch_list_length/batch_num))):
             sub_batch_list = get_random_eles_from_list(batch_list, batch_num)
             for batch in sub_batch_list:
@@ -88,6 +89,10 @@ def _train(config):
                 # get_summary = global_step % config.log_period == 0
                 get_summary = True
                 print(global_step)
+
+                if global_step == 1000:
+                    trainer.change_lr(new_lr)
+
                 loss, summary, train_op = trainer.step(sess, batch, get_summary=get_summary)
 
                 train_writer.add_summary(summary, global_step)
