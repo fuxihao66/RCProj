@@ -26,38 +26,6 @@ def main(config):
             raise ValueError("invalid value for 'mode': {}".format(config.mode))
 
 
-# def set_dirs(config):
-#     # create directories
-#     assert config.load or config.mode == 'train', "config.load must be True if not training"
-#     if not config.load and os.path.exists(config.out_dir):
-#         shutil.rmtree(config.out_dir)
-
-#     config.save_dir = os.path.join(config.out_dir, "save")
-#     config.log_dir = os.path.join(config.out_dir, "log")
-#     config.eval_dir = os.path.join(config.out_dir, "eval")
-#     config.answer_dir = os.path.join(config.out_dir, "answer")
-#     if not os.path.exists(config.out_dir):
-#         os.makedirs(config.out_dir)
-#     if not os.path.exists(config.save_dir):
-#         os.mkdir(config.save_dir)
-#     if not os.path.exists(config.log_dir):
-#         os.mkdir(config.log_dir)
-#     if not os.path.exists(config.answer_dir):
-#         os.mkdir(config.answer_dir)
-#     if not os.path.exists(config.eval_dir):
-#         os.mkdir(config.eval_dir)
-
-
-# def _config_debug(config):
-#     if config.debug:
-#         config.num_steps = 2
-#         config.eval_period = 1
-#         config.log_period = 1
-#         config.save_period = 1
-#         config.val_num_batches = 2
-#         config.test_num_batches = 2
-
-
 def _train(config):
     
     train_data_dict = read_metadata('''/home/zhangs/RC/data/train_v1.1.json''')
@@ -101,7 +69,7 @@ def _train(config):
 
 
 
-    train_writer = tf.summary.FileWriter('/home/zhangs/RC/data/nnlog', sess.graph)
+    train_writer = tf.summary.FileWriter('/home/zhangs/RC/data/nnlog01', sess.graph)
     # merged = tf.summary.merge_all()
 
     init = tf.global_variables_initializer()
