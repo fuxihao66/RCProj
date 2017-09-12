@@ -91,8 +91,8 @@ def _train(config):
                 get_summary = True
                 print(global_step)
 
-                # if global_step == 1000:
-                #     trainer.change_lr(new_lr)
+                if global_step == 450:
+                    trainer.change_lr(new_lr)
 
                 loss, summary, train_op = trainer.step(sess, batch, get_summary=get_summary)
 
