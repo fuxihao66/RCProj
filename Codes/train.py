@@ -3,10 +3,12 @@ from model import Model
 class single_GPU_trainer:
     def __init__(self, config, model):
 
+        self.learning_rate = tf.placeholder(tf.float32, shape=[])
         self.config = config
-
+        self.lr = config.init_lr
         self.model = model
-        self.opt = tf.train.AdadeltaOptimizer(config.init_lr)
+        # self.opt = tf.train.AdadeltaOptimizer(config.init_lr)
+        self.opt = tf.train.AdadeltaOptimizer(learning_rate=self.learning_rate)
         self.var_list = model.get_var_list()
         self.global_step = model.get_global_step()
         self.summary = model.summary
@@ -19,18 +21,19 @@ class single_GPU_trainer:
         return self.train_op
     
     def change_lr(self, new_lr):
-        self.opt = tf.train.AdadeltaOptimizer(new_lr)
-        self.grads = self.opt.compute_gradients(self.loss, var_list=self.var_list)
-        self.train_op = self.opt.apply_gradients(self.grads, global_step=self.global_step)
+        self.lr = new_lr
     def step(self, sess, batch, get_summary=False):
         assert isinstance(sess, tf.Session)
         ds = batch
         feed_dict = self.model.get_feed_dict(ds, True)
+
+        lr_dict = {self.learning_rate: self.lr}
+
         if get_summary:
             loss, summary, train_op = \
-                sess.run([self.loss, self.summary, self.train_op], feed_dict=feed_dict)
+                sess.run([self.loss, self.summary, self.train_op], feed_dict=feed_dict.update(lr_dict))
         else:
-            loss, train_op = sess.run([self.loss, self.train_op], feed_dict=feed_dict)
+            loss, train_op = sess.run([self.loss, self.train_op], feed_dict=feed_dict.update(lr_dict))
             summary = None
         return loss, summary, train_op
 
