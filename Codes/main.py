@@ -79,8 +79,8 @@ def _train(config):
     batch_list_length = len(batch_list)
     batch_num = 10
 
-    new_lr = 0.25
-    trainer.change_lr(new_lr)
+    # new_lr = 0.25
+    # trainer.change_lr(new_lr)
     for i in range(config.num_epochs):
 
         for i in range(int(math.ceil(batch_list_length/batch_num))):
