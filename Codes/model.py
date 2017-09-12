@@ -71,7 +71,7 @@ class Model:
             with tf.variable_scope("emb_var"), tf.device("/cpu:0"):
                 char_emb_mat = tf.get_variable("char_emb_mat", shape=[VC, dc], dtype='float')
 
-            with tf.variable_scope("char"):
+            with tf.variable_scope("char"), tf.device("/cpu:0"):
                 Acx = tf.nn.embedding_lookup(char_emb_mat, self.cx)  # [N, M, JX, W, dc]
                 Acq = tf.nn.embedding_lookup(char_emb_mat, self.cq)  # [N, JQ, W, dc]
                 Acx = tf.reshape(Acx, [-1, JX, W, dc])
