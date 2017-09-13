@@ -79,8 +79,8 @@ def _train(config):
     batch_list_length = len(batch_list)
     batch_num = 10
 
-    new_lr = 0.25
-
+    new_lr_1 = 0.25
+    new_lr_2 = 0.15
     for i in range(config.num_epochs):
 
         for i in range(int(math.ceil(batch_list_length/batch_num))):
@@ -92,8 +92,9 @@ def _train(config):
                 print(global_step)
 
                 if global_step == 450:
-                    trainer.change_lr(new_lr)
-
+                    trainer.change_lr(new_lr_1)
+                if global_step == 600:
+                    trainer.change_lr(new_lr_2)
                 loss, summary, train_op = trainer.step(sess, batch, get_summary=get_summary)
 
                 train_writer.add_summary(summary, global_step)
