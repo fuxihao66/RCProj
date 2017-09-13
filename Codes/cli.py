@@ -31,7 +31,7 @@ flags.DEFINE_bool('load_ema', True, "load exponential average of variables when 
 flags.DEFINE_bool("eval", True, "eval? [True]")
 
 # Training / test parameters
-flags.DEFINE_integer("batch_size", 4, "Batch size [60]")
+flags.DEFINE_integer("batch_size", 10, "Batch size [60]")
 flags.DEFINE_integer("val_num_batches", 100, "validation num batches [100]")
 flags.DEFINE_integer("test_num_batches", 0, "test num batches [0]")
 flags.DEFINE_integer("num_epochs", 60, "Total number of epochs for training [12]")
