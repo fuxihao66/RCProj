@@ -18,6 +18,7 @@ def main(config):
     with tf.device(config.device):
         # if config.mode == 'train':
         _train(config)
+        
         # elif config.mode == 'test':
         #     _test(config)
         # elif config.mode == 'forward':
