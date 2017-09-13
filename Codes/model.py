@@ -286,7 +286,7 @@ class Model:
         feed_dict[self.y2] = y2
 
         for i, yi in enumerate(batch['y']):  
-            if yi[0][1] < JX and yi[1][1] < JX:  
+            if yi[0][1] < JX and yi[1][1] < JX and yi[0][0] < M and yi[1][0] < M:  
                 [j, k] = yi[0]
                 [j2, k2] = yi[1]
             else:
