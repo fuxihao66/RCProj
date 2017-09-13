@@ -69,7 +69,7 @@ def _train(config):
 
 
 
-    train_writer = tf.summary.FileWriter('/home/zhangs/RC/data/nnlog01', sess.graph)
+    train_writer = tf.summary.FileWriter('/home/zhangs/RC/data/nnlog_change_lr', sess.graph)
     # merged = tf.summary.merge_all()
 
     init = tf.global_variables_initializer()
