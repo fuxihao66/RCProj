@@ -42,7 +42,11 @@ class DataSet:
                     batch['y']   = self.data['ans_start_stop_idx'][i*batch_size:self.num_examples]
                     batch['q']   = self.data['queries'][i*batch_size:self.num_examples]
                     batch['cq']  = self.data['char_q'][i*batch_size:self.num_examples]
-                self.batches.append(batch)   
+                
+                if i != 11:
+                    self.batches.append(batch)   
+
+                    
             print('batch data preparation finished')    
         elif set_type == 'dev' or 'test':
             self.batches_y = []
