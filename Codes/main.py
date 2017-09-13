@@ -100,6 +100,9 @@ def _train(config):
                 train_writer.add_summary(summary, global_step)
 
                 if loss < 4:
+                    for ind, bat in enumerate(batch_list):
+                        if bat == batch:
+                            print(ind)
                     print(batch)
 
                 print(loss)
