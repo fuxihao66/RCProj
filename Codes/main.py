@@ -98,6 +98,10 @@ def _train(config):
                 loss, summary, train_op = trainer.step(sess, batch, get_summary=get_summary)
 
                 train_writer.add_summary(summary, global_step)
+
+                if loss < 4:
+                    print(batch)
+
                 print(loss)
     
     # for batch in tqdm(dev_data.get_batch_list()):
