@@ -64,7 +64,7 @@ def _train(config):
 
     train_data = DataSet(train_data_dict)
     # dev_data   = DataSet(dev_data_dict)
-    train_data.init_with_ans_file('''/home/zhangs/RC/data/train_answers.json''', config.batch_size, 'train')
+    train_data.init_with_ans_file('''/home/zhangs/RC/data/gen_ans.json''', config.batch_size, 'train')
     # dev_data.init_with_ans_file(path)
 
 
