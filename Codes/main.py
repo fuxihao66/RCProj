@@ -38,7 +38,7 @@ def _train(config):
     config.max_num_sents = 22
     config.max_sent_size = 100
     config.max_ques_size = 20
-    config.max_word_size = 15
+    config.max_word_size = 20
 
     config.emb_mat = emb_mat
     config.word_vocab_size = vocabulary_size
