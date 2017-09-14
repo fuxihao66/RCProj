@@ -89,7 +89,7 @@ def _train(config):
                 global_step = sess.run(model.global_step) + 1  # +1 because all calculations are done after step
                 # get_summary = global_step % config.log_period == 0
                 get_summary = True
-                # print(global_step)
+                print(global_step)
 
                 # if global_step == 1800:
                 #     trainer.change_lr(new_lr_1)
