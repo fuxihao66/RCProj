@@ -289,7 +289,7 @@ class Model:
             if yi[0][1] < JX and yi[1][1] < JX and yi[0][0] < M and yi[1][0] < M:  
                 [j, k] = yi[0]
                 [j2, k2] = yi[1]
-                print('success')
+                
             else:
                 [j, k] = [0, 0]
                 [j2, k2] = [0,0]

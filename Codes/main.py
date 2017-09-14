@@ -36,7 +36,7 @@ def _train(config):
     word2idx_dict, emb_mat, vocabulary_size = get_word2idx_and_embmat('''/home/zhangs/RC/data/glove.6B.100d.txt''')
     
     config.max_num_sents = 15
-    config.max_sent_size = 50
+    config.max_sent_size = 100
     config.max_ques_size = 20
     config.max_word_size = 15
 
@@ -70,7 +70,6 @@ def _train(config):
 
 
     train_writer = tf.summary.FileWriter('/home/zhangs/RC/data/nnlog_change_lr_without_a_batch', sess.graph)
-    # merged = tf.summary.merge_all()
 
     init = tf.global_variables_initializer()
     sess.run(init)
