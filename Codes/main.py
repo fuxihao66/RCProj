@@ -77,7 +77,7 @@ def _train(config):
 
     batch_list = train_data.get_batch_list()
     batch_list_length = len(batch_list)
-    batch_num = 10
+    batch_num = 1
 
     new_lr_1 = 0.25
     new_lr_2 = 0.15
