@@ -43,7 +43,7 @@ class DataSet:
                     batch['q']   = self.data['queries'][i*batch_size:self.num_examples]
                     batch['cq']  = self.data['char_q'][i*batch_size:self.num_examples]
                 
-                if i == 11:
+                if i != 11:
                     self.batches.append(batch)   
 
                     

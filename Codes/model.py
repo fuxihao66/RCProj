@@ -292,7 +292,7 @@ class Model:
             else:
                 [j, k] = [0, 0]
                 [j2, k2] = [0,0]
-                print(i)
+                print(''''there's something wrong ''')
             y[i, j, k] = True
             y2[i, j2, k2] = True
 

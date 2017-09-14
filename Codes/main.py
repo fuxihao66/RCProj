@@ -77,7 +77,7 @@ def _train(config):
 
     batch_list = train_data.get_batch_list()
     batch_list_length = len(batch_list)
-    batch_num = 1
+    batch_num = 5
 
     new_lr_1 = 0.25
     new_lr_2 = 0.15
@@ -89,10 +89,10 @@ def _train(config):
                 global_step = sess.run(model.global_step) + 1  # +1 because all calculations are done after step
                 # get_summary = global_step % config.log_period == 0
                 get_summary = True
-                print(global_step)
+                # print(global_step)
 
-                if global_step == 1800:
-                    trainer.change_lr(new_lr_1)
+                # if global_step == 1800:
+                #     trainer.change_lr(new_lr_1)
                 # if global_step == 600:
                 #     trainer.change_lr(new_lr_2)
                 loss, summary, train_op = trainer.step(sess, batch, get_summary=get_summary)
