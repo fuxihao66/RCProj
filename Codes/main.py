@@ -85,7 +85,7 @@ def _train(config):
     for i in range(config.num_epochs):
 
         # for i in range(int(math.ceil(batch_list_length/batch_num))):
-        for i in range(int(math.ceil(batch_list_length/config.num_gpus)))
+        for i in range(int(math.ceil(batch_list_length/config.num_gpus))):
             # sub_batch_list = get_random_eles_from_list(batch_list, batch_num)
             sub_batch_list = get_random_eles_from_list(batch_list, config.num_gpus)
 
