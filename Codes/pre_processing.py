@@ -154,13 +154,6 @@ class DataSet:
         for thr in thread_list:
             thr.join()
 
-        # while  q.qsize() > 0:  
-        #     l = q.get()
-        #     for item in l:
-        #         self.data['ans_start_stop_idx'].append(item)
-
-        # print(self.data['ans_start_stop_idx'])
-
           
     def write_answers_to_file(self, path):
         with open(path, 'w', encoding='utf8') as data_file:
@@ -170,7 +163,7 @@ class DataSet:
         with open(path, 'r', encoding='utf8') as data_file:
             for line in tqdm(data_file):
                 instance = json.loads(line)
-                self.data['ans_start_stop_idx'] = instance[:900]
+                self.data['ans_start_stop_idx'] = instance[:300]
 
     def init_with_ans_file(self, path_to_answers, batch_size, set_type):
         self.read_operated_answers_from_file(path_to_answers)
