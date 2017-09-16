@@ -14,12 +14,14 @@ def get_multi_models(config, word2idx_dict, char2idx_dict):
     models = []
     for gpu_idx in range(config.num_gpus):
         with tf.name_scope("model_{}".format(gpu_idx)) as scope, tf.device("/{}:{}".format(config.device_type, gpu_idx)):
-            model = Model(config, word2idx_dict, char2idx_dict)
+            model = Model(config, scope, word2idx_dict, char2idx_dict)
             tf.get_variable_scope().reuse_variables()
             models.append(model)
     return models
 class Model:
-    def __init__(self, config, word2idx_dict, char2idx_dict):
+    def __init__(self, config, scope, word2idx_dict, char2idx_dict):
+
+        self.scope = scope
 
         self.config = config
         self.emb_mat = config.emb_mat
@@ -213,35 +215,35 @@ class Model:
         return self.var_list
 
     def build_loss(self):
-        with tf.name_scope('loss'):
-            config = self.config
-            JX = tf.shape(self.x)[2]
-            M = tf.shape(self.x)[1]
-            JQ = tf.shape(self.q)[1]
-            loss_mask = tf.reduce_max(tf.cast(self.q_mask, 'float'), 1)
+        
+        config = self.config
+        JX = tf.shape(self.x)[2]
+        M = tf.shape(self.x)[1]
+        JQ = tf.shape(self.q)[1]
+        loss_mask = tf.reduce_max(tf.cast(self.q_mask, 'float'), 1)
 
-            '''compute the cross entropy loss with y and logit'''
-            losses = tf.nn.softmax_cross_entropy_with_logits(
-                logits=self.logits, labels=tf.cast(tf.reshape(self.y, [-1, M * JX]), 'float'))
-            ce_loss = tf.reduce_mean(loss_mask * losses)
-            tf.add_to_collection('losses', ce_loss)
-            ce_loss2 = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(
-                logits=self.logits2, labels=tf.cast(tf.reshape(self.y2, [-1, M * JX]), 'float')))
-            tf.add_to_collection("losses", ce_loss2)
+        '''compute the cross entropy loss with y and logit'''
+        losses = tf.nn.softmax_cross_entropy_with_logits(
+            logits=self.logits, labels=tf.cast(tf.reshape(self.y, [-1, M * JX]), 'float'))
+        ce_loss = tf.reduce_mean(loss_mask * losses)
+        tf.add_to_collection('losses', ce_loss)
+        ce_loss2 = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(
+            logits=self.logits2, labels=tf.cast(tf.reshape(self.y2, [-1, M * JX]), 'float')))
+        tf.add_to_collection("losses", ce_loss2)
 
-            # self.loss = tf.add_n(tf.get_collection('losses', scope=self.scope), name='loss')
-            self.loss = tf.add_n(tf.get_collection('losses'), name='loss')
-            tf.summary.scalar(self.loss.op.name, self.loss)
-            tf.add_to_collection('ema/scalar', self.loss)
+        # self.loss = tf.add_n(tf.get_collection('losses', scope=self.scope), name='loss')
+        self.loss = tf.add_n(tf.get_collection('losses'), name='loss')
+        tf.summary.scalar(self.loss.op.name, self.loss)
+        tf.add_to_collection('ema/scalar', self.loss)
     def build_ema(self):
         self.ema = tf.train.ExponentialMovingAverage(self.config.decay)
         ema = self.ema
-        tensors = tf.get_collection("ema/scalar") + tf.get_collection("ema/vector")
+        tensors = tf.get_collection("ema/scalar", scope=self.scope) + tf.get_collection("ema/vector")
         ema_op = ema.apply(tensors)
-        for var in tf.get_collection("ema/scalar"):
+        for var in tf.get_collection("ema/scalar", scope=self.scope):
             ema_var = ema.average(var)
             tf.summary.scalar(ema_var.op.name, ema_var)
-        for var in tf.get_collection("ema/vector"):
+        for var in tf.get_collection("ema/vector", scope=self.scope):
             ema_var = ema.average(var)
             tf.summary.histogram(ema_var.op.name, ema_var)
 
