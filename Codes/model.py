@@ -63,7 +63,7 @@ class Model:
             self.build_ema()
 
         self.summary = tf.summary.merge_all()
-
+        print(1)
     def get_lr(self):
         return self.learning_rate
     def build_forward(self):
@@ -101,7 +101,7 @@ class Model:
                     xx = tf.reshape(xx, [-1, M, JX, dco])
                     qq = tf.reshape(qq, [-1, JQ, dco])
 
-            print('start word embedding')
+        
             with tf.name_scope("word"):
                 Ax = tf.nn.embedding_lookup(self.emb_mat, self.x)  # [N, M, JX, d]
                 Aq = tf.nn.embedding_lookup(self.emb_mat, self.q)  # [N, JQ, d]
@@ -231,8 +231,8 @@ class Model:
             logits=self.logits2, labels=tf.cast(tf.reshape(self.y2, [-1, M * JX]), 'float')))
         tf.add_to_collection("losses", ce_loss2)
 
-        # self.loss = tf.add_n(tf.get_collection('losses', scope=self.scope), name='loss')
         self.loss = tf.add_n(tf.get_collection('losses', scope=self.scope), name='loss')
+        # self.loss = tf.add_n(tf.get_collection('losses'), name='loss')
         tf.summary.scalar(self.loss.op.name, self.loss)
         tf.add_to_collection('ema/scalar', self.loss)
     def build_ema(self):
