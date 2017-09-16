@@ -54,7 +54,8 @@ def _train(config):
 
     # with tf.name_scope("trainer"):
     #     trainer = single_GPU_trainer(config, model)
-    trainer = MultiGPUTrainer(config, models)
+    with tf.name_scope("trainer"):
+        trainer = MultiGPUTrainer(config, models)
 
     
     sess = tf.Session(config=tf.ConfigProto(allow_soft_placement=True))

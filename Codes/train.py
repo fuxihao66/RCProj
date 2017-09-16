@@ -60,7 +60,7 @@ class MultiGPUTrainer(object):
                 grads = self.opt.compute_gradients(loss, var_list=self.var_list)
                 losses.append(loss)
                 grads_list.append(grads)
-
+        print(losses)
         self.loss = tf.add_n(losses)/len(losses)
         self.grads = average_gradients(grads_list)
         self.train_op = self.opt.apply_gradients(self.grads, global_step=self.global_step)
