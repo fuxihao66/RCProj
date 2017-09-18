@@ -287,7 +287,7 @@ class Model:
         feed_dict[self.cq] = cq
         feed_dict[self.q_mask] = q_mask
         feed_dict[self.is_train] = is_train
-        feed_dict[self.learning_rate] = lr
+        # feed_dict[self.learning_rate] = lr
         X = batch['x']
         CX = batch['cx']
 
