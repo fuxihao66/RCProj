@@ -8,7 +8,7 @@ class single_GPU_trainer:
         self.lr = config.init_lr
         self.model = model
         # self.opt = tf.train.AdadeltaOptimizer(config.init_lr)
-        self.opt = tf.train.AdadeltaOptimizer(learning_rate=model.get_lr())
+        self.opt = tf.train.AdadeltaOptimizer(self.lr)
         self.var_list = model.get_var_list()
         self.global_step = model.get_global_step()
         self.summary = model.summary
@@ -64,7 +64,7 @@ class MultiGPUTrainer(object):
                     grads_list.append(grads)
 
                     # tf.get_variable_scope().reuse_variables()
-        
+        tf.get_variable_scope().reuse = False
         self.loss = tf.add_n(losses)/len(losses)
         self.grads = average_gradients(grads_list)
         self.train_op = self.opt.apply_gradients(self.grads, global_step=self.global_step)
