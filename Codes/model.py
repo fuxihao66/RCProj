@@ -12,11 +12,12 @@ import itertools
 
 def get_multi_models(config, word2idx_dict, char2idx_dict):
     models = []
-    for gpu_idx in range(config.num_gpus):
-        with tf.name_scope("model_{}".format(gpu_idx)) as scope, tf.device("/{}:{}".format(config.device_type, gpu_idx)):
-            model = Model(config, scope, word2idx_dict, char2idx_dict)
-            tf.get_variable_scope().reuse_variables()
-            models.append(model)
+    with tf.variable_scope(tf.get_variable_scope()) as vscope:
+        for gpu_idx in range(config.num_gpus):
+            with tf.name_scope("model_{}".format(gpu_idx)) as scope, tf.device("/{}:{}".format(config.device_type, gpu_idx)):
+                model = Model(config, scope, word2idx_dict, char2idx_dict)
+                tf.get_variable_scope().reuse_variables()
+                models.append(model)
     return models
 class Model:
     def __init__(self, config, scope, word2idx_dict, char2idx_dict):
