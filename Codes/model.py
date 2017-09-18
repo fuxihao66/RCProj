@@ -12,7 +12,9 @@ import itertools
 
 def get_multi_models(config, word2idx_dict, char2idx_dict):
     models = []
-    with tf.variable_scope(tf.get_variable_scope()) as vscope:
+
+    # the following line should be added
+    with tf.variable_scope(tf.get_variable_scope()):
         for gpu_idx in range(config.num_gpus):
             with tf.name_scope("model_{}".format(gpu_idx)) as scope, tf.device("/{}:{}".format(config.device_type, gpu_idx)):
                 model = Model(config, scope, word2idx_dict, char2idx_dict)
@@ -288,7 +290,7 @@ class Model:
         feed_dict[self.cq] = cq
         feed_dict[self.q_mask] = q_mask
         feed_dict[self.is_train] = is_train
-        # feed_dict[self.learning_rate] = lr
+        feed_dict[self.learning_rate] = lr
         X = batch['x']
         CX = batch['cx']
 

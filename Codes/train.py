@@ -8,7 +8,7 @@ class single_GPU_trainer:
         self.lr = config.init_lr
         self.model = model
         # self.opt = tf.train.AdadeltaOptimizer(config.init_lr)
-        self.opt = tf.train.AdadeltaOptimizer(self.lr)
+        self.opt = tf.train.AdadeltaOptimizer(learning_rate=model.get_lr())
         self.var_list = model.get_var_list()
         self.global_step = model.get_global_step()
         self.summary = model.summary
@@ -46,7 +46,7 @@ class MultiGPUTrainer(object):
         
         self.config = config
         self.model = model
-        self.opt = tf.train.AdadeltaOptimizer(self.lr)
+        self.opt = tf.train.AdadeltaOptimizer(learning_rate=model.get_lr())
         self.var_list = model.get_var_list()
         self.global_step = model.get_global_step()
         self.summary = model.summary
@@ -62,8 +62,6 @@ class MultiGPUTrainer(object):
                 grads = self.opt.compute_gradients(loss, var_list=self.var_list)
                 losses.append(loss)
                 grads_list.append(grads)
-
-                    # tf.get_variable_scope().reuse_variables()
         
         self.loss = tf.add_n(losses)/len(losses)
         self.grads = average_gradients(grads_list)
@@ -73,7 +71,7 @@ class MultiGPUTrainer(object):
         assert isinstance(sess, tf.Session)
         feed_dict = {}
         for batch, model in zip(batches, self.models):
-            _, ds = batch
+            ds = batch
             feed_dict.update(model.get_feed_dict(ds, self.lr, True))
 
         if get_summary:
