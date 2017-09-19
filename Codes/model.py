@@ -64,7 +64,8 @@ class Model:
         self.var_ema = None
         self.build_var_ema()
         if config.mode == 'train':
-            self.build_ema()
+            with tf.variable_scope(tf.get_variable_scope(), reuse=False):
+                self.build_ema()
 
         self.summary = tf.summary.merge_all()
         print(1)
