@@ -241,21 +241,22 @@ class Model:
         tf.summary.scalar(self.loss.op.name, self.loss)
         tf.add_to_collection('ema/scalar', self.loss)
     def build_ema(self):
-        with tf.variable_scope(tf.get_variable_scope(), reuse=False):
-            self.ema = tf.train.ExponentialMovingAverage(self.config.decay)
-            ema = self.ema
-            
-            tensors = tf.get_collection("ema/scalar", scope=None) + tf.get_collection("ema/vector", scope=None)
-            ema_op = ema.apply(tensors)
-            for var in tf.get_collection("ema/scalar", scope=None):
-                ema_var = ema.average(var)
-                tf.summary.scalar(ema_var.op.name, ema_var)
-            for var in tf.get_collection("ema/vector", scope=None):
-                ema_var = ema.average(var)
-                tf.summary.histogram(ema_var.op.name, ema_var)
+        
+        self.ema = tf.train.ExponentialMovingAverage(self.config.decay)
+        ema = self.ema
+        
+        tensors = tf.get_collection("ema/scalar", scope=self.scope) + tf.get_collection("ema/vector", scope=self.scope)
+        print(tf.get_collection("ema/vector", scope=self.scope))
+        ema_op = ema.apply(tensors)
+        for var in tf.get_collection("ema/scalar", scope=self.scope):
+            ema_var = ema.average(var)
+            tf.summary.scalar(ema_var.op.name, ema_var)
+        for var in tf.get_collection("ema/vector", scope=self.scope):
+            ema_var = ema.average(var)
+            tf.summary.histogram(ema_var.op.name, ema_var)
 
-            with tf.control_dependencies([ema_op]):
-                self.loss = tf.identity(self.loss)
+        with tf.control_dependencies([ema_op]):
+            self.loss = tf.identity(self.loss)
 
     def build_var_ema(self):
         self.var_ema = tf.train.ExponentialMovingAverage(self.config.var_decay)
