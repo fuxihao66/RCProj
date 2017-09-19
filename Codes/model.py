@@ -18,6 +18,10 @@ def get_multi_models(config, word2idx_dict, char2idx_dict):
         for gpu_idx in range(config.num_gpus):
             with tf.name_scope("model_{}".format(gpu_idx)) as scope, tf.device("/{}:{}".format(config.device_type, gpu_idx)):
                 model = Model(config, scope, word2idx_dict, char2idx_dict)
+
+                with tf.variable_scope(tf.get_variable_scope(), reuse=False):
+                    model.build_ema()
+                    
                 tf.get_variable_scope().reuse_variables()
                 models.append(model)
 
@@ -63,8 +67,8 @@ class Model:
         self.build_loss()
         self.var_ema = None
         self.build_var_ema()
-        if config.mode == 'train':
-            self.build_ema()
+        # if config.mode == 'train':
+        #     self.build_ema()
 
         self.summary = tf.summary.merge_all()
         print(1)
@@ -243,8 +247,7 @@ class Model:
         self.ema = tf.train.ExponentialMovingAverage(self.config.decay)
         ema = self.ema
         tensors = tf.get_collection("ema/scalar", scope=self.scope) + tf.get_collection("ema/vector", scope=self.scope)
-        with tf.variable_scope(tf.get_variable_scope(), reuse=False):
-            ema_op = ema.apply(tensors)
+        ema_op = ema.apply(tensors)
         for var in tf.get_collection("ema/scalar", scope=self.scope):
             ema_var = ema.average(var)
             tf.summary.scalar(ema_var.op.name, ema_var)
