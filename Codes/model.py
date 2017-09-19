@@ -62,14 +62,12 @@ class Model:
         self.var_list = None
         self.build_forward()
 
-        if config.mode == 'train':
-            self.build_ema()
-
-            
         self.build_loss()
         self.var_ema = None
         self.build_var_ema()
         
+        if config.mode == 'train':
+            self.build_ema()
 
         self.summary = tf.summary.merge_all()
         print(1)
@@ -250,8 +248,8 @@ class Model:
         ema = self.ema
         
         tensors = tf.get_collection("ema/scalar", scope=self.scope) + tf.get_collection("ema/vector", scope=self.scope)
-        print(tf.get_collection("ema/scalar", scope=self.scope))
-        ema_op = ema.apply(tensors)
+        with tf.name_scope(None):
+            ema_op = ema.apply(tensors)
         for var in tf.get_collection("ema/scalar", scope=self.scope):
             ema_var = ema.average(var)
             tf.summary.scalar(ema_var.op.name, ema_var)
