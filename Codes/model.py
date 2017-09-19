@@ -246,7 +246,7 @@ class Model:
         ema = self.ema
         
         tensors = tf.get_collection("ema/scalar", scope=self.scope) + tf.get_collection("ema/vector", scope=self.scope)
-        print(tf.get_collection("ema/vector", scope=self.scope))
+        print(tf.get_collection("ema/scalar", scope=self.scope))
         ema_op = ema.apply(tensors)
         for var in tf.get_collection("ema/scalar", scope=self.scope):
             ema_var = ema.average(var)
