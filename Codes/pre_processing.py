@@ -113,7 +113,7 @@ class DataSet:
         except:
             print('error in a process')
 
-        path = '''/home/zhangs/RC/data/ans_dev{}.json'''.format(thread_idx)
+        path = '''/home/zhangs/RC/data/ans_train{}.json'''.format(thread_idx)
         write_to_file(path, temp)
 
         print('this process exited successfully')
@@ -192,11 +192,11 @@ if __name__ == '__main__':
     train_data_dict = read_metadata('''/home/zhangs/RC/data/train_v1.1.json''')
     # dev_data_dict   = read_metadata('''/home/zhangs/RC/data/dev_v1.1.json''')
 
-    # # train_data = DataSet(train_data_dict)
+    train_data = DataSet(train_data_dict)
     # dev_data   = DataSet(dev_data_dict)
     # print('start operating answers')
-    # dev_data.operate_answers(25)
-    # print('operating answers successfully')
+    train_data.operate_answers(24)
+    print('operating answers successfully')
 
 
 

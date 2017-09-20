@@ -43,6 +43,9 @@ def get_idx_sublist(li, subli):
     return -1, -1
 
 def trans_idx_1dto2d(idx_start, idx_stop, list2d):
+    max_num_sents = 22
+    max_sent_size = 100
+
     flag = -1
     for i, ele in enumerate(list2d):
         for j, item in enumerate(ele):
@@ -50,6 +53,7 @@ def trans_idx_1dto2d(idx_start, idx_stop, list2d):
 
             if flag == idx_start:
                 start_idxs_2d = [i, j]
+                
             if flag == idx_stop:
                 end_idxs_2d = [i, j]
     # print(flag)

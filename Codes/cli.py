@@ -98,6 +98,7 @@ flags.DEFINE_bool("q2c_att", True, "question-to-context attention? [True]")
 flags.DEFINE_bool("c2q_att", True, "context-to-question attention? [True]")
 flags.DEFINE_bool("dynamic_att", False, "Dynamic attention [False]")
 
+flags.DEFINE_bool("supervised", True, "whether the feed dict contain y")
 # the passage size limitation
 ## Maximum passage size is about 2200
 flags.DEFINE_integer("max_num_sents", 22, "the max number of sentences")

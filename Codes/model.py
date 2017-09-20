@@ -275,7 +275,7 @@ class Model:
         x: [[ [1,2,..],[3,4,..],[5,6,..] ], [], [], []]  
     }
     '''
-    def get_feed_dict(self, batch, lr, is_train):
+    def get_feed_dict(self, batch, lr, is_train, supervised=True):
 
         config = self.config
         N, M, JX, JQ, VW, VC, d, W = \
@@ -301,22 +301,23 @@ class Model:
         X = batch['x']
         CX = batch['cx']
 
-        y = np.zeros([N, M, JX], dtype='bool')
-        y2 = np.zeros([N, M, JX], dtype='bool')
-        feed_dict[self.y] = y
-        feed_dict[self.y2] = y2
+        if supervised:
+            y = np.zeros([N, M, JX], dtype='bool')
+            y2 = np.zeros([N, M, JX], dtype='bool')
+            feed_dict[self.y] = y
+            feed_dict[self.y2] = y2
 
-        for i, yi in enumerate(batch['y']):  
-            if yi[0][1] < JX and yi[1][1] < JX and yi[0][0] < M and yi[1][0] < M:  
-                [j, k] = yi[0]
-                [j2, k2] = yi[1]
-                
-            else:
-                [j, k] = [0, 0]
-                [j2, k2] = [0,0]
-                  
-            y[i, j, k] = True
-            y2[i, j2, k2] = True
+            for i, yi in enumerate(batch['y']):  
+                if yi[0][1] < JX and yi[1][1] < JX and yi[0][0] < M and yi[1][0] < M:  
+                    [j, k] = yi[0]
+                    [j2, k2] = yi[1]
+                    
+                else:
+                    [j, k] = [0, 0]
+                    [j2, k2] = [0,0]
+                    
+                y[i, j, k] = True
+                y2[i, j2, k2] = True
 
         def _get_word(word):
             d = self.word2idx_dict

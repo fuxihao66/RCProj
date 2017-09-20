@@ -14,22 +14,23 @@ from metadata_operation import *
 from pre_processing import *
 
 def main(config):
-    # set_dirs(config)
-    # with tf.device(config.device):
-        if config.mode == 'train':
-            _train(config)
-        # elif config.mode == 'test':
-        #     _test(config)
-        # elif config.mode == 'forward':
-        #     _forward(config)
-        else:
-            raise ValueError("invalid value for 'mode': {}".format(config.mode))
+
+    
+    if config.mode == 'train':
+        _train(config)
+    # elif config.mode == 'test':
+    #     _test(config)
+    # elif config.mode == 'forward':
+    #     _forward(config)
+    else:
+        raise ValueError("invalid value for 'mode': {}".format(config.mode))
+
 
 
 def _train(config):
     
     train_data_dict = read_metadata('''/home/zhangs/RC/data/train_v1.1.json''')
-    # dev_data_dict = read_metadata('''/home/zhangs/RC/data/dev_v1.1.json''')
+    ''' the char dict should also contain dev-set'''
     char2idx_dict, char_vocabulary_size = get_char2idx(train_data_dict)
     
 
@@ -60,9 +61,7 @@ def _train(config):
 
 
     train_data = DataSet(train_data_dict)
-    # dev_data   = DataSet(dev_data_dict)
     train_data.init_with_ans_file('''/home/zhangs/RC/data/train_answers.json''', config.batch_size, 'train')
-    # dev_data.init_with_ans_file(path)
 
 
 
@@ -100,4 +99,13 @@ def _train(config):
             #     print(loss)
     
 
+    '''start to evaluate via dev-set'''
+    dev_data_dict = read_metadata('''/home/zhangs/RC/data/dev_v1.1.json''')
+    dev_data   = DataSet(dev_data_dict)
+    dev_data.init_with_ans_file(path)
 
+    dev_batches = 
+    for batch in dev_batches:
+        feed_dict = models[0].get_feed_dict(batch, None, False)
+        yp, yp2, loss = sess.run([models[0].yp, models[0].yp2, self.loss], feed_dict=feed_dict)
+        
