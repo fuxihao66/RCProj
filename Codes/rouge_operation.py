@@ -91,7 +91,10 @@ def get_highest_rl_span(para, reference, max_gap):
                         best_span_start = index_start
                         best_span_end   = index_stop
                         max_rouge = temp_score
-
+                        
+    if get_rougel_score(para[best_span_start: best_span_end], reference, 'f') < 0.6:
+        return 1, False
+    
     substring = Tokenize_string_word_level(para[best_span_start: best_span_end]) 
     word_token_para = Tokenize_string_word_level(para)
     sent_token_para = Tokenize(para)

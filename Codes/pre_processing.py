@@ -195,7 +195,7 @@ if __name__ == '__main__':
     train_data = DataSet(train_data_dict)
     # dev_data   = DataSet(dev_data_dict)
     # print('start operating answers')
-    train_data.operate_answers(24)
+    train_data.operate_answers(25)
     print('operating answers successfully')
 
 
