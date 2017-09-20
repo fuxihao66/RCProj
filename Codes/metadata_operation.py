@@ -18,8 +18,8 @@ def read_metadata(file_to_read):
     with open(file_to_read, 'r', encoding='utf8') as data_file:
         for i, line in enumerate(tqdm(data_file)):
 
-            if len(passage_list) == 300:
-                break
+            # if len(passage_list) == 300:
+            #     break
 
 
             instance = json.loads(line)
@@ -30,23 +30,41 @@ def read_metadata(file_to_read):
 
             passage = ''
             selected_passage = []
+            selected_passage_indics = []
+            passage_to_be_sort = []
 
-
-            for sentence in instance['passages']:
+            for i, sentence in enumerate(instance['passages']):
                 if sentence['is_selected'] == 1:
                     selected_passage.append(sentence['passage_text'])
+                    selected_passage_indics.append(i)
             if selected_passage == []:
                 continue
 
-            for i, sentence in enumerate(instance['passages']):
-                if i != 0:
-                    passage = passage + ' ' + sentence['passage_text']
+
+
+            '''add a temporary part to sort the passage'''
+            for sentence in instance['passages']:
+                passage_to_be_sort.append(sentence['passage_text'])
+            for i, idx in enumerate(selected_passage_indics):
+                if i == 0:
+                    passage = passage + passage_to_be_sort[idx]
                 else:
-                    passage = passage + sentence['passage_text']   
+                    passage = passage + ' ' + passage_to_be_sort[idx]
+            for idx in range(len(instance['passages'])):
+                if idx not in selected_passage_indics:
+                    passage = passage + ' ' + passage_to_be_sort[idx]
+            # for i, sentence in enumerate(instance['passages']):
+            #     if i != 0:
+            #         passage = passage + ' ' + sentence['passage_text']
+            #     else:
+            #         passage = passage + sentence['passage_text']   
+
+
+
+
 
             passage_list.append(passage)
             selected_passage_list.append(selected_passage)
-            # passage_sent_list.append(passage_sent)
             
             answer = ''
             for i, answer_str in enumerate(instance['answers']):
@@ -198,7 +216,5 @@ def get_phrase(context, wordss, span):
     assert char_start is not None
     assert char_stop is not None
     return context[char_start:char_stop]
-
-
 
     

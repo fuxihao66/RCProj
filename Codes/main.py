@@ -36,17 +36,10 @@ def _train(config):
     word2idx_dict, emb_mat, vocabulary_size = get_word2idx_and_embmat('''/home/zhangs/RC/data/glove.6B.100d.txt''')
     
 
-    ## Maximum passage size is about 2200
-    config.max_num_sents = 22
-    config.max_sent_size = 100
-    config.max_ques_size = 20
-    config.max_word_size = 20
-
     config.emb_mat = emb_mat
     config.word_vocab_size = vocabulary_size
     config.char_vocab_size = char_vocabulary_size
     
-
 
     # with tf.name_scope("model"):
     #     model = Model(config, word2idx_dict, char2idx_dict)

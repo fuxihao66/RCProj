@@ -98,6 +98,13 @@ flags.DEFINE_bool("q2c_att", True, "question-to-context attention? [True]")
 flags.DEFINE_bool("c2q_att", True, "context-to-question attention? [True]")
 flags.DEFINE_bool("dynamic_att", False, "Dynamic attention [False]")
 
+# the passage size limitation
+## Maximum passage size is about 2200
+flags.DEFINE_integer("max_num_sents", 22, "the max number of sentences")
+flags.DEFINE_integer("max_sent_size", 100, "the max number of words in a sentence")
+flags.DEFINE_integer("max_ques_size", 20, "the max number of words in a question")
+flags.DEFINE_integer("max_word_size", 20, "the max size of a word")
+
 
 def main(_):
     config = flags.FLAGS

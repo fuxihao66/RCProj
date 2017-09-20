@@ -53,8 +53,6 @@ class MultiGPUTrainer(object):
         self.models = models
         losses = []
         grads_list = []
-
-
         
         for gpu_idx, model in enumerate(models):
             with tf.name_scope("grads_{}".format(gpu_idx)), tf.device("/{}:{}".format(config.device_type, gpu_idx)):
