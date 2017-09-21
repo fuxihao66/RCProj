@@ -106,19 +106,19 @@ def _train(config):
     dev_data.init_without_ans(config.batch_size, 'dev')
     ans_list = dev_data.answers_list
     dev_batches = dev_data.get_batch_list()
-    for i, batch in enumerate(dev_batches):
+    for j, batch in enumerate(dev_batches):
         feed_dict = models[0].get_feed_dict(batch, None, False)
         yp, yp2 = sess.run([models[0].yp, models[0].yp2], feed_dict=feed_dict)   
         yp = get_y_index(yp)
         yp2= get_y_index(yp2)
         for i in range(len(yp)):
-            print(yp[i])
-            print(yp2[i])
-            print(dev_data_dict_backup['passages'][i*config.batch_size+i])
+            print(yp[1])
+            print(yp2[1])
+            print(dev_data_dict_backup['passages'][j*config.batch_size+i])
             wordss = batch['x'][i][yp[i][0]:yp2[i][0]+1]
             wordss[0] = wordss[0][yp[i][1]:]
             wordss[len(wordss)-1] = wordss[len(wordss)-1][:yp2[i][1]+1]
             
-            summary = get_phrase(dev_data_dict_backup['passages'][i*config.batch_size+i], wordss, [yp[i], yp2[i]])
-            score = get_rougel_score(summary, ans_list[i*config.batch_size+i], 'f')
+            summary = get_phrase(dev_data_dict_backup['passages'][j*config.batch_size+i], wordss, [yp[i], yp2[i]])
+            score = get_rougel_score(summary, ans_list[j*config.batch_size+i], 'f')
             print(score)
