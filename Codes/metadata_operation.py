@@ -201,6 +201,10 @@ def get_phrase(context, wordss, span):
     #get 1d index in the passage
     flat_start = get_flat_idx(wordss, start)
     flat_stop = get_flat_idx(wordss, stop)
+    if flat_start > flat_stop:
+        k = flat_start
+        flat_start = flat_stop
+        flat_stop = k
     print(flat_start)
     print(flat_stop)
     flat_stop += 1
