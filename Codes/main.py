@@ -101,6 +101,7 @@ def _train(config):
 
     '''start to evaluate via dev-set'''
     dev_data_dict = read_metadata('''/home/zhangs/RC/data/dev_v1.1.json''')
+    dev_data_dict_backup = read_metadata('''/home/zhangs/RC/data/dev_v1.1.json''')
     dev_data   = DataSet(dev_data_dict)
     dev_data.init_without_ans(config.batch_size, 'dev')
     ans_list = dev_data.answers_list
@@ -116,7 +117,7 @@ def _train(config):
             wordss = batch['x'][i][yp[i][0]:yp2[i][0]+1]
             wordss[0] = wordss[0][yp[i][1]:]
             wordss[len(wordss)-1] = wordss[len(wordss)-1][:yp2[i][1]+1]
-            print((dev_data_dict['passages'][i*config.batch_size+i]))
-            summary = get_phrase(dev_data_dict['passages'][i*config.batch_size+i], wordss, [yp[i], yp2[i]])
+            print((dev_data_dict_backup['passages'][i*config.batch_size+i]))
+            summary = get_phrase(dev_data_dict_backup['passages'][i*config.batch_size+i], wordss, [yp[i], yp2[i]])
             score = get_rougel_score(summary, ans_list[i*config.batch_size+i], 'f')
             print(score)
