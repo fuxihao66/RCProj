@@ -112,8 +112,8 @@ def _train(config):
         yp = get_y_index(yp)
         yp2= get_y_index(yp2)
         for i in range(len(yp)):
-            print(yp[1])
-            print(yp2[1])
+            print(yp[i])
+            print(yp2[i])
             print(dev_data_dict_backup['passages'][j*config.batch_size+i])
             wordss = batch['x'][i][yp[i][0]:yp2[i][0]+1]
             wordss[0] = wordss[0][yp[i][1]:]

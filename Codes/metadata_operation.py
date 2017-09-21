@@ -201,6 +201,8 @@ def get_phrase(context, wordss, span):
     #get 1d index in the passage
     flat_start = get_flat_idx(wordss, start)
     flat_stop = get_flat_idx(wordss, stop)
+    print(flat_start)
+    print(flat_stop)
     # wordss looks like: [['this', 'is', 'me', '.'],['waht', 'are', 'you', 'doing', '.']]
     words = sum(wordss, [])
     char_idx = 0
