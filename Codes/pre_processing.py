@@ -173,12 +173,13 @@ class DataSet:
 
 if __name__ == '__main__':
 
-    dev_ans = []
-    for i in range(25):
-        with open('''/home/zhangs/RC/data/ans_train{}.json'''.format(i), 'r') as ans:
-            for line in tqdm(ans):
-                instance = json.loads(line)
-                print(len(instance))
+    # dev_ans = []
+    # for i in range(25):
+    with open('''/home/zhangs/RC/data/ans_train{}.json'''.format(24), 'r') as ans:
+        for line in tqdm(ans):
+            instance = json.loads(line)
+            print(instance)
+    
     # write_to_file('''/home/zhangs/RC/data/train_answers.json''', dev_ans)
     # print(len(dev_ans))
     # de = []
