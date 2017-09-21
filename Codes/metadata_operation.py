@@ -217,4 +217,18 @@ def get_phrase(context, wordss, span):
     assert char_stop is not None
     return context[char_start:char_stop]
 
+def get_y_index(y_after_softmax):
+    y_indics = []
+    for y in y_after_softmax:
+        max_value = 0.0
+        word_index = 0
+        sent_index = 0
+        for i, sent in enumerate(y):
+            for j, word in enumerate(sent):
+                if word > max_value:
+                    word_index = j
+                    sent_index = i
+        y_indics.append([sent_index, word_index])
+    return y_indics
+
   

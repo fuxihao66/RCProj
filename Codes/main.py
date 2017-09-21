@@ -108,10 +108,11 @@ def _train(config):
     for i, batch in enumerate(dev_batches):
         feed_dict = models[0].get_feed_dict(batch, None, False)
         yp, yp2 = sess.run([models[0].yp, models[0].yp2], feed_dict=feed_dict)   
-
+        yp = get_y_index(yp)
+        yp2= get_y_index(yp2)
         for i in range(len(yp)):
-            print(len(yp[i]))
-            print(len(yp))
+            # print(len(yp[i]))
+            # print(len(yp))
             wordss = batch['x'][i][yp[i][0]:yp2[i][0]+1]
             wordss[0] = wordss[0][yp[i][1]:]
             wordss[len(wordss)-1] = wordss[len(wordss)-1][:yp2[i][1]+1]
