@@ -111,6 +111,7 @@ def _train(config):
 
         for i in range(len(yp)):
             print(type(yp[i][0]))
+            print(yp)
             wordss = batch['x'][i][yp[i][0]:yp2[i][0]+1]
             wordss[0] = wordss[0][yp[i][1]:]
             wordss[len(wordss)-1] = wordss[len(wordss)-1][:yp2[i][1]+1]
