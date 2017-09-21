@@ -178,8 +178,8 @@ if __name__ == '__main__':
         with open('''/home/zhangs/RC/data/ans_train{}.json'''.format(i), 'r') as ans:
             for line in tqdm(ans):
                 instance = json.loads(line)
-                dev_ans.extend(instance)
-    write_to_file('''/home/zhangs/RC/data/train_answers.json''', dev_ans)
+                print(len(instance))
+    # write_to_file('''/home/zhangs/RC/data/train_answers.json''', dev_ans)
     # print(len(dev_ans))
     # de = []
     # with open('''/home/zhangs/RC/data/train_answers.json''', 'r') as fi:
