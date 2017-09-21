@@ -70,7 +70,6 @@ class DataSet:
                     answer       = self.data['answers'][i*batch_size:self.num_examples]
                 self.answers_list.append(answer)
                 self.batches.append(batch)   
-                self.batches_y.append(batch_y)
             print('batch data preparation finished')   
 
 
