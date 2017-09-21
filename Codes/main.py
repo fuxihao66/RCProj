@@ -117,12 +117,10 @@ def _train(config):
             # print(dev_data_dict_backup['passages'][j*config.batch_size+i])
             
             wordss = batch['x'][i]
-            print(wordss[yp[i][0]][yp[i][1]])
-            # wordss[0] = wordss[0][yp[i][1]:]
-            # wordss[len(wordss)-1] = wordss[len(wordss)-1][:yp2[i][1]+1]
-            # print(wordss)
+            print(wordss[yp[i][0]][yp[i][1]]) 
+            
 
             summary = get_phrase(dev_data_dict_backup['passages'][j*config.batch_size+i], wordss, [yp[i], yp2[i]])
             print(summary)
-            score = get_rougel_score(summary, ans_list[j*config.batch_size+i], 'f')
+            score = get_rougel_score(summary, dev_data_dict['answers'][j*config.batch_size+i], 'f')
             print(score)
