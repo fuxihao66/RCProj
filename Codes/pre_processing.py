@@ -50,6 +50,8 @@ class DataSet:
             print('batch data preparation finished')    
         elif set_type == 'dev' or 'test':
             self.batches_y = []
+            self.answers_list = []
+
             for i in tqdm(range(num_batch)):
                 batch = {}
                 if (i+1)*batch_size <= self.num_examples:
@@ -58,12 +60,15 @@ class DataSet:
                     batch_y      = self.data['ans_start_stop_idx'][i*batch_size:(i+1)*batch_size]
                     batch['q']   = self.data['queries'][i*batch_size:(i+1)*batch_size]
                     batch['cq']  = self.data['char_q'][i*batch_size:(i+1)*batch_size]
+                    answer       = self.data['answers'][i*batch_size:(i+1)*batch_size]
                 else :
                     batch['x']   = self.data['passages'][i*batch_size:self.num_examples]
                     batch['cx']  = self.data['char_x'][i*batch_size:self.num_examples]
                     batch_y      = self.data['ans_start_stop_idx'][i*batch_size:self.num_examples]
                     batch['q']   = self.data['queries'][i*batch_size:self.num_examples]
                     batch['cq']  = self.data['char_q'][i*batch_size:self.num_examples]
+                    answer       = self.data['answers'][i*batch_size:self.num_examples]
+                self.answers_list.append(answer)
                 self.batches.append(batch)   
                 self.batches_y.append(batch_y)
             print('batch data preparation finished')   
@@ -163,13 +168,15 @@ class DataSet:
         with open(path, 'r', encoding='utf8') as data_file:
             for line in tqdm(data_file):
                 instance = json.loads(line)
-                self.data['ans_start_stop_idx'] = instance
+                self.data['ans_start_stop_idx'] = instance[:300]
 
     def init_with_ans_file(self, path_to_answers, batch_size, set_type):
         self.read_operated_answers_from_file(path_to_answers)
         self.tokenize()
         self.generate_batch(batch_size, set_type)
-
+    def init_without_ans(self, batch_size, set_type):
+        self.tokenize()
+        self.generate_batch(batch_size, set_type)
 
 if __name__ == '__main__':
 
