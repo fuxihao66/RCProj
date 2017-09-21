@@ -117,9 +117,10 @@ def _train(config):
             # print(dev_data_dict_backup['passages'][j*config.batch_size+i])
             
             wordss = batch['x'][i]
+            print(wordss[yp[i][0]][yp[i][1]])
             # wordss[0] = wordss[0][yp[i][1]:]
             # wordss[len(wordss)-1] = wordss[len(wordss)-1][:yp2[i][1]+1]
-            print(wordss)
+            # print(wordss)
 
             summary = get_phrase(dev_data_dict_backup['passages'][j*config.batch_size+i], wordss, [yp[i], yp2[i]])
             print(summary)
