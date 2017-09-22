@@ -117,12 +117,11 @@ def _train(config):
             # print(dev_data_dict_backup['passages'][j*config.batch_size+i])
             
             wordss = batch['x'][i]
-            wo = wordss[yp[i][0]:yp2[i][0]+1]
-            wo[0] = wo[0][yp[i][1]:]
-            wo[len(wo)-1] = wo[len(wo)-1][:yp2[i][1]+1]
-            print(wo)
+            # wo = wordss[yp[i][0]:yp2[i][0]+1]
+            # wo[0] = wo[0][yp[i][1]:]
+            # wo[len(wo)-1] = wo[len(wo)-1][:yp2[i][1]+1]
+            # print(wo)
             summary = get_phrase(dev_data_dict_backup['passages'][j*config.batch_size+i], wordss, [yp[i], yp2[i]])
             print(summary)
-            break
             score = get_rougel_score(summary, dev_data_dict['answers'][j*config.batch_size+i], 'f')
             print(score)
