@@ -205,10 +205,8 @@ def get_phrase(context, wordss, span):
         k = flat_start
         flat_start = flat_stop
         flat_stop = k
-    print(flat_start)
-    print(flat_stop)
+    
     flat_stop += 1
-    # wordss looks like: [['this', 'is', 'me', '.'],['waht', 'are', 'you', 'doing', '.']]
     words = sum(wordss, [])
     char_idx = 0
     char_start, char_stop = None, None
@@ -236,7 +234,7 @@ def get_y_index(y_after_softmax):
                     max_value = word
                     word_index = j
                     sent_index = i
-        print(max_value)
+        # print(max_value)
         y_indics.append([sent_index, word_index])
     return y_indics
 
