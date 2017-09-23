@@ -362,11 +362,15 @@ class Model:
 
         for i, qi in enumerate(batch['q']):
             for j, qij in enumerate(qi):
+                if j == config.max_ques_size:
+                    break
                 q[i, j] = _get_word(qij)
                 q_mask[i, j] = True
 
         for i, cqi in enumerate(batch['cq']):
             for j, cqij in enumerate(cqi):
+                if j == config.max_ques_size:
+                    break
                 for k, cqijk in enumerate(cqij):
                     cq[i, j, k] = _get_char(cqijk)
                     if k + 1 == config.max_word_size:
