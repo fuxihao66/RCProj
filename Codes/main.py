@@ -106,6 +106,8 @@ def _train(config):
     dev_data.init_without_ans(config.batch_size, 'dev')
     ans_list = dev_data.answers_list
     dev_batches = dev_data.get_batch_list()
+
+    summaries = []
     for j, batch in enumerate(dev_batches):
         feed_dict = models[0].get_feed_dict(batch, None, False)
         yp, yp2 = sess.run([models[0].yp, models[0].yp2], feed_dict=feed_dict)   
@@ -122,6 +124,17 @@ def _train(config):
             # wo[len(wo)-1] = wo[len(wo)-1][:yp2[i][1]+1]
             # print(wo)
             summary = get_phrase(dev_data_dict_backup['passages'][j*config.batch_size+i], wordss, [yp[i], yp2[i]])
-            print(summary)
-            score = get_rougel_score(summary, dev_data_dict['answers'][j*config.batch_size+i], 'f')
-            print(score)
+            summaries.append(summary)
+    
+    rouge_score = get_rougel_score(summaries, dev_data_dict['answers'], 'f')
+
+    for summary in summaries:
+        summary = Tokenize_string_word_level(summary)
+    reference = []
+    for ref in dev_data_dict['answers']:
+        reference.append([Tokenize_string_word_level(ref)])
+    bleu_score = nltk.translate.bleu_score.corpus_bleu(reference, summaries)
+    
+    print(rouge_score)
+    print(bleu_score)
+            

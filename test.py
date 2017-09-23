@@ -89,5 +89,14 @@ def get_phrase(context, wordss, span):
     assert char_stop is not None
     return context[char_start:char_stop]
 if __name__ == '__main__':
-    context = '''this.my is '''
-    print(process_tokens(word_tokenize(context)))
+    hypothesis = ["open", "the", "file", "what", "are", "you", "doing", "."]
+    reference = ["open", "file", "."]
+    
+    context = ["this is my list", "what are you doing"]
+    reference = ['list', "doing"]
+    # BLEUscore = nltk.translate.bleu_score.sentence_bleu([reference], hypothesis)
+    # print(BLEUscore)
+    rouge = Rouge()
+
+    scores = rouge.get_scores(context, reference, avg=True)
+    print(scores)
