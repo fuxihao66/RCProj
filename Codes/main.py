@@ -114,8 +114,7 @@ def _train(config):
         yp = get_y_index(yp)
         yp2= get_y_index(yp2)
         for i in range(len(yp)):
-            print(yp[i])
-            print(yp2[i])
+            
             # print(dev_data_dict_backup['passages'][j*config.batch_size+i])
             
             wordss = batch['x'][i]
@@ -127,6 +126,8 @@ def _train(config):
                 summary = get_phrase(dev_data_dict_backup['passages'][j*config.batch_size+i], wordss, [yp[i], yp2[i]])
                 summaries.append(summary)  
             except:
+                print(yp[i])
+                print(yp2[i])
                 print(dev_data_dict_backup['passages'][j*config.batch_size+i])
                 print(wordss)
     
