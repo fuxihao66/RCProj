@@ -113,7 +113,7 @@ def _train(config):
         yp, yp2 = sess.run([models[0].yp, models[0].yp2], feed_dict=feed_dict)   
         yp = get_y_index(yp)
         yp2= get_y_index(yp2)
-        for i in range(len(yp)):
+        for i in range(len(batch['x'])):
             
             # print(dev_data_dict_backup['passages'][j*config.batch_size+i])
             
