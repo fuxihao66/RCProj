@@ -27,7 +27,7 @@ def get_rougel_score(summary, reference, score_type):
 def get_rougel_score_ave(summaries, references, score_type):
     rouge = Rouge()
     scores = rouge.get_scores(references, summaries, avg=True)
-    return scores[0]['rouge-l'][score_type]
+    return scores['rouge-l'][score_type]
 def get_idx_sublist(li, subli):
     for idx_li in range(len(li)):
         flag = 1
