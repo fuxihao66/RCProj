@@ -29,7 +29,7 @@ def main(config):
 
 def _train(config):
     
-    train_data_dict = read_metadata('''/home/zhangs/RC/data/train_v1.1.json''')
+    train_data_dict = read_metadata('''/home/zhangs/RC/data/train_v1.1.json''', 'train')
     ''' the char dict should also contain dev-set'''
     char2idx_dict, char_vocabulary_size = get_char2idx(train_data_dict)
     
@@ -100,8 +100,8 @@ def _train(config):
     
 
     '''start to evaluate via dev-set'''
-    dev_data_dict = read_metadata('''/home/zhangs/RC/data/dev_v1.1.json''')
-    dev_data_dict_backup = read_metadata('''/home/zhangs/RC/data/dev_v1.1.json''')
+    dev_data_dict = read_metadata('''/home/zhangs/RC/data/dev_v1.1.json''', 'dev')
+    dev_data_dict_backup = read_metadata('''/home/zhangs/RC/data/dev_v1.1.json''', 'dev')
     dev_data   = DataSet(dev_data_dict)
     dev_data.init_without_ans(config.batch_size, 'dev')
     ans_list = dev_data.answers_list
@@ -123,10 +123,14 @@ def _train(config):
             # wo[0] = wo[0][yp[i][1]:]
             # wo[len(wo)-1] = wo[len(wo)-1][:yp2[i][1]+1]
             # print(wo)
-            summary = get_phrase(dev_data_dict_backup['passages'][j*config.batch_size+i], wordss, [yp[i], yp2[i]])
-            summaries.append(summary)
+            try:
+                summary = get_phrase(dev_data_dict_backup['passages'][j*config.batch_size+i], wordss, [yp[i], yp2[i]])
+                summaries.append(summary)  
+            except:
+                print(dev_data_dict_backup['passages'][j*config.batch_size+i])
+                print(wordss)
     
-    rouge_score = get_rougel_score(summaries, dev_data_dict['answers'], 'f')
+    rouge_score = get_rougel_score_ave(summaries, dev_data_dict['answers'], 'f')
 
     for summary in summaries:
         summary = Tokenize_string_word_level(summary)

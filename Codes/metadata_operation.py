@@ -8,7 +8,7 @@ from tqdm import tqdm
 from rouge import Rouge
 import numpy as np
 import random
-def read_metadata(file_to_read):
+def read_metadata(file_to_read, set_type):
     passage_list     =  []
     answers_list     =  []
     query_list       =  []
@@ -17,6 +17,9 @@ def read_metadata(file_to_read):
     # description_list =  []
     with open(file_to_read, 'r', encoding='utf8') as data_file:
         for i, line in enumerate(tqdm(data_file)):
+
+            if len(passage_list) == 500 and set_type == 'train':
+                break 
 
             instance = json.loads(line)
 
