@@ -64,7 +64,8 @@ class MultiGPUTrainer(object):
         self.loss = tf.add_n(losses)/len(losses)
         self.grads = average_gradients(grads_list)
         self.train_op = self.opt.apply_gradients(self.grads, global_step=self.global_step)
-
+    def change_lr(self, new_lr):
+        self.lr = new_lr
     def step(self, sess, batches, get_summary=False):
         assert isinstance(sess, tf.Session)
         feed_dict = {}

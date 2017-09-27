@@ -84,6 +84,8 @@ def _train(config):
 
             global_step = sess.run(models[0].global_step) + 1
             print(global_step)
+            if global_step == 10000:
+                trainer.change_lr(0.25)
             loss, summary, train_op = trainer.step(sess, sub_batch_list, True)
             train_writer.add_summary(summary, global_step)
             print(loss)
@@ -133,12 +135,13 @@ def _train(config):
     
     rouge_score = get_rougel_score_ave(summaries, dev_data_dict['answers'], 'f')
 
+    summ = []
     for summary in summaries:
-        summary = Tokenize_string_word_level(summary)
+        summ.append(Tokenize_string_word_level(summary))
     reference = []
     for ref in dev_data_dict['answers']:
         reference.append([Tokenize_string_word_level(ref)])
-    bleu_score = nltk.translate.bleu_score.corpus_bleu(reference, summaries)
+    bleu_score = nltk.translate.bleu_score.corpus_bleu(reference, summ)
     
     print(rouge_score)
     print(bleu_score)

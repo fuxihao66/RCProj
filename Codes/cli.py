@@ -20,7 +20,7 @@ flags.DEFINE_string("shared_path", "", "Shared path []")
 # Device placement
 flags.DEFINE_string("device", "/cpu:0", "default device for summing gradients. [/cpu:0]")
 flags.DEFINE_string("device_type", "gpu", "device for computing gradients (parallelization). cpu | gpu [gpu]")
-flags.DEFINE_integer("num_gpus", 3, "num of gpus or cpus for computing gradients [1]")
+flags.DEFINE_integer("num_gpus", 4, "num of gpus or cpus for computing gradients [1]")
 
 # Essential training and test options
 flags.DEFINE_string("mode", "train", "trains | test | forward [test]")
@@ -34,7 +34,7 @@ flags.DEFINE_bool("eval", True, "eval? [True]")
 flags.DEFINE_integer("batch_size", 15, "Batch size [45]")
 flags.DEFINE_integer("val_num_batches", 100, "validation num batches [100]")
 flags.DEFINE_integer("test_num_batches", 0, "test num batches [0]")
-flags.DEFINE_integer("num_epochs", 24, "Total number of epochs for training [12]")
+flags.DEFINE_integer("num_epochs", 12, "Total number of epochs for training [12]")
 flags.DEFINE_integer("num_steps", 20000, "Number of steps [20000]")
 flags.DEFINE_integer("load_step", 0, "load step [0]")
 flags.DEFINE_float("init_lr", 0.9, "Initial learning rate [0.5]")
