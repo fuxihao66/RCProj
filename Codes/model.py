@@ -24,7 +24,7 @@ def get_multi_models(config, word2idx_dict, char2idx_dict):
 
     return models
 class Model:
-    def __init__(self, config,  word2idx_dict, char2idx_dict， scope=None):
+    def __init__(self, config,  word2idx_dict, char2idx_dict, scope=None):
 
         self.scope = scope
 
