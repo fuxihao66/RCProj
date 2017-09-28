@@ -82,23 +82,23 @@ def _train(config):
             sub_batch_list = get_random_eles_from_list(batch_list, batch_num)
             # sub_batch_list = get_random_eles_from_list(batch_list, config.num_gpus)
 
-            global_step = sess.run(model.global_step) + 1
-            print(global_step)
-            # if global_step == 10000:
-            #     trainer.change_lr(0.25)
-            loss, summary, train_op = trainer.step(sess, sub_batch_list, True)
-            train_writer.add_summary(summary, global_step)
-            print(loss)
+            # global_step = sess.run(model.global_step) + 1
+            # print(global_step)
+            # # if global_step == 10000:
+            # #     trainer.change_lr(0.25)
+            # loss, summary, train_op = trainer.step(sess, sub_batch_list, True)
+            # train_writer.add_summary(summary, global_step)
+            # print(loss)
 
-            # for batch in sub_batch_list:
-            #     global_step = sess.run(models[0].global_step) + 1  # +1 because all calculations are done after step
-            #     get_summary = True
-            #     print(global_step)
+            for batch in sub_batch_list:
+                global_step = sess.run(model.global_step) + 1  # +1 because all calculations are done after step
+                get_summary = True
+                print(global_step)
 
-            #     loss, summary, train_op = trainer.step(sess, batch, get_summary=get_summary)
-            #     train_writer.add_summary(summary, global_step)
+                loss, summary, train_op = trainer.step(sess, batch, get_summary=get_summary)
+                train_writer.add_summary(summary, global_step)
 
-            #     print(loss)
+                print(loss)
     
 
     '''start to evaluate via dev-set'''
