@@ -177,7 +177,5 @@ if __name__ == '__main__':
     count = 0
     for passage in passages:
         tokenized_passage = Tokenize_string_word_level(passage)
-        if len(tokenized_passage) > 2200:
-            count+=1
-            print(count)
-    print(count)
+        print(len(tokenized_passage))
+    # print(count)
