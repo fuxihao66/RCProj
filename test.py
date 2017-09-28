@@ -179,4 +179,5 @@ if __name__ == '__main__':
         tokenized_passage = Tokenize_string_word_level(passage)
         if len(tokenized_passage) > 2200:
             count+=1
+            print(count)
     print(count)
