@@ -42,14 +42,14 @@ def _train(config):
     config.char_vocab_size = char_vocabulary_size
     
 
-    # with tf.name_scope("model"):
-    #     model = Model(config, word2idx_dict, char2idx_dict)
-    models = get_multi_models(config, word2idx_dict, char2idx_dict)
+    with tf.name_scope("model"):
+        model = Model(config, word2idx_dict, char2idx_dict)
+    # models = get_multi_models(config, word2idx_dict, char2idx_dict)
 
-    # with tf.name_scope("trainer"):
-    #     trainer = single_GPU_trainer(config, model)
+    with tf.name_scope("trainer"):
+        trainer = single_GPU_trainer(config, model)
     
-    trainer = MultiGPUTrainer(config, models)
+    # trainer = MultiGPUTrainer(config, models)
 
     
     sess = tf.Session(config=tf.ConfigProto(allow_soft_placement=True))
@@ -77,15 +77,15 @@ def _train(config):
 
     for i in range(config.num_epochs):
 
-        # for i in range(int(math.ceil(batch_list_length/batch_num))):
-        for i in range(int(math.ceil(batch_list_length/config.num_gpus))):
-            # sub_batch_list = get_random_eles_from_list(batch_list, batch_num)
-            sub_batch_list = get_random_eles_from_list(batch_list, config.num_gpus)
+        for i in range(int(math.ceil(batch_list_length/batch_num))):
+        # for i in range(int(math.ceil(batch_list_length/config.num_gpus))):
+            sub_batch_list = get_random_eles_from_list(batch_list, batch_num)
+            # sub_batch_list = get_random_eles_from_list(batch_list, config.num_gpus)
 
-            global_step = sess.run(models[0].global_step) + 1
+            global_step = sess.run(model.global_step) + 1
             print(global_step)
-            if global_step == 10000:
-                trainer.change_lr(0.25)
+            # if global_step == 10000:
+            #     trainer.change_lr(0.25)
             loss, summary, train_op = trainer.step(sess, sub_batch_list, True)
             train_writer.add_summary(summary, global_step)
             print(loss)
@@ -111,8 +111,8 @@ def _train(config):
 
     summaries = []
     for j, batch in enumerate(dev_batches):
-        feed_dict = models[0].get_feed_dict(batch, None, False)
-        yp, yp2 = sess.run([models[0].yp, models[0].yp2], feed_dict=feed_dict)   
+        feed_dict = model.get_feed_dict(batch, None, False)
+        yp, yp2 = sess.run([model.yp, model.yp2], feed_dict=feed_dict)   
         yp = get_y_index(yp)
         yp2= get_y_index(yp2)
         for i in range(len(batch['x'])):

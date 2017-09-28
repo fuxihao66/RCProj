@@ -17,14 +17,14 @@ def get_multi_models(config, word2idx_dict, char2idx_dict):
     with tf.variable_scope(tf.get_variable_scope()):
         for gpu_idx in range(config.num_gpus):
             with tf.name_scope("model_{}".format(gpu_idx)) as scope, tf.device("/{}:{}".format(config.device_type, gpu_idx)):
-                model = Model(config, scope, word2idx_dict, char2idx_dict)
+                model = Model(config,  word2idx_dict, char2idx_dict,scope)
 
                 tf.get_variable_scope().reuse_variables()
                 models.append(model)
 
     return models
 class Model:
-    def __init__(self, config, scope, word2idx_dict, char2idx_dict):
+    def __init__(self, config,  word2idx_dict, char2idx_dict， scope=None):
 
         self.scope = scope
 
@@ -66,8 +66,8 @@ class Model:
         self.var_ema = None
         self.build_var_ema()
         
-        # if config.mode == 'train':
-        #     self.build_ema()
+        if config.mode == 'train':
+            self.build_ema()
 
         self.summary = tf.summary.merge_all()
         print(1)
@@ -315,7 +315,7 @@ class Model:
                 else:
                     [j, k] = [0, 0]
                     [j2, k2] = [0,0]
-                    print(i)
+                    
                 y[i, j, k] = True
                 y2[i, j2, k2] = True
 
