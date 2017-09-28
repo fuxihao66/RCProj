@@ -8,6 +8,80 @@ import re
 from tqdm import tqdm   
 from rouge import Rouge
 import numpy as np
+def read_metadata(file_to_read, set_type):
+    passage_list     =  []
+    answers_list     =  []
+    query_list       =  []
+    passage_sent_list=  []
+    selected_passage_list =  []
+    # description_list =  []
+    with open(file_to_read, 'r', encoding='utf8') as data_file:
+        for i, line in enumerate(tqdm(data_file)):
+
+            # if len(passage_list) == 500 and set_type == 'train':
+            #     break 
+            instance = json.loads(line)
+
+            #some answers are blank
+            if instance['answers'] == []:
+                continue
+
+            passage = ''
+            selected_passage = []
+            selected_passage_indics = []
+            passage_to_be_sort = []
+
+            for i, sentence in enumerate(instance['passages']):
+                if sentence['is_selected'] == 1:
+                    selected_passage.append(sentence['passage_text'])
+                    selected_passage_indics.append(i)
+            if selected_passage == []:
+                continue
+
+
+
+            '''add a temporary part to sort the passage'''
+            for sentence in instance['passages']:
+                passage_to_be_sort.append(sentence['passage_text'])
+            for i, idx in enumerate(selected_passage_indics):
+                if i == 0:
+                    passage = passage + passage_to_be_sort[idx]
+                else:
+                    passage = passage + ' ' + passage_to_be_sort[idx]
+            for idx in range(len(instance['passages'])):
+                if idx not in selected_passage_indics:
+                    passage = passage + ' ' + passage_to_be_sort[idx]
+            # for i, sentence in enumerate(instance['passages']):
+            #     if i != 0:
+            #         passage = passage + ' ' + sentence['passage_text']
+            #     else:
+            #         passage = passage + sentence['passage_text']   
+
+
+
+
+            passage = passage.replace("''", '"').replace("``", '"')
+            passage_list.append(passage)
+            selected_passage_list.append(selected_passage)
+            
+            answer = ''
+            for i, answer_str in enumerate(instance['answers']):
+                if i != 0:
+                    answer = answer + ' ' + answer_str
+                else:
+                    answer = answer + answer_str
+            if answer == ' 888-989-4473 ':
+                answer = '888-989-4473'
+                print(answer)
+            answers_list.append(answer) 
+
+            query_list.append(instance['query'])
+            # description_list.append(instance['query_type'])
+
+    data_dict = {}
+    data_dict['passages']     =  passage_list
+    
+    return data_dict['passages']
 def Tokenize(para_list):
     
     if isinstance(para_list, list) and isinstance(para_list[0], str):
@@ -78,7 +152,10 @@ def get_phrase(context, wordss, span):
     char_idx = 0
     char_start, char_stop = None, None
     for word_idx, word in enumerate(words):
+        print(word)
+        
         char_idx = context.find(word, char_idx)
+        print(char_idx)
         assert char_idx >= 0
         if word_idx == flat_start:
             char_start = char_idx
@@ -88,15 +165,18 @@ def get_phrase(context, wordss, span):
     assert char_start is not None
     assert char_stop is not None
     return context[char_start:char_stop]
-if __name__ == '__main__':
-    hypothesis = ["open", "the", "file", "what", "are", "you", "doing", "."]
-    reference = ["open", "file", "."]
-    
-    context = ["this is my list", "what are you doing"]
-    reference = ['list', "doing"]
-    # BLEUscore = nltk.translate.bleu_score.sentence_bleu([reference], hypothesis)
-    # print(BLEUscore)
+def get_rougel_score_ave(summaries, references, score_type):
     rouge = Rouge()
-
-    scores = rouge.get_scores(context, reference, avg=True)
-    print(scores)
+    scores = rouge.get_scores(references, summaries, avg=True)
+    return scores['rouge-l'][score_type]
+if __name__ == '__main__':
+    # summaries = ['this is me', 'this is you', 'he']
+    # references = ['me', 'you', 'he']
+    # print(get_rougel_score_ave(summaries, references, 'f'))
+    passages = read_metadata('''/home/zhangs/RC/data/train_v1.1.json''', 'train')
+    count = 0
+    for passage in passages:
+        tokenized_passage = Tokenize_string_word_level(passage)
+        if len(tokenized_passage) > 2200:
+            count+=1
+    print(count)
