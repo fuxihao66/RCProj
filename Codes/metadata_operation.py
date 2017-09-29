@@ -170,9 +170,10 @@ def get_word2idx_and_embmat(path_to_file):
     emb_mat = emb_mat.astype(dtype='float32')
     vacabulary_size = i
     return word2idx_dict, emb_mat, vacabulary_size
+
 def get_char2idx(data_dict):
     char2idx_dict = {}
-    i = 0
+    i = 1
     for key in data_dict:
         if key == 'passages' or key == 'queries':
             for string in data_dict[key]:

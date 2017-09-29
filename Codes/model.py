@@ -50,6 +50,8 @@ class Model:
         self.y = tf.placeholder('bool', [config.batch_size, None, None])
         self.y2 = tf.placeholder('bool', [config.batch_size, None, None])
 
+
+        '''an optimization: 让非mask的在softmax后非常小'''
         self.x_mask = tf.placeholder('bool', [config.batch_size, None, None], name='x_mask')
         self.q_mask = tf.placeholder('bool', [config.batch_size, None], name='q_mask')
         self.is_train = tf.placeholder('bool', [], name='is_train')
