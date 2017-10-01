@@ -192,7 +192,7 @@ if __name__ == '__main__':
     #                 de.append(ins)
     # print(len(de))
              
-    train_data_dict = read_metadata('''/home/zhangs/RC/data/train_v1.1.json''')
+    train_data_dict = read_metadata('''/home/zhangs/RC/data/train_v1.1.json''', 'train')
     # dev_data_dict   = read_metadata('''/home/zhangs/RC/data/dev_v1.1.json''')
 
     train_data = DataSet(train_data_dict)
