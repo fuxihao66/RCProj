@@ -191,22 +191,23 @@ def write_to_file( path, data):
 
 def get_random_eles_from_list(list_to_select, num_ele):
     return random.sample(list_to_select, num_ele)
+
+
+
 def get_flat_idx(wordss, idx):
     return sum(len(words) for words in wordss[:idx[0]]) + idx[1]
-def get_phrase(context, wordss, span):
+def get_phrase(context, words, span):
 
-    #span looks like: [ [start_sent_idx, start_word_idx], [end_sent_idx, end_word_idx] ]
-    start, stop = span
+    #span looks like: [ start_index, stop_index ]
+    flat_start, flat_stop = span
     #get 1d index in the passage
-    flat_start = get_flat_idx(wordss, start)
-    flat_stop = get_flat_idx(wordss, stop)
+
     if flat_start > flat_stop:
         k = flat_start
         flat_start = flat_stop
         flat_stop = k
     
     flat_stop += 1
-    words = sum(wordss, [])
     char_idx = 0
     char_start, char_stop = None, None
     for word_idx, word in enumerate(words):

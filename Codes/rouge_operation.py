@@ -67,6 +67,7 @@ def trans_idx_1dto2d(idx_start, idx_stop, list2d):
 def get_highest_rl_span(para, reference, max_gap):
 
     max_rouge = 0
+    ## get the indics of words
     signal_idxs = get_signal_idxs(para)
     start_idxs = [0]
     for item in signal_idxs:
@@ -100,7 +101,7 @@ def get_highest_rl_span(para, reference, max_gap):
     
     substring = Tokenize_string_word_level(para[best_span_start: best_span_end]) 
     word_token_para = Tokenize_string_word_level(para)
-    sent_token_para = Tokenize(para)
+    # sent_token_para = Tokenize(para)
 
     index_start, index_stop = get_idx_sublist(word_token_para, substring)
     # print(para[best_span_start: best_span_end])
@@ -110,11 +111,12 @@ def get_highest_rl_span(para, reference, max_gap):
     # print(substring)
     # print(word_token_para)
     # print(sent_token_para)
-    try:
-        return trans_idx_1dto2d(index_start, index_stop, sent_token_para), True
-    except:
-        print(substring)
-        print(para)
+    return [index_start, index_stop]
+    # try:
+    #     return trans_idx_1dto2d(index_start, index_stop, sent_token_para), True
+    # except:
+    #     print(substring)
+    #     print(para)
 
 def get_selected_span(para, selected_span):
     
@@ -123,4 +125,4 @@ def get_selected_span(para, selected_span):
     sent_token_para = Tokenize(para)
     index_start, index_stop = get_idx_sublist(word_token_para, substring)
     
-    return trans_idx_1dto2d(index_start, index_stop, sent_token_para)
+    return [index_start, index_stop]

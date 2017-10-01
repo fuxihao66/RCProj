@@ -101,8 +101,8 @@ flags.DEFINE_bool("dynamic_att", False, "Dynamic attention [False]")
 flags.DEFINE_bool("supervised", True, "whether the feed dict contain y")
 # the passage size limitation
 ## Maximum passage size is about 2200
-flags.DEFINE_integer("max_num_sents", 22, "the max number of sentences")
-flags.DEFINE_integer("max_sent_size", 100, "the max number of words in a sentence")
+# flags.DEFINE_integer("max_num_sents", 22, "the max number of sentences")
+flags.DEFINE_integer("max_sent_size", 1500, "the max number of words in a sentence")
 flags.DEFINE_integer("max_ques_size", 20, "the max number of words in a question")
 flags.DEFINE_integer("max_word_size", 20, "the max size of a word")
 

@@ -83,9 +83,9 @@ class DataSet:
         for key in self.data:
             print(key)
             if key == 'passages':
-                self.data[key] = Tokenize(self.data[key])
+                self.data[key] = Tokenize_without_sent(self.data[key])
                 for passage in self.data[key]:
-                    cxi = [[list(xijk) for xijk in xij] for xij in passage]
+                    cxi = [list(xij) for xij in passage]
                     self.data['char_x'].append(cxi)
             elif key == 'queries':
                 self.data[key] = Tokenize_without_sent(self.data[key])
@@ -124,10 +124,6 @@ class DataSet:
         print((start, end))
         
     def operate_answers(self, num_threads):
-        
-        # self.data['passages'].reverse()
-        # self.data['answers'].reverse()
-        # self.data['passage_selected'].reverse()
 
         # def del_signal(sentence):
         #     token_sent = Tokenize_string_word_level(sentence)
