@@ -111,8 +111,8 @@ class DataSet:
                         l = get_selected_span(para, self.data['passage_selected'][i][0])
                 except:
                     print('get span error')
-                    # l looks like: [[j1,k1],[j2,k2]]
-                # self.data['ans_start_stop_idx'].append(l)
+                    # l looks like: [j,j2]
+  
                 temp.append(l)
         except:
             print('error in a process')
@@ -177,10 +177,10 @@ if __name__ == '__main__':
 
     # dev_ans = []
     # for i in range(25):
-    with open('''/home/zhangs/RC/data/ans_train{}.json'''.format(24), 'r') as ans:
-        for line in tqdm(ans):
-            instance = json.loads(line)
-            print(instance)
+    # with open('''/home/zhangs/RC/data/ans_train{}.json'''.format(24), 'r') as ans:
+    #     for line in tqdm(ans):
+    #         instance = json.loads(line)
+    #         print(instance)
     
     # write_to_file('''/home/zhangs/RC/data/train_answers.json''', dev_ans)
     # print(len(dev_ans))
@@ -192,14 +192,14 @@ if __name__ == '__main__':
     #                 de.append(ins)
     # print(len(de))
              
-    # train_data_dict = read_metadata('''/home/zhangs/RC/data/train_v1.1.json''')
+    train_data_dict = read_metadata('''/home/zhangs/RC/data/train_v1.1.json''')
     # dev_data_dict   = read_metadata('''/home/zhangs/RC/data/dev_v1.1.json''')
 
-    # # train_data = DataSet(train_data_dict)
+    train_data = DataSet(train_data_dict)
     # dev_data   = DataSet(dev_data_dict)
-    # # print('start operating answers')
-    # dev_data.operate_answers(20)
-    # print('operating answers successfully')
+    print('start operating answers')
+    train_data.operate_answers(25)
+    print('operating answers successfully')
 
 
 
