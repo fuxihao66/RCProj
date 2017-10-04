@@ -81,7 +81,7 @@ class Model:
             config.batch_size,  config.max_sent_size, \
             config.max_ques_size, config.word_vocab_size, config.char_vocab_size, config.hidden_size, \
             config.max_word_size
-        JX = tf.shape(self.x)[2]
+        JX = tf.shape(self.x)[1]
         JQ = tf.shape(self.q)[1]
         
         dc, dw, dco = config.char_emb_size, config.word_emb_size, config.char_out_size
@@ -222,7 +222,7 @@ class Model:
     def build_loss(self):
         
         config = self.config
-        JX = tf.shape(self.x)[2]
+        JX = tf.shape(self.x)[1]
         JQ = tf.shape(self.q)[1]
         loss_mask = tf.reduce_max(tf.cast(self.q_mask, 'float'), 1)
 
