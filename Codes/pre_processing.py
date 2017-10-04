@@ -109,6 +109,7 @@ class DataSet:
                     l, flag = get_highest_rl_span(para, ans, 30)
                     if  flag == False:
                         l = get_selected_span(para, self.data['passage_selected'][i][0])
+                    print(l)
                 except:
                     print('get span error')
                     # l looks like: [j,j2]
@@ -175,13 +176,13 @@ class DataSet:
 
 if __name__ == '__main__':
 
-    train_ans = []
-    # for i in range(25):
-    with open('''/home/zhangs/RC/data/ans_train{}.json'''.format(0), 'r') as ans:
-        for line in tqdm(ans):
-            instance = json.loads(line)
-            train_ans.extend(instance)
-            print(instance)
+    # train_ans = []
+    # # for i in range(25):
+    # with open('''/home/zhangs/RC/data/ans_train{}.json'''.format(0), 'r') as ans:
+    #     for line in tqdm(ans):
+    #         instance = json.loads(line)
+    #         train_ans.extend(instance)
+    #         print(instance)
     # print((train_ans))
     # write_to_file('''/home/zhangs/RC/data/train_answers.json''', dev_ans)
     # print(len(dev_ans))
@@ -193,11 +194,11 @@ if __name__ == '__main__':
     #                 de.append(ins)
     # print(len(de))
              
-    # train_data_dict = read_metadata('''/home/zhangs/RC/data/train_v1.1.json''', 'train')
-    # train_data = DataSet(train_data_dict)
-    # print('start operating answers')
-    # train_data.operate_answers(25)
-    # print('operating answers successfully')
+    train_data_dict = read_metadata('''/home/zhangs/RC/data/train_v1.1.json''', 'train')
+    train_data = DataSet(train_data_dict)
+    print('start operating answers')
+    train_data.operate_answers(25)
+    print('operating answers successfully')
 
 
 
