@@ -109,7 +109,7 @@ class DataSet:
                     l, flag = get_highest_rl_span(para, ans, 30)
                     if  flag == False:
                         l = get_selected_span(para, self.data['passage_selected'][i][0])
-                    print(l)
+                        print(l)
                 except:
                     print('get span error')
                     # l looks like: [j,j2]
