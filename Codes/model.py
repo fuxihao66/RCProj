@@ -24,7 +24,7 @@ def get_multi_models(config, word2idx_dict, char2idx_dict):
 
     return models
 class Model:
-    def __init__(self, config, scope, word2idx_dict, char2idx_dict):
+    def __init__(self, config, word2idx_dict, char2idx_dict, scope=None):
 
         self.scope = scope
 
@@ -379,13 +379,21 @@ def bi_attention(config, is_train, h, u, h_mask=None, u_mask=None, scope=None, t
 
         u_logits = get_logits([h_aug, u_aug], None, True, wd=config.wd, mask=hu_mask,
                               is_train=is_train, func=config.logit_func, scope='u_logits')  # [N, M, JX, JQ]
-        u_a = softsel(u_aug, u_logits)  # [N, M, JX, d]
-        h_a = softsel(h, tf.reduce_max(u_logits, 3))  # [N, M, d]
+        u_a = softsel(u_aug, u_logits)  # [N, JX, d]
+        h_a = softsel(h, tf.reduce_max(u_logits, 2))  # [N, d]
+
+
+
+
+
         h_a = tf.tile(tf.expand_dims(h_a, 2), [1, 1, JX, 1])
 
+
+
+
         if tensor_dict is not None:
-            a_u = tf.nn.softmax(u_logits)  # [N, M, JX, JQ]
-            a_h = tf.nn.softmax(tf.reduce_max(u_logits, 3))
+            a_u = tf.nn.softmax(u_logits)  # [N, JX, JQ]
+            a_h = tf.nn.softmax(tf.reduce_max(u_logits, 2))
             tensor_dict['a_u'] = a_u
             tensor_dict['a_h'] = a_h
             variables = tf.get_collection(tf.GraphKeys.VARIABLES, scope=tf.get_variable_scope().name)
