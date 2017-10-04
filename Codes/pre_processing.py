@@ -202,7 +202,7 @@ if __name__ == '__main__':
         for line in ans:
             instance = json.loads(line)
             for i, y in enumerate(instance):
-                if y[1] > 1000:
+                if y[1] > 800:
                     print(i)
 
 
