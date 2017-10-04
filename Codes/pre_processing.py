@@ -202,8 +202,8 @@ if __name__ == '__main__':
         for line in ans:
             instance = json.loads(line)
             for i, y in enumerate(instance):
-                if y[1] > 800:
-                    print(i)
+                if y[1] > 900:
+                    print(y[1])
 
 
     # print(len(train_data_dict['passages']))
