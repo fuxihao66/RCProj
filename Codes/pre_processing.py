@@ -181,7 +181,7 @@ if __name__ == '__main__':
             for line in tqdm(ans):
                 instance = json.loads(line)
                 train_ans.extend(instance)
-    print(len(train_ans))
+    print((train_ans))
     # write_to_file('''/home/zhangs/RC/data/train_answers.json''', dev_ans)
     # print(len(dev_ans))
     # de = []
