@@ -18,8 +18,8 @@ def read_metadata(file_to_read, set_type):
     with open(file_to_read, 'r', encoding='utf8') as data_file:
         for i, line in enumerate(tqdm(data_file)):
 
-            # if len(passage_list) == 500 and set_type == 'train':
-            #     break 
+            if len(passage_list) == 500 and set_type == 'train':
+                break 
             instance = json.loads(line)
 
             #some answers are blank
@@ -225,17 +225,13 @@ def get_phrase(context, words, span):
 def get_y_index(y_after_softmax):
     y_indics = []
     for y in y_after_softmax:
-        max_value = 0.0
-        word_index = 0
-        sent_index = 0
-        for i, sent in enumerate(y):
-            for j, word in enumerate(sent):
-                if word > max_value:
-                    max_value = word
-                    word_index = j
-                    sent_index = i
+        max_value = 0
+        for j, word in enumerate(y):
+            if word > max_value:
+                max_value = word
+                word_index = j
         # print(max_value)
-        y_indics.append([sent_index, word_index])
+        y_indics.append(word_index)
     return y_indics
 
   
