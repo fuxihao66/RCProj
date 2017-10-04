@@ -175,15 +175,15 @@ class DataSet:
 
 if __name__ == '__main__':
 
-    train_ans = []
-    for i in range(25):
-        with open('''/home/zhangs/RC/data/ans_train{}.json'''.format(i), 'r') as ans:
-            for line in tqdm(ans):
-                instance = json.loads(line)
-                train_ans.extend(instance)
+    # train_ans = []
+    # for i in range(25):
+    #     with open('''/home/zhangs/RC/data/ans_train{}.json'''.format(i), 'r') as ans:
+    #         for line in tqdm(ans):
+    #             instance = json.loads(line)
+    #             train_ans.extend(instance)
 
-    print(len(train_ans))
-    write_to_file('''/home/zhangs/RC/data/train_answers_non_sent.json''', train_ans)
+    # print(len(train_ans))
+    # write_to_file('''/home/zhangs/RC/data/train_answers_non_sent.json''', train_ans)
     # print(len(dev_ans))
     # de = []
     # with open('''/home/zhangs/RC/data/train_answers.json''', 'r') as fi:
@@ -198,7 +198,12 @@ if __name__ == '__main__':
     # print('start operating answers')
     # train_data.operate_answers(25)
     # print('operating answers successfully')
-
+    with open('''/home/zhangs/RC/data/train_answers_non_sent.json''') as ans:
+        for line in ans:
+            instance = json.loads(line)
+                for i, y in enumerate(instance):
+                    if y[1] > 1000:
+                        print(i)
 
 
     # print(len(train_data_dict['passages']))
