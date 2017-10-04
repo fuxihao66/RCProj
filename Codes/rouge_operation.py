@@ -124,5 +124,4 @@ def get_selected_span(para, selected_span):
     word_token_para = Tokenize_string_word_level(para)
     sent_token_para = Tokenize(para)
     index_start, index_stop = get_idx_sublist(word_token_para, substring)
-    
     return [index_start, index_stop]
