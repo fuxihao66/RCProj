@@ -201,9 +201,9 @@ if __name__ == '__main__':
     with open('''/home/zhangs/RC/data/train_answers_non_sent.json''') as ans:
         for line in ans:
             instance = json.loads(line)
-                for i, y in enumerate(instance):
-                    if y[1] > 1000:
-                        print(i)
+            for i, y in enumerate(instance):
+                if y[1] > 1000:
+                    print(i)
 
 
     # print(len(train_data_dict['passages']))
