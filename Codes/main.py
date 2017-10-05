@@ -40,7 +40,6 @@ def _train(config):
     config.emb_mat = emb_mat
     config.word_vocab_size = vocabulary_size
     config.char_vocab_size = char_vocabulary_size
-    print(char_vocabulary_size)
 
     with tf.name_scope("model"):
         model = Model(config, word2idx_dict, char2idx_dict)
