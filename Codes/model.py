@@ -68,8 +68,8 @@ class Model:
         self.var_ema = None
         self.build_var_ema()
         
-        # if config.mode == 'train':
-        #     self.build_ema()
+        if config.mode == 'train':
+            self.build_ema()
 
         self.summary = tf.summary.merge_all()
         print(1)
@@ -143,7 +143,7 @@ class Model:
                 h = tf.concat([fw_h, bw_h], 2)  # [N, JX, 2d]
             else:
                 (fw_h, bw_h), _ = bidirectional_dynamic_rnn(cell, cell, xx, x_len, dtype='float', scope='h1')  # [N,  JX, 2d]
-                h = tf.concat([fw_h, bw_h], 2)  # [N, JX, 2d]
+                h = tf.concat([fw_h, bw_h], 2)  # [N, h = tf.concat([fw_h, bw_h], 2)  # [N, JX, 2d]
             self.tensor_dict['u'] = u
             self.tensor_dict['h'] = h
 
@@ -366,29 +366,26 @@ the functions below are implemented with the method mentioned in the paper
 '''
 def bi_attention(config, is_train, h, u, h_mask=None, u_mask=None, scope=None, tensor_dict=None):
     with tf.variable_scope(scope or "bi_attention"):
-        JX = tf.shape(h)[2]
+        JX = tf.shape(h)[1]
         JQ = tf.shape(u)[1]
-        h_aug = tf.tile(tf.expand_dims(h, 3), [1, 1, 1, JQ, 1])
-        u_aug = tf.tile(tf.expand_dims(tf.expand_dims(u, 1), 1), [1, M, JX, 1, 1])
+        h_aug = tf.tile(tf.expand_dims(h, 2), [1, 1, JQ, 1])
+        u_aug = tf.tile(tf.expand_dims(u, 1), [1, JX, 1, 1])#do expand_dims 1 time less
         if h_mask is None:
             hu_mask = None
         else:
-            h_mask_aug = tf.tile(tf.expand_dims(h_mask, 3), [1, 1, 1, JQ])
-            u_mask_aug = tf.tile(tf.expand_dims(tf.expand_dims(u_mask, 1), 1), [1, M, JX, 1])
+            h_mask_aug = tf.tile(tf.expand_dims(h_mask, 2), [1, 1, JQ])
+            u_mask_aug = tf.tile(tf.expand_dims(u_mask, 1), [1, JX, 1])#do expand_dims 1 time less
             hu_mask = h_mask_aug & u_mask_aug
 
+        #S
         u_logits = get_logits([h_aug, u_aug], None, True, wd=config.wd, mask=hu_mask,
                               is_train=is_train, func=config.logit_func, scope='u_logits')  # [N, M, JX, JQ]
+        
+        #对logits做softmax，aug做加权和
         u_a = softsel(u_aug, u_logits)  # [N, JX, d]
         h_a = softsel(h, tf.reduce_max(u_logits, 2))  # [N, d]
 
-
-
-
-
         h_a = tf.tile(tf.expand_dims(h_a, 2), [1, 1, JX, 1])
-
-
 
 
         if tensor_dict is not None:
@@ -405,13 +402,13 @@ def bi_attention(config, is_train, h, u, h_mask=None, u_mask=None, scope=None, t
 
 def attention_layer(config, is_train, h, u, h_mask=None, u_mask=None, scope=None, tensor_dict=None):
     with tf.variable_scope(scope or "attention_layer"):
-        JX = tf.shape(h)[2]
-        M = tf.shape(h)[1]
+        JX = tf.shape(h)[1]
+        # M = tf.shape(h)[1]
         JQ = tf.shape(u)[1]
         if config.q2c_att or config.c2q_att:
             u_a, h_a = bi_attention(config, is_train, h, u, h_mask=h_mask, u_mask=u_mask, tensor_dict=tensor_dict)
-        if not config.c2q_att:
-            u_a = tf.tile(tf.expand_dims(tf.expand_dims(tf.reduce_mean(u, 1), 1), 1), [1, M, JX, 1])
+        # if not config.c2q_att:
+        #     u_a = tf.tile(tf.expand_dims(tf.expand_dims(tf.reduce_mean(u, 1), 1), 1), [1, JX, 1])
         if config.q2c_att:
             p0 = tf.concat([h, u_a, h * u_a, h * h_a], 2)  
         else:
