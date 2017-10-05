@@ -384,7 +384,7 @@ def bi_attention(config, is_train, h, u, h_mask=None, u_mask=None, scope=None, t
         #对logits做softmax，aug做加权和
         u_a = softsel(u_aug, u_logits)  # [N, JX, d]
         h_a = softsel(h, tf.reduce_max(u_logits, 2))  # [N, d]
-
+        print(h_a)
         h_a = tf.tile(tf.expand_dims(h_a, 2), [1, 1, JX, 1])
 
 
