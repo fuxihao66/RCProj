@@ -14,16 +14,17 @@ def read_metadata(file_to_read, set_type):
     query_list       =  []
     passage_sent_list=  []
     selected_passage_list =  []
+    query_ids = []
     # description_list =  []
     with open(file_to_read, 'r', encoding='utf8') as data_file:
         for i, line in enumerate(tqdm(data_file)):
 
-            # if len(passage_list) == 500 and set_type == 'train':
-            #     break 
+            if len(passage_list) == 500 and set_type == 'train':
+                break 
             instance = json.loads(line)
 
             #some answers are blank
-            if instance['answers'] == []:
+            if instance['answers'] == [] and set_type == 'train':
                 continue
 
             passage = ''
@@ -35,7 +36,7 @@ def read_metadata(file_to_read, set_type):
                 if sentence['is_selected'] == 1:
                     selected_passage.append(sentence['passage_text'])
                     selected_passage_indics.append(i)
-            if selected_passage == []:
+            if selected_passage == [] and set_type=='train':
                 continue
 
 
@@ -76,6 +77,7 @@ def read_metadata(file_to_read, set_type):
             answers_list.append(answer) 
 
             query_list.append(instance['query'])
+            query_ids.append(instance['query_id'])
             # description_list.append(instance['query_type'])
 
     data_dict = {}
@@ -83,6 +85,8 @@ def read_metadata(file_to_read, set_type):
     data_dict['answers']      =  answers_list
     data_dict['queries']      =  query_list
     # data_dict['passage_sent'] =  passage_sent_list
+    if set_type != 'train':
+        data_dict['query_ids']    =  query_ids
     data_dict['passage_selected'] = selected_passage_list
     # data_dict['descriptions'] =  description_list
     return data_dict
