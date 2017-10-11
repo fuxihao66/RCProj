@@ -32,20 +32,20 @@ def read_metadata(file_to_read, set_type):
             selected_passage_indics = []
             passage_to_be_sort = []
 
-            for i, sentence in enumerate(instance['passages']):
+            for j, sentence in enumerate(instance['passages']):
                 if sentence['is_selected'] == 1:
                     selected_passage.append(sentence['passage_text'])
-                    selected_passage_indics.append(i)
+                    selected_passage_indics.append(j)
             if selected_passage == [] and set_type=='train':
                 continue
-
-
+            # if instance['answers'] == ["yes"] and selected_passage == []:
+            #     print(i)
 
             '''add a temporary part to sort the passage'''
             for sentence in instance['passages']:
                 passage_to_be_sort.append(sentence['passage_text'])
-            for i, idx in enumerate(selected_passage_indics):
-                if i == 0:
+            for j, idx in enumerate(selected_passage_indics):
+                if j == 0:
                     passage = passage + passage_to_be_sort[idx]
                 else:
                     passage = passage + ' ' + passage_to_be_sort[idx]
@@ -66,14 +66,15 @@ def read_metadata(file_to_read, set_type):
             selected_passage_list.append(selected_passage)
             
             answer = ''
-            for i, answer_str in enumerate(instance['answers']):
-                if i != 0:
+            for j, answer_str in enumerate(instance['answers']):
+                if j != 0:
                     answer = answer + ' ' + answer_str
                 else:
                     answer = answer + answer_str
+
             if answer == ' 888-989-4473 ':
                 answer = '888-989-4473'
-                print(answer)
+                # print(answer)
             answers_list.append(answer) 
 
             query_list.append(instance['query'])

@@ -181,10 +181,10 @@ if __name__ == '__main__':
 
     # dev_ans = []
     # for i in range(25):
-    with open('''/home/zhangs/RC/data/ans_train{}.json'''.format(24), 'r') as ans:
-        for line in tqdm(ans):
-            instance = json.loads(line)
-            print(instance)
+    # with open('''/home/zhangs/RC/data/ans_train{}.json'''.format(24), 'r') as ans:
+    #     for line in tqdm(ans):
+    #         instance = json.loads(line)
+    #         print(instance)
     
     # write_to_file('''/home/zhangs/RC/data/train_answers.json''', dev_ans)
     # print(len(dev_ans))
@@ -196,7 +196,8 @@ if __name__ == '__main__':
     #                 de.append(ins)
     # print(len(de))
              
-    # train_data_dict = read_metadata('''/home/zhangs/RC/data/train_v1.1.json''')
+    train_data_dict = read_metadata('''L:\\dd\\train_v1.1.json''', 'dev')
+
     # dev_data_dict   = read_metadata('''/home/zhangs/RC/data/dev_v1.1.json''')
 
     # # train_data = DataSet(train_data_dict)
