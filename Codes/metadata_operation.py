@@ -19,8 +19,8 @@ def read_metadata(file_to_read, set_type):
     with open(file_to_read, 'r', encoding='utf8') as data_file:
         for i, line in enumerate(tqdm(data_file)):
 
-            if len(passage_list) == 500 and set_type == 'train':
-                break 
+            # if len(passage_list) == 500 and set_type == 'train':
+            #     break 
             instance = json.loads(line)
 
             #some answers are blank
