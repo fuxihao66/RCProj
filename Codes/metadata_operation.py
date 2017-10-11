@@ -177,7 +177,7 @@ def get_word2idx_and_embmat(path_to_file):
 
 def get_char2idx(data_dict):
     char2idx_dict = {}
-    i = 1
+    i = 0
     for key in data_dict:
         if key == 'passages' or key == 'queries':
             for string in data_dict[key]:
