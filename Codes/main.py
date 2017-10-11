@@ -30,10 +30,10 @@ def main(config):
 def _train(config):
     
     train_data_dict = read_metadata('''/home/zhangs/RC/data/train_v1.1.json''', 'train')
-    dev_data_dict   = read_metadata('''/home/zhangs/RC/data/dev_v1.1.json''', 'dev')
-    dev_data_dict['passages'].extend(train_data_dict['passages'])
-    dev_data_dict['queries'].extend(train_data_dict['queries'])
-    char2idx_dict, char_vocabulary_size = get_char2idx(dev_data_dict)
+    # dev_data_dict   = read_metadata('''/home/zhangs/RC/data/dev_v1.1.json''', 'dev')
+    # dev_data_dict['passages'].extend(train_data_dict['passages'])
+    # dev_data_dict['queries'].extend(train_data_dict['queries'])
+    char2idx_dict, char_vocabulary_size = get_char2idx(train_data_dict)
     
     word2idx_dict, emb_mat, vocabulary_size = get_word2idx_and_embmat('''/home/zhangs/RC/data/glove.6B.100d.txt''')
     
@@ -136,7 +136,7 @@ def _train(config):
     with open('''/home/zhangs/RC/data/ans_text.json''', 'w') as out:
         for i, summary in enumerate(summaries):
             di = {"answers": [summary], "query_id": dev_data_dict['query_ids'][i]}
-            out.write(di + '\n')
+            out.write(json.dumps(di) + '\n')
     # rouge_score = get_rougel_score_ave(summaries, dev_data_dict['answers'], 'f')
 
     # summ = []

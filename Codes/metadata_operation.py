@@ -41,9 +41,6 @@ def read_metadata(file_to_read, set_type):
                     selected_passage.append(sentence['passage_text'])
                     selected_passage_indics.append(j)
 
-            if len(selected_passage) > 3:
-                print(len(selected_passage))
-                print(i)
             if selected_passage == []:
                 continue
 
