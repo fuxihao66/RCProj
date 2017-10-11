@@ -65,13 +65,13 @@ def read_metadata(file_to_read, set_type):
             passage_list.append(passage)
             selected_passage_list.append(selected_passage)
             
-            # answer = ''
-            # for j, answer_str in enumerate(instance['answers']):
-            #     if j != 0:
-            #         answer = answer + ' ' + answer_str
-            #     else:
-            #         answer = answer + answer_str
-            answer = instance['answers'][0]
+            answer = ''
+            for j, answer_str in enumerate(instance['answers']):
+                if j != 0:
+                    answer = answer + ' ' + answer_str
+                else:
+                    answer = answer + answer_str
+            # answer = instance['answers'][0]
 
 
             if answer == ' 888-989-4473 ':
