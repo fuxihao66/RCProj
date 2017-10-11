@@ -196,13 +196,13 @@ if __name__ == '__main__':
     #                 de.append(ins)
     # print(len(de))
              
-    train_data_dict = read_metadata('''/home/zhangs/RC/data/train_v1.1.json''')
-
-    train_data = DataSet(train_data_dict)
-    anss = train_data_dict['answers']
-    for ans in anss:
-        if ans[len(ans)-1] != '.':
-            print(ans[len(ans)-1])
+    train_data_dict = read_metadata('''L:\\dd\\train_v1.1.json''', 'train')
+    
+    # train_data = DataSet(train_data_dict)
+    # anss = train_data_dict['answers']
+    # for ans in anss:
+    #     if ans[len(ans)-1] != '.':
+    #         print(ans[len(ans)-1])
     # # print('start operating answers')
     # print('operating answers successfully')
 

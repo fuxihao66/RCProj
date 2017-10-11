@@ -14,27 +14,36 @@ def read_metadata(file_to_read, set_type):
     query_list       =  []
     passage_sent_list=  []
     selected_passage_list =  []
+    query_ids = []
     # description_list =  []
-    with open(file_to_read, 'r', encoding='utf8') as data_file:
-        for i, line in enumerate(tqdm(data_file)):
 
-            # if len(passage_list) == 500 and set_type == 'train':
-            #     break 
+    with open(file_to_read, 'r', encoding='utf8') as data_file:
+        for i, line in enumerate(data_file):
+
+            if len(passage_list) == 500 and set_type == 'train':
+                break 
             instance = json.loads(line)
 
             #some answers are blank
-            if instance['answers'] == []:
+            if instance['answers'] == [] and set_type=='train':
                 continue
+
 
             passage = ''
             selected_passage = []
             selected_passage_indics = []
             passage_to_be_sort = []
 
-            for i, sentence in enumerate(instance['passages']):
+
+
+            for j, sentence in enumerate(instance['passages']):
                 if sentence['is_selected'] == 1:
                     selected_passage.append(sentence['passage_text'])
-                    selected_passage_indics.append(i)
+                    selected_passage_indics.append(j)
+
+            if len(selected_passage) > 3:
+                print(len(selected_passage))
+                print(i)
             if selected_passage == []:
                 continue
 
@@ -51,8 +60,8 @@ def read_metadata(file_to_read, set_type):
             # for idx in range(len(instance['passages'])):
             #     if idx not in selected_passage_indics:
             #         passage = passage + ' ' + passage_to_be_sort[idx]
-            for i, sentence in enumerate(instance['passages']):
-                if i != 0:
+            for j, sentence in enumerate(instance['passages']):
+                if j != 0:
                     passage = passage + ' ' + sentence['passage_text']
                 else:
                     passage = passage + sentence['passage_text']   
@@ -65,8 +74,8 @@ def read_metadata(file_to_read, set_type):
             selected_passage_list.append(selected_passage)
             
             answer = ''
-            for i, answer_str in enumerate(instance['answers']):
-                if i != 0:
+            for j, answer_str in enumerate(instance['answers']):
+                if j != 0:
                     answer = answer + ' ' + answer_str
                 else:
                     answer = answer + answer_str
@@ -76,6 +85,7 @@ def read_metadata(file_to_read, set_type):
             answers_list.append(answer) 
 
             query_list.append(instance['query'])
+            query_ids.append(instance['query_id'])
             # description_list.append(instance['query_type'])
 
     data_dict = {}
@@ -83,8 +93,11 @@ def read_metadata(file_to_read, set_type):
     data_dict['answers']      =  answers_list
     data_dict['queries']      =  query_list
     # data_dict['passage_sent'] =  passage_sent_list
+    if set_type != 'train':
+        data_dict['query_ids']    =  query_ids
     data_dict['passage_selected'] = selected_passage_list
     # data_dict['descriptions'] =  description_list
+
     return data_dict
 
     ### this method cannot encode some character very well
