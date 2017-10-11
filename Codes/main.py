@@ -87,7 +87,7 @@ def _train(config):
             global_step = sess.run(models[0].global_step) + 1
             print(global_step)
             if global_step == 10000:
-                trainer.change_lr(0.25)
+                trainer.change_lr(0.2)
             loss, summary, train_op = trainer.step(sess, sub_batch_list, True)
             train_writer.add_summary(summary, global_step)
             print(loss)
