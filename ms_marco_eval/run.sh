@@ -16,36 +16,36 @@ mkdir -p rouge
 
 if [ ! -f "bleu/LICENSE" ]
 then
-    wget -O bleu/LICENSE https://raw.githubusercontent.com/tylin/coco-caption/master/pycocoevalcap/bleu/LICENSE
+    wget -O bleu/LICENSE https://github.com/tylin/coco-caption/tree/master/pycocoevalcap/bleu/LICENSE
 fi
 
 if [ ! -f "bleu/bleu.py" ]
 then
-    wget -O bleu/bleu.py https://raw.githubusercontent.com/tylin/coco-caption/master/pycocoevalcap/bleu/bleu.py
+    wget -O bleu/bleu.py https://github.com/tylin/coco-caption/tree/master/pycocoevalcap/bleu/bleu.py
     2to3 -wn bleu/bleu.py
 fi
 
 if [ ! -f "bleu/__init__.py" ]
 then
-    wget -O bleu/__init__.py https://raw.githubusercontent.com/tylin/coco-caption/master/pycocoevalcap/bleu/__init__.py
+    wget -O bleu/__init__.py https://github.com/tylin/coco-caption/tree/master/pycocoevalcap/bleu/__init__.py
     2to3 -wn bleu/__init__.py
 fi
 
 if [ ! -f "bleu/bleu_scorer.py" ]
 then
-    wget -O bleu/bleu_scorer.py https://raw.githubusercontent.com/tylin/coco-caption/master/pycocoevalcap/bleu/bleu_scorer.py
+    wget -O bleu/bleu_scorer.py https://github.com/tylin/coco-caption/tree/master/pycocoevalcap/bleu/bleu_scorer.py
     2to3 -wn bleu/bleu_scorer.py
 fi
 
 if [ ! -f "rouge/__init__.py" ]
 then
-    wget -O rouge/__init__.py https://raw.githubusercontent.com/tylin/coco-caption/master/pycocoevalcap/rouge/__init__.py
+    wget -O rouge/__init__.py https://github.com/tylin/coco-caption/tree/master/pycocoevalcap/rouge/__init__.py
     2to3 -wn rouge/__init__.py
 fi
 
 if [ ! -f "rouge/rouge.py" ]
 then
-    wget -O rouge/rouge.py https://raw.githubusercontent.com/tylin/coco-caption/master/pycocoevalcap/rouge/rouge.py
+    wget -O rouge/rouge.py https://github.com/tylin/coco-caption/tree/master/pycocoevalcap/rouge/rouge.py
     2to3 -wn rouge/rouge.py
 fi
 
