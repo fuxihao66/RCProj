@@ -7,6 +7,7 @@ import nltk
 import re
 from tqdm import tqdm   
 from rouge import Rouge
+
 import numpy as np
 def read_metadata(file_to_read, set_type):
     passage_list     =  []
@@ -169,14 +170,30 @@ def get_rougel_score_ave(summaries, references, score_type):
     rouge = Rouge()
     scores = rouge.get_scores(references, summaries, avg=True)
     return scores['rouge-l'][score_type]
+def get_rougel_score(summary, reference, score_type):
+    rouge = Rouge()
+    scores = rouge.get_scores(reference, summary)
+    return scores[0]['rouge-l'][score_type]
 if __name__ == '__main__':
-    # summaries = ['this is me', 'this is you', 'he']
-    # references = ['me', 'you', 'he']
+    # summaries = [ ]
+    # references = [[]]
+    # bleu_score = nltk.translate.bleu_score.sentence_bleu(references, summaries)
     # print(get_rougel_score_ave(summaries, references, 'f'))
-    passages = read_metadata('''/home/zhangs/RC/data/train_v1.1.json''', 'train')
-    count = 0
-    for passage in passages:
-        tokenized_passage = Tokenize_string_word_level(passage)
-        if len(tokenized_passage) > count:
-            count = len(tokenized_passage) 
-    print(count)
+    # print(bleu_score)
+
+    reference = 'do you like'
+    summary   = 'do you like me.'
+    print(get_rougel_score(summary, reference, 'f'))
+    # passages = read_metadata('''/home/zhangs/RC/data/train_v1.1.json''', 'train')
+    # count = 0
+    # for passage in passages:
+    #     tokenized_passage = Tokenize_string_word_level(passage)
+    #     if len(tokenized_passage) > count:
+    #         count = len(tokenized_passage) 
+    # print(count)
+    # summari = []
+    # for summ in summari:
+    #     # print(Tokenize_string_word_level(summ))
+    #     summ = Tokenize_string_word_level(summ)
+    #     print(summ)
+    # print(summari)

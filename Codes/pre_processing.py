@@ -197,7 +197,20 @@ if __name__ == '__main__':
     # print(len(de))
              
     train_data_dict = read_metadata('''L:\\dd\\train_v1.1.json''', 'dev')
-
+    tokenized_passages = Tokenize(train_data_dict['passages'])
+    max_sent_num = 50
+    max_sent_size = 80
+    sent_num = 0
+    sent_size = 0
+    for passage in tokenized_passages:
+        # if len(passage) > max_sent_num:
+        #     sent_num+=1
+        for sent in passage:
+            if len(sent) > max_sent_size:
+                sent_size+=1
+            break
+    print(sent_num)
+    print(sent_size)
     # dev_data_dict   = read_metadata('''/home/zhangs/RC/data/dev_v1.1.json''')
 
     # # train_data = DataSet(train_data_dict)
