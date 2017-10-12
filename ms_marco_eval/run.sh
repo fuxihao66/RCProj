@@ -14,6 +14,7 @@
 mkdir -p bleu
 mkdir -p rouge
 
+
 if [ ! -f "bleu/LICENSE" ]
 then
     wget -O bleu/LICENSE https://github.com/tylin/coco-caption/tree/master/pycocoevalcap/bleu/LICENSE
