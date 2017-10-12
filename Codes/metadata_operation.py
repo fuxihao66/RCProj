@@ -38,8 +38,7 @@ def read_metadata(file_to_read, set_type):
                     selected_passage_indics.append(j)
             if selected_passage == [] and set_type=='train':
                 continue
-            # if instance['answers'] == ["yes"] and selected_passage == []:
-            #     print(i)
+          
 
             '''add a temporary part to sort the passage'''
             # for sentence in instance['passages']:
