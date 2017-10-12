@@ -42,21 +42,21 @@ def read_metadata(file_to_read, set_type):
             #     print(i)
 
             '''add a temporary part to sort the passage'''
-            for sentence in instance['passages']:
-                passage_to_be_sort.append(sentence['passage_text'])
-            for j, idx in enumerate(selected_passage_indics):
-                if j == 0:
-                    passage = passage + passage_to_be_sort[idx]
-                else:
-                    passage = passage + ' ' + passage_to_be_sort[idx]
-            for idx in range(len(instance['passages'])):
-                if idx not in selected_passage_indics:
-                    passage = passage + ' ' + passage_to_be_sort[idx]
-            # for i, sentence in enumerate(instance['passages']):
-            #     if i != 0:
-            #         passage = passage + ' ' + sentence['passage_text']
+            # for sentence in instance['passages']:
+            #     passage_to_be_sort.append(sentence['passage_text'])
+            # for j, idx in enumerate(selected_passage_indics):
+            #     if j == 0:
+            #         passage = passage + passage_to_be_sort[idx]
             #     else:
-            #         passage = passage + sentence['passage_text']   
+            #         passage = passage + ' ' + passage_to_be_sort[idx]
+            # for idx in range(len(instance['passages'])):
+            #     if idx not in selected_passage_indics:
+            #         passage = passage + ' ' + passage_to_be_sort[idx]
+            for i, sentence in enumerate(instance['passages']):
+                if i != 0:
+                    passage = passage + ' ' + sentence['passage_text']
+                else:
+                    passage = passage + sentence['passage_text']   
 
 
 
@@ -65,13 +65,13 @@ def read_metadata(file_to_read, set_type):
             passage_list.append(passage)
             selected_passage_list.append(selected_passage)
             
-            answer = ''
-            for j, answer_str in enumerate(instance['answers']):
-                if j != 0:
-                    answer = answer + ' ' + answer_str
-                else:
-                    answer = answer + answer_str
-            # answer = instance['answers'][0]
+            # answer = ''
+            # for j, answer_str in enumerate(instance['answers']):
+            #     if j != 0:
+            #         answer = answer + ' ' + answer_str
+            #     else:
+            #         answer = answer + answer_str
+            answer = instance['answers'][0]
 
 
             if answer == ' 888-989-4473 ':
