@@ -123,4 +123,7 @@ def get_selected_span(para, selected_span):
     sent_token_para = Tokenize(para)
     index_start, index_stop = get_idx_sublist(word_token_para, substring)
     
-    return trans_idx_1dto2d(index_start, index_stop, sent_token_para)
+    try:
+        return trans_idx_1dto2d(index_start, index_stop, sent_token_para)
+    except:
+        print('selected span error')

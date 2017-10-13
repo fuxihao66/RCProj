@@ -120,8 +120,8 @@ class DataSet:
         path = '''/home/zhangs/RC/data/ans_train{}.json'''.format(thread_idx)
         write_to_file(path, temp)
 
-        print('this process exited successfully')
-        print((start, end))
+        # print('this process exited successfully')
+        # print((start, end))
         
     def operate_answers(self, num_threads):
         
@@ -224,7 +224,7 @@ if __name__ == '__main__':
     # train_data.write_answers_to_file('''/home/zhangs/RC/data/train_answers.json''', 'train')
     # print('start operating answers')
     # dev_data.operate_answers(25)
-    print('operating answers successfully')
+    # print('operating answers successfully')
     # dev_data.write_answers_to_file('''/home/zhangs/RC/data/dev_answers.json''')
 
 
