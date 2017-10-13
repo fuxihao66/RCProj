@@ -180,8 +180,7 @@ if __name__ == '__main__':
     # bleu_score = nltk.translate.bleu_score.sentence_bleu(references, summaries)
     # print(get_rougel_score_ave(summaries, references, 'f'))
     # print(bleu_score)
-
-    reference = 'do you like'
+    
     summary   = 'do you like me.'
     print(get_rougel_score(summary, reference, 'f'))
     # passages = read_metadata('''/home/zhangs/RC/data/train_v1.1.json''', 'train')

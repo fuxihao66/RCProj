@@ -29,13 +29,13 @@ def read_metadata(file_to_read, set_type):
 
             passage = ''
             selected_passage = []
-            selected_passage_indics = []
-            passage_to_be_sort = []
+            # selected_passage_indics = []
+            # passage_to_be_sort = []
 
             for j, sentence in enumerate(instance['passages']):
                 if sentence['is_selected'] == 1:
-                    selected_passage.append(sentence['passage_text'])
-                    selected_passage_indics.append(j)
+                    selected_passage.append(sentence['passage_text'].replace("''", '"').replace("``", '"'))
+                    # selected_passage_indics.append(j)
             if selected_passage == [] and set_type=='train':
                 continue
           
