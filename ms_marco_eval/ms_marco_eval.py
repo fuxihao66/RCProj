@@ -14,7 +14,7 @@ from __future__ import print_function
 
 import json
 import sys
-
+import io
 from bleu.bleu import Bleu
 from rouge.rouge import Rouge
 from spacy.en import English as NlpEnglish
@@ -66,7 +66,7 @@ def load_file(p_path_to_data):
     all_answers = []
     query_ids = []
     no_answer_query_ids = set()
-    with open(p_path_to_data, 'r', encoding='utf-8') as data_file:
+    with io.open(p_path_to_data, 'r', encoding='utf-8') as data_file:
         for line in data_file:
             try:
                 json_object = json.loads(line)
