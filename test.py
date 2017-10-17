@@ -180,9 +180,17 @@ if __name__ == '__main__':
     # bleu_score = nltk.translate.bleu_score.sentence_bleu(references, summaries)
     # print(get_rougel_score_ave(summaries, references, 'f'))
     # print(bleu_score)
-    
-    summary   = 'do you like me.'
-    print(get_rougel_score(summary, reference, 'f'))
+    ans_list = []
+    with open('''/home/zhangs/RC/RCProj/ms_marco_eval/sample_test_data/dev_as_references.json''','r', encoding='utf8') as ans:
+        for line in ans:
+            instance = json.loads(line)
+            instance['answers'] = [instance['answers'][0]]
+            ans_list.append(instance)
+    with open('''/home/zhangs/RC/data/sample_ans.json''', 'w', encoding='utf8') as sample_ans:
+        for ans in ans_list:
+            sample_ans.write(json.dumps(ans)+'\n')
+    # summary   = 'do you like me.'
+    # print(get_rougel_score(summary, reference, 'f'))
     # passages = read_metadata('''/home/zhangs/RC/data/train_v1.1.json''', 'train')
     # count = 0
     # for passage in passages:
