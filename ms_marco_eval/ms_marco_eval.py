@@ -46,7 +46,7 @@ def normalize_batch(p_iter, p_batch_size=1000, p_thread_count=5):
 
     for doc in output_iter:
         tokens = [str(w).strip().lower() for w in doc]
-        yield ' '.join(tokens)
+        yield ' '.decode('utf-8').join(tokens)
 
 def load_file(p_path_to_data):
     """Load data from json file.
