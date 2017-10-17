@@ -184,7 +184,10 @@ if __name__ == '__main__':
     with open('''/home/zhangs/RC/RCProj/ms_marco_eval/sample_test_data/dev_as_references.json''','r', encoding='utf8') as ans:
         for line in ans:
             instance = json.loads(line)
-            instance['answers'] = [instance['answers'][0]]
+            if instance['answers'] = []:
+                instance['answers'] = [' ']
+            else: 
+                instance['answers'] = [instance['answers'][0]]
             ans_list.append(instance)
     with open('''/home/zhangs/RC/data/sample_ans.json''', 'w', encoding='utf8') as sample_ans:
         for ans in ans_list:
