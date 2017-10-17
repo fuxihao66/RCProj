@@ -11,7 +11,7 @@ Authors : Tri Nguyen <trnguye@microsoft.com>, Xia Song <xiaso@microsoft.com>, To
 """
 
 from __future__ import print_function
-
+from __future__ import unicode_literals
 import json
 import sys
 import io
