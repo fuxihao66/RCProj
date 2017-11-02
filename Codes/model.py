@@ -57,7 +57,6 @@ class Model:
         self.is_train = tf.placeholder('bool', [], name='is_train')
 
         self.learning_rate = tf.placeholder(tf.float32, shape=[])
-        # self.emb_mat = tf.placeholder('float', [None, word_emb_size])
         
         self.tensor_dict = {}
         self.loss = None
@@ -86,8 +85,13 @@ class Model:
         M = tf.shape(self.x)[1]
         dc, dw, dco = config.char_emb_size, config.word_emb_size, config.char_out_size
 
+
+        word_emb = tf.get_variable("word_emb_mat", 
+                            shape=[config.word_vocab_size, config.word_emb_size], 
+                            dtype='float', 
+                            initializer=self.emb_mat)
         with tf.variable_scope("embedding"):
-       
+            
             with tf.variable_scope("emb_var"), tf.device("/cpu:0"):
                 char_emb_mat = tf.get_variable("char_emb_mat", shape=[VC, dc], dtype='float')
 
@@ -112,8 +116,8 @@ class Model:
 
         
             with tf.name_scope("word"):
-                Ax = tf.nn.embedding_lookup(self.emb_mat, self.x)  # [N, M, JX, d]
-                Aq = tf.nn.embedding_lookup(self.emb_mat, self.q)  # [N, JQ, d]
+                Ax = tf.nn.embedding_lookup(word_emb, self.x)  # [N, M, JX, d]
+                Aq = tf.nn.embedding_lookup(word_emb, self.q)  # [N, JQ, d]
                 self.tensor_dict['x'] = Ax
                 self.tensor_dict['q'] = Aq
             if config.use_char_emb:

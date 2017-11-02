@@ -5,6 +5,7 @@ from tqdm import tqdm
 from rouge_operation import *
 from multiprocessing import Process
 from multiprocessing import Queue
+from itertools import *
 class DataSet:
     '''
     the data_dict looks like:
@@ -178,7 +179,7 @@ class DataSet:
         self.generate_batch(batch_size, set_type)
 
 if __name__ == '__main__':
-
+    
     # dev_ans = []
     # for i in range(25):
     #     with open('''/home/zhangs/RC/data/ans_train{}.json'''.format(i), 'r') as ans:
@@ -197,7 +198,17 @@ if __name__ == '__main__':
     # print(len(de))
              
     # train_data_dict = read_metadata('''L:\\dd\\train_v1.1.json''', 'dev')
-    # tokenized_passages = Tokenize(train_data_dict['passages'])
+    train_data_dict = read_metadata('''/home/zhangs/RC/data/train_v1.1.json''', 'train')
+    tokenized_passages = Tokenize_without_sent(train_data_dict['passages'])
+    tokenized_answers = Tokenize_without_sent(train_data_dict['answers'])
+    tokenized_queries = Tokenize_without_sent(train_data_dict['queries'])
+    tokenized_passages.extend(tokenized_answers)
+    tokenized_passages.extend(tokenized_queries)
+    words = list(chain.from_iterable(tokenized_passages))
+    dic = list(set(words))
+    print(len(dic))
+    with open('''/home/zhangs/RC/data/syn_dict.json''', 'w') as out:
+        out.write(json.dumps(dic))
     # max_sent_num = 50
     # max_sent_size = 80
     # sent_num = 0
@@ -211,12 +222,12 @@ if __name__ == '__main__':
     #         break
     # print(sent_num)
     # print(sent_size)
-    train_data_dict   = read_metadata('''/home/zhangs/RC/data/train_v1.1.json''', 'train')
+    # train_data_dict   = read_metadata('''/home/zhangs/RC/data/train_v1.1.json''', 'train')
 
-    train_data = DataSet(train_data_dict)
-    print('start operating answers')
-    train_data.operate_answers(25)
-    # print('operating answers successfully')
+    # train_data = DataSet(train_data_dict)
+    # print('start operating answers')
+    # train_data.operate_answers(25)
+    # # print('operating answers successfully')
 
 
 

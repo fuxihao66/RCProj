@@ -70,6 +70,7 @@ def read_metadata(file_to_read, set_type):
             #         answer = answer + ' ' + answer_str
             #     else:
             #         answer = answer + answer_str
+            '''in this version, only take the first ans'''
             answer = instance['answers'][0]
 
 
