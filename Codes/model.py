@@ -17,7 +17,7 @@ def get_multi_models(config, word2idx_dict, char2idx_dict):
     with tf.variable_scope(tf.get_variable_scope()):
         for gpu_idx in range(config.num_gpus):
             with tf.name_scope("model_{}".format(gpu_idx)) as scope, tf.device("/{}:{}".format(config.device_type, gpu_idx)):
-                model = Model(config, scope, word2idx_dict, char2idx_dict)
+                model = Model(config, word2idx_dict, char2idx_dict, scope=scope)
 
                 tf.get_variable_scope().reuse_variables()
                 models.append(model)
