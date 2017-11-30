@@ -46,6 +46,8 @@ def get_idx_sublist(li, subli):
     return -1, -1
 
 def trans_idx_1dto2d(idx_start, idx_stop, list2d):
+    max_num_sents = 22
+    max_sent_size = 100
 
     flag = -1
     for i, ele in enumerate(list2d):
@@ -61,10 +63,7 @@ def trans_idx_1dto2d(idx_start, idx_stop, list2d):
     # print(idx_start)
     # print(idx_stop)
 
-    try:
-        return [start_idxs_2d, end_idxs_2d]
-    except:
-        print(idx_stop)
+    return [start_idxs_2d, end_idxs_2d]
 def get_highest_rl_span(para, reference, max_gap):
 
     max_rouge = 0
@@ -126,12 +125,4 @@ def get_selected_span(para, selected_span):
     word_token_para = Tokenize_string_word_level(para)
     sent_token_para = Tokenize(para)
     index_start, index_stop = get_idx_sublist(word_token_para, substring)
-<<<<<<< HEAD
-    
-    try:
-        return trans_idx_1dto2d(index_start, index_stop, sent_token_para)
-    except:
-        print('selected span error')
-=======
     return [index_start, index_stop]
->>>>>>> dd350fef78c382ed46e475224fff3de0e4ded01d

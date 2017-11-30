@@ -57,6 +57,7 @@ class Model:
         self.is_train = tf.placeholder('bool', [], name='is_train')
 
         self.learning_rate = tf.placeholder(tf.float32, shape=[])
+        # self.emb_mat = tf.placeholder('float', [None, word_emb_size])
         
         self.tensor_dict = {}
         self.loss = None
@@ -67,8 +68,8 @@ class Model:
         self.var_ema = None
         self.build_var_ema()
         
-        if config.mode == 'train':
-            self.build_ema()
+        # if config.mode == 'train':
+        #     self.build_ema()
 
         self.summary = tf.summary.merge_all()
         print(1)
@@ -85,13 +86,8 @@ class Model:
         
         dc, dw, dco = config.char_emb_size, config.word_emb_size, config.char_out_size
 
-
-        word_emb = tf.get_variable("word_emb_mat", 
-                            shape=[config.word_vocab_size, config.word_emb_size], 
-                            dtype='float', 
-                            initializer=self.emb_mat)
         with tf.variable_scope("embedding"):
-            
+       
             with tf.variable_scope("emb_var"), tf.device("/cpu:0"):
                 char_emb_mat = tf.get_variable("char_emb_mat", shape=[VC, dc], dtype='float')
 
@@ -116,8 +112,8 @@ class Model:
 
         
             with tf.name_scope("word"):
-                Ax = tf.nn.embedding_lookup(word_emb, self.x)  # [N, M, JX, d]
-                Aq = tf.nn.embedding_lookup(word_emb, self.q)  # [N, JQ, d]
+                Ax = tf.nn.embedding_lookup(self.emb_mat, self.x)  # [N, M, JX, d]
+                Aq = tf.nn.embedding_lookup(self.emb_mat, self.q)  # [N, JQ, d]
                 self.tensor_dict['x'] = Ax
                 self.tensor_dict['q'] = Aq
             if config.use_char_emb:
@@ -309,23 +305,16 @@ class Model:
             feed_dict[self.y2] = y2
 
             for i, yi in enumerate(batch['y']):  
-<<<<<<< HEAD
-                if yi[0][1] < JX and yi[1][1] < JX and yi[0][0] < M and yi[1][0] < M:  
-                    [j, k] = yi[0]
-                    [j2, k2] = yi[1]
-                    
-                else:
-                    [j, k] = [0, 0]
-                    [j2, k2] = [0,0]
-                    
-                y[i, j, k] = True
-                y2[i, j2, k2] = True
-=======
                 j = yi[0]
-                j2 = yi[1]    
+                j2 = yi[1]
+                if j>= config.max_sent_size:
+                    j = 0
+                    j2 = 0
+                elif j< config.max_sent_size and j2 >= config.max_sent_size:
+                    j2 = config.max_sent_size-1
+                
                 y[i, j] = True
                 y2[i, j2] = True
->>>>>>> dd350fef78c382ed46e475224fff3de0e4ded01d
 
         def _get_word(word):
             d = self.word2idx_dict

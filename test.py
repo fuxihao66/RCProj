@@ -1,3 +1,4 @@
+
 # -*- coding:utf8 -*-
 import codecs
 import json
@@ -7,7 +8,6 @@ import re
 from tqdm import tqdm   
 from rouge import Rouge
 import numpy as np
-import random
 def read_metadata(file_to_read, set_type):
     passage_list     =  []
     answers_list     =  []
@@ -80,20 +80,8 @@ def read_metadata(file_to_read, set_type):
 
     data_dict = {}
     data_dict['passages']     =  passage_list
-    data_dict['answers']      =  answers_list
-    data_dict['queries']      =  query_list
-    # data_dict['passage_sent'] =  passage_sent_list
-    data_dict['passage_selected'] = selected_passage_list
-    # data_dict['descriptions'] =  description_list
-    return data_dict
-
-    ### this method cannot encode some character very well
-    # with open(file_to_write, 'w') as modified_data_file:
-    #     modified_data_file.write(json.dumps(data_dict)) 
-
-## signals are also regarded "words"
-def word_tokenize(tokens):
-    return [token.replace("''", '"').replace("``", '"') for token in nltk.word_tokenize(tokens)]
+    
+    return data_dict['passages']
 def Tokenize(para_list):
     
     if isinstance(para_list, list) and isinstance(para_list[0], str):
@@ -128,10 +116,8 @@ def Tokenize_without_sent(para_list):
 def Tokenize_string_word_level(para):
     l = process_tokens(word_tokenize(para))
     return l
-'''
-this method is used to split '/' or '-', 
-eg: It's 2017/09/06  or 1997-2017
-'''
+def word_tokenize(tokens):
+    return [token.replace("''", '"').replace("``", '"') for token in nltk.word_tokenize(tokens)]
 def process_tokens(temp_tokens):
     tokens = []
     for token in temp_tokens:
@@ -151,67 +137,25 @@ def process_tokens(temp_tokens):
                 tokens.append(item)
     return tokens
 
-## the case of words should be taken into consideration
-def get_word2idx_and_embmat(path_to_file):
-    word2vec_dict = {}
-    word2idx_dict = {}
-    i = 0
-    with open(path_to_file, 'r') as vec_file:
-        for line in tqdm(vec_file):
-            list_of_line = line.split(' ')
-            word2vec_dict[list_of_line[0]] = list(map(float, list_of_line[1:]))
-            i += 1
-            word2idx_dict[list_of_line[0]] = i
-    emb_mat = []
-    emb_mat.append([0 for i in range(100)])
-    for key in word2vec_dict:
-        emb_mat.append(word2vec_dict[key])
-    emb_mat = np.asarray(emb_mat)
-    emb_mat = emb_mat.astype(dtype='float32')
-    vacabulary_size = i
-    return word2idx_dict, emb_mat, vacabulary_size
-
-def get_char2idx(data_dict):
-    char2idx_dict = {}
-    i = 0
-    for key in data_dict:
-        if key == 'passages' or key == 'queries':
-            for string in data_dict[key]:
-                for char in string:
-                    if char not in char2idx_dict:
-                        char2idx_dict[char] = i
-                        i+=1
-    char_vocabulary_size = len(char2idx_dict)
-    return char2idx_dict, char_vocabulary_size
-
-
-def write_to_file( path, data):
-        with open(path, 'w', encoding='utf8') as data_file:
-            data_file.write(json.dumps(data))  
-
-def get_random_eles_from_list(list_to_select, num_ele):
-    return random.sample(list_to_select, num_ele)
-
-
 
 def get_flat_idx(wordss, idx):
     return sum(len(words) for words in wordss[:idx[0]]) + idx[1]
-def get_phrase(context, words, span):
+def get_phrase(context, wordss, span):
 
-    #span looks like: [ start_index, stop_index ]
-    flat_start, flat_stop = span
+    #span looks like: [ [start_sent_idx, start_word_idx], [end_sent_idx, end_word_idx] ]
+    start, stop = span
     #get 1d index in the passage
-
-    if flat_start > flat_stop:
-        k = flat_start
-        flat_start = flat_stop
-        flat_stop = k
-    
-    flat_stop += 1
+    flat_start = get_flat_idx(wordss, start)
+    flat_stop = get_flat_idx(wordss, stop)
+    # wordss looks like: [['this', 'is', 'me', '.'],['waht', 'are', 'you', 'doing', '.']]
+    words = sum(wordss, [])
     char_idx = 0
     char_start, char_stop = None, None
     for word_idx, word in enumerate(words):
+        print(word)
+        
         char_idx = context.find(word, char_idx)
+        print(char_idx)
         assert char_idx >= 0
         if word_idx == flat_start:
             char_start = char_idx
@@ -221,17 +165,18 @@ def get_phrase(context, words, span):
     assert char_start is not None
     assert char_stop is not None
     return context[char_start:char_stop]
-
-def get_y_index(y_after_softmax):
-    y_indics = []
-    for y in y_after_softmax:
-        max_value = 0
-        for j, word in enumerate(y):
-            if word > max_value:
-                max_value = word
-                word_index = j
-        # print(max_value)
-        y_indics.append(word_index)
-    return y_indics
-
-  
+def get_rougel_score_ave(summaries, references, score_type):
+    rouge = Rouge()
+    scores = rouge.get_scores(references, summaries, avg=True)
+    return scores['rouge-l'][score_type]
+if __name__ == '__main__':
+    # summaries = ['this is me', 'this is you', 'he']
+    # references = ['me', 'you', 'he']
+    # print(get_rougel_score_ave(summaries, references, 'f'))
+    passages = read_metadata('''/home/zhangs/RC/data/train_v1.1.json''', 'train')
+    count = 0
+    for passage in passages:
+        tokenized_passage = Tokenize_string_word_level(passage)
+        if len(tokenized_passage) > count:
+            count = len(tokenized_passage) 
+    print(count)

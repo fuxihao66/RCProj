@@ -5,7 +5,6 @@ from tqdm import tqdm
 from rouge_operation import *
 from multiprocessing import Process
 from multiprocessing import Queue
-from itertools import *
 class DataSet:
     '''
     the data_dict looks like:
@@ -121,8 +120,8 @@ class DataSet:
         path = '''/home/zhangs/RC/data/ans_train{}.json'''.format(thread_idx)
         write_to_file(path, temp)
 
-        # print('this process exited successfully')
-        # print((start, end))
+        print('this process exited successfully')
+        print((start, end))
         
     def operate_answers(self, num_threads):
 
@@ -175,27 +174,16 @@ class DataSet:
         self.generate_batch(batch_size, set_type)
 
 if __name__ == '__main__':
-<<<<<<< HEAD
-    
-    # dev_ans = []
-=======
 
     # train_ans = []
->>>>>>> dd350fef78c382ed46e475224fff3de0e4ded01d
     # for i in range(25):
     #     with open('''/home/zhangs/RC/data/ans_train{}.json'''.format(i), 'r') as ans:
     #         for line in tqdm(ans):
     #             instance = json.loads(line)
-<<<<<<< HEAD
-    #             print(instance)
-    
-    # write_to_file('''/home/zhangs/RC/data/train_answers.json''', dev_ans)
-=======
     #             train_ans.extend(instance)
 
     # print(len(train_ans))
     # write_to_file('''/home/zhangs/RC/data/train_answers_non_sent.json''', train_ans)
->>>>>>> dd350fef78c382ed46e475224fff3de0e4ded01d
     # print(len(dev_ans))
     # de = []
     # with open('''/home/zhangs/RC/data/train_answers.json''', 'r') as fi:
@@ -205,40 +193,6 @@ if __name__ == '__main__':
     #                 de.append(ins)
     # print(len(de))
              
-<<<<<<< HEAD
-    # train_data_dict = read_metadata('''L:\\dd\\train_v1.1.json''', 'dev')
-    train_data_dict = read_metadata('''/home/zhangs/RC/data/train_v1.1.json''', 'train')
-    tokenized_passages = Tokenize_without_sent(train_data_dict['passages'])
-    tokenized_answers = Tokenize_without_sent(train_data_dict['answers'])
-    tokenized_queries = Tokenize_without_sent(train_data_dict['queries'])
-    tokenized_passages.extend(tokenized_answers)
-    tokenized_passages.extend(tokenized_queries)
-    words = list(chain.from_iterable(tokenized_passages))
-    dic = list(set(words))
-    print(len(dic))
-    with open('''/home/zhangs/RC/data/syn_dict.json''', 'w') as out:
-        out.write(json.dumps(dic))
-    # max_sent_num = 50
-    # max_sent_size = 80
-    # sent_num = 0
-    # sent_size = 0
-    # for passage in tokenized_passages:
-    #     # if len(passage) > max_sent_num:
-    #     #     sent_num+=1
-    #     for sent in passage:
-    #         if len(sent) > max_sent_size:
-    #             sent_size+=1
-    #         break
-    # print(sent_num)
-    # print(sent_size)
-    # train_data_dict   = read_metadata('''/home/zhangs/RC/data/train_v1.1.json''', 'train')
-
-    # train_data = DataSet(train_data_dict)
-    # print('start operating answers')
-    # train_data.operate_answers(25)
-    # # print('operating answers successfully')
-
-=======
     # train_data_dict = read_metadata('''/home/zhangs/RC/data/train_v1.1.json''', 'train')
     # train_data = DataSet(train_data_dict)
     # print('start operating answers')
@@ -250,13 +204,12 @@ if __name__ == '__main__':
             for i, y in enumerate(instance):
                 if y[1] > 900:
                     print(y[1])
->>>>>>> dd350fef78c382ed46e475224fff3de0e4ded01d
 
 
     # print(len(train_data_dict['passages']))
-    # train_data.write_answers_to_file('''/home/zhangs/RC/data/train_answers.json''', 'train')
+    # train_data.write_answers_to_file('''/home/zhangs/RC/data/train_answers.json''')
     # print('start operating answers')
-    # dev_data.operate_answers(25)
+    # dev_data.operate_answers(20)
     # print('operating answers successfully')
     # dev_data.write_answers_to_file('''/home/zhangs/RC/data/dev_answers.json''')
 
