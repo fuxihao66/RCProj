@@ -20,7 +20,11 @@ flags.DEFINE_string("shared_path", "", "Shared path []")
 # Device placement
 flags.DEFINE_string("device", "/cpu:0", "default device for summing gradients. [/cpu:0]")
 flags.DEFINE_string("device_type", "gpu", "device for computing gradients (parallelization). cpu | gpu [gpu]")
+<<<<<<< HEAD
 flags.DEFINE_integer("num_gpus", 3, "num of gpus or cpus for computing gradients [1]")
+=======
+flags.DEFINE_integer("num_gpus", 1, "num of gpus or cpus for computing gradients [1]")
+>>>>>>> dd350fef78c382ed46e475224fff3de0e4ded01d
 
 # Essential training and test options
 flags.DEFINE_string("mode", "train", "trains | test | forward [test]")
@@ -30,11 +34,16 @@ flags.DEFINE_boolean("debug", False, "Debugging mode? [False]")
 flags.DEFINE_bool('load_ema', True, "load exponential average of variables when testing?  [True]")
 flags.DEFINE_bool("eval", True, "eval? [True]")
 
+
 # Training / test parameters
-flags.DEFINE_integer("batch_size", 15, "Batch size [45]")
+flags.DEFINE_integer("batch_size", 35, "Batch size [45]")
 flags.DEFINE_integer("val_num_batches", 100, "validation num batches [100]")
 flags.DEFINE_integer("test_num_batches", 0, "test num batches [0]")
+<<<<<<< HEAD
 flags.DEFINE_integer("num_epochs", 15, "Total number of epochs for training [12]")
+=======
+flags.DEFINE_integer("num_epochs", 12, "Total number of epochs for training [12]")
+>>>>>>> dd350fef78c382ed46e475224fff3de0e4ded01d
 flags.DEFINE_integer("num_steps", 20000, "Number of steps [20000]")
 flags.DEFINE_integer("load_step", 0, "load step [0]")
 flags.DEFINE_float("init_lr", 0.9, "Initial learning rate [0.5]")
@@ -101,8 +110,8 @@ flags.DEFINE_bool("dynamic_att", False, "Dynamic attention [False]")
 flags.DEFINE_bool("supervised", True, "whether the feed dict contain y")
 # the passage size limitation
 ## Maximum passage size is about 2200
-flags.DEFINE_integer("max_num_sents", 22, "the max number of sentences")
-flags.DEFINE_integer("max_sent_size", 100, "the max number of words in a sentence")
+# flags.DEFINE_integer("max_num_sents", 22, "the max number of sentences")
+flags.DEFINE_integer("max_sent_size", 950, "the max number of words in a sentence")
 flags.DEFINE_integer("max_ques_size", 20, "the max number of words in a question")
 flags.DEFINE_integer("max_word_size", 20, "the max size of a word")
 

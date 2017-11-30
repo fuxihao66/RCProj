@@ -84,9 +84,9 @@ class DataSet:
         for key in self.data:
             print(key)
             if key == 'passages':
-                self.data[key] = Tokenize(self.data[key])
+                self.data[key] = Tokenize_without_sent(self.data[key])
                 for passage in self.data[key]:
-                    cxi = [[list(xijk) for xijk in xij] for xij in passage]
+                    cxi = [list(xij) for xij in passage]
                     self.data['char_x'].append(cxi)
             elif key == 'queries':
                 self.data[key] = Tokenize_without_sent(self.data[key])
@@ -112,8 +112,8 @@ class DataSet:
                         l = get_selected_span(para, self.data['passage_selected'][i][0])
                 except:
                     print('get span error')
-                    # l looks like: [[j1,k1],[j2,k2]]
-                # self.data['ans_start_stop_idx'].append(l)
+                    # l looks like: [j,j2]
+  
                 temp.append(l)
         except:
             print('error in a process')
@@ -125,10 +125,6 @@ class DataSet:
         # print((start, end))
         
     def operate_answers(self, num_threads):
-        
-        # self.data['passages'].reverse()
-        # self.data['answers'].reverse()
-        # self.data['passage_selected'].reverse()
 
         # def del_signal(sentence):
         #     token_sent = Tokenize_string_word_level(sentence)
@@ -179,15 +175,27 @@ class DataSet:
         self.generate_batch(batch_size, set_type)
 
 if __name__ == '__main__':
+<<<<<<< HEAD
     
     # dev_ans = []
+=======
+
+    # train_ans = []
+>>>>>>> dd350fef78c382ed46e475224fff3de0e4ded01d
     # for i in range(25):
     #     with open('''/home/zhangs/RC/data/ans_train{}.json'''.format(i), 'r') as ans:
     #         for line in tqdm(ans):
     #             instance = json.loads(line)
+<<<<<<< HEAD
     #             print(instance)
     
     # write_to_file('''/home/zhangs/RC/data/train_answers.json''', dev_ans)
+=======
+    #             train_ans.extend(instance)
+
+    # print(len(train_ans))
+    # write_to_file('''/home/zhangs/RC/data/train_answers_non_sent.json''', train_ans)
+>>>>>>> dd350fef78c382ed46e475224fff3de0e4ded01d
     # print(len(dev_ans))
     # de = []
     # with open('''/home/zhangs/RC/data/train_answers.json''', 'r') as fi:
@@ -197,6 +205,7 @@ if __name__ == '__main__':
     #                 de.append(ins)
     # print(len(de))
              
+<<<<<<< HEAD
     # train_data_dict = read_metadata('''L:\\dd\\train_v1.1.json''', 'dev')
     train_data_dict = read_metadata('''/home/zhangs/RC/data/train_v1.1.json''', 'train')
     tokenized_passages = Tokenize_without_sent(train_data_dict['passages'])
@@ -229,6 +238,19 @@ if __name__ == '__main__':
     # train_data.operate_answers(25)
     # # print('operating answers successfully')
 
+=======
+    # train_data_dict = read_metadata('''/home/zhangs/RC/data/train_v1.1.json''', 'train')
+    # train_data = DataSet(train_data_dict)
+    # print('start operating answers')
+    # train_data.operate_answers(25)
+    # print('operating answers successfully')
+    with open('''/home/zhangs/RC/data/train_answers_non_sent.json''') as ans:
+        for line in ans:
+            instance = json.loads(line)
+            for i, y in enumerate(instance):
+                if y[1] > 900:
+                    print(y[1])
+>>>>>>> dd350fef78c382ed46e475224fff3de0e4ded01d
 
 
     # print(len(train_data_dict['passages']))
