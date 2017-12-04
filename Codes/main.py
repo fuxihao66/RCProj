@@ -68,8 +68,6 @@ def _train(config):
     sess = tf.Session(config=tf.ConfigProto(allow_soft_placement=True))
     
 
-    
-    num_steps = config.num_steps
     global_step = 0
 
 
