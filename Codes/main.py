@@ -56,14 +56,13 @@ def _train(config):
     config.word_vocab_size = vocabulary_size
     config.char_vocab_size = char_vocabulary_size
 
-    # with tf.name_scope("model"):
-        # model = Model(config, word2idx_dict, char2idx_dict)
-    models = get_multi_models(config, word2idx_dict, char2idx_dict)
+    with tf.name_scope("model"):
+        model = Model(config, word2idx_dict, char2idx_dict)
+    # models = get_multi_models(config, word2idx_dict, char2idx_dict)
 
-    # with tf.name_scope("trainer"):
-    #     trainer = single_GPU_trainer(config, model)
-    
-    trainer = MultiGPUTrainer(config, models)
+    with tf.name_scope("trainer"):
+        trainer = single_GPU_trainer(config, model)
+    # trainer = MultiGPUTrainer(config, models)
 
     
     sess = tf.Session(config=tf.ConfigProto(allow_soft_placement=True))
@@ -91,28 +90,31 @@ def _train(config):
 
     for i in range(config.num_epochs):
 
-        # for i in range(int(math.ceil(batch_list_length/batch_num))):
-        for i in range(int(math.ceil(batch_list_length/config.num_gpus))):
-            # sub_batch_list = get_random_eles_from_list(batch_list, batch_num)
-            sub_batch_list = get_random_eles_from_list(batch_list, config.num_gpus)
+        for i in range(int(math.ceil(batch_list_length/batch_num))):
+        # for i in range(int(math.ceil(batch_list_length/config.num_gpus))):
+            sub_batch_list = get_random_eles_from_list(batch_list, batch_num)
+            # sub_batch_list = get_random_eles_from_list(batch_list, config.num_gpus)
 
-            global_step = sess.run(models[0].global_step) + 1
-            print(global_step)
-            if global_step == 10000:
-                trainer.change_lr(0.3)
-            loss, summary, train_op = trainer.step(sess, sub_batch_list, True)
-            train_writer.add_summary(summary, global_step)
-            print(loss)
+            # global_step = sess.run(models[0].global_step) + 1
+            # print(global_step)
+            # if global_step == 10000:
+            #     trainer.change_lr(0.3)
+            # loss, summary, train_op = trainer.step(sess, sub_batch_list, True)
+            # train_writer.add_summary(summary, global_step)
+            # print(loss)
 
-            # for batch in sub_batch_list:
-            #     global_step = sess.run(model.global_step) + 1  # +1 because all calculations are done after step
-            #     get_summary = True
-            #     print(global_step)
+            for batch in sub_batch_list:
+                global_step = sess.run(model.global_step) + 1  # +1 because all calculations are done after step
+                get_summary = True
+                print(global_step)
 
-            #     loss, summary, train_op = trainer.step(sess, batch, get_summary=get_summary)
-            #     train_writer.add_summary(summary, global_step)
+                if global_step == 12000:
+                    trainer.change_lr(0.3)
 
-            #     print(loss)
+                loss, summary, train_op = trainer.step(sess, batch, get_summary=get_summary)
+                train_writer.add_summary(summary, global_step)
+
+                print(loss)
     
 
     '''start to evaluate via dev-set'''
