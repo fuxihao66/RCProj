@@ -32,7 +32,7 @@ flags.DEFINE_bool("eval", True, "eval? [True]")
 
 
 # Training / test parameters
-flags.DEFINE_integer("batch_size", 65, "Batch size [45]")
+flags.DEFINE_integer("batch_size", 35, "Batch size [45]")
 flags.DEFINE_integer("val_num_batches", 100, "validation num batches [100]")
 flags.DEFINE_integer("test_num_batches", 0, "test num batches [0]")
 flags.DEFINE_integer("num_epochs", 12, "Total number of epochs for training [12]")
@@ -103,7 +103,7 @@ flags.DEFINE_bool("supervised", True, "whether the feed dict contain y")
 # the passage size limitation
 ## Maximum passage size is about 2200
 # flags.DEFINE_integer("max_num_sents", 22, "the max number of sentences")
-flags.DEFINE_integer("max_sent_size", 500, "the max number of words in a sentence")
+flags.DEFINE_integer("max_sent_size", 1000, "the max number of words in a sentence")
 flags.DEFINE_integer("max_ques_size", 20, "the max number of words in a question")
 flags.DEFINE_integer("max_word_size", 20, "the max size of a word")
 
