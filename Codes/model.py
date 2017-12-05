@@ -311,7 +311,9 @@ class Model:
                 if j< config.max_sent_size and j2 < config.max_sent_size:
                     y[i, j] = True
                     y2[i, j2] = True
-                
+                else:
+                    y[i, 0] = True
+                    y2[i, 0] = True
 
         def _get_word(word):
             d = self.word2idx_dict
