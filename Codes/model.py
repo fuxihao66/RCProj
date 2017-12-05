@@ -307,14 +307,11 @@ class Model:
             for i, yi in enumerate(batch['y']):  
                 j = yi[0]
                 j2 = yi[1]
-                if j>= config.max_sent_size:
-                    j = 0
-                    j2 = 0
-                elif j< config.max_sent_size and j2 >= config.max_sent_size:
-                    j2 = config.max_sent_size-1
                 
-                y[i, j] = True
-                y2[i, j2] = True
+                if j< config.max_sent_size and j2 < config.max_sent_size:
+                    y[i, j] = True
+                    y2[i, j2] = True
+                
 
         def _get_word(word):
             d = self.word2idx_dict
