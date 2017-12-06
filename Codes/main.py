@@ -45,10 +45,6 @@ def _train(config):
     train_data_dict['queries']  = queries_for_train
 
 
-    print(len(train_data_dict['passages']))
-    print(len(train_data_dict['queries']))
-    print(len(train_data_dict['answers']))
-
     '''TODO: the char dict should also contain dev-set'''
     char2idx_dict, char_vocabulary_size = get_char2idx(train_data_dict)
     
@@ -56,11 +52,9 @@ def _train(config):
     word2idx_dict, emb_mat, vocabulary_size = get_word2idx_and_embmat('''/home/zhangs/RC/data/glove.6B.100d.txt''')
     
     train_data = DataSet(train_data_dict)
-    train_data.init_with_ans_file('''/home/zhangs/RC/data/Repo_for_transfer/ans_train_nonblank_indics.json''', config.batch_size, 'train')
-
-
-
     
+    train_data.init_with_ans_file('''/home/zhangs/RC/data/Repo_for_transfer/ans_train_nonblank_indics.json''', config.batch_size, 'train')
+    print(len(train_data.data['ans_start_stop_idx']))
     return 
 
     config.emb_mat = emb_mat

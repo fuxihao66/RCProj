@@ -21,6 +21,7 @@ class DataSet:
         self.data['ans_start_stop_idx'] = []
         # self.temp = []
         self.num_examples = len(data_dict['passages'])
+        print(self.num_examples)
         self.batches = []
 
     def generate_batch(self, batch_size, set_type, shuffle=False):
