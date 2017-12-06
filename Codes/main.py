@@ -44,13 +44,21 @@ def _train(config):
     train_data_dict['passages'] = passage_for_train
     train_data_dict['queries']  = queries_for_train
 
-
     '''TODO: the char dict should also contain dev-set'''
     char2idx_dict, char_vocabulary_size = get_char2idx(train_data_dict)
     
 
     word2idx_dict, emb_mat, vocabulary_size = get_word2idx_and_embmat('''/home/zhangs/RC/data/glove.6B.100d.txt''')
     
+    train_data = DataSet(train_data_dict)
+    train_data.init_with_ans_file('''/home/zhangs/RC/data/Repo_for_transfer/ans_train_nonblank_indics.json''', config.batch_size, 'train')
+
+
+
+    print(len(train_data_dict['passages']))
+    print(len(train_data_dict['queries']))
+    print(len(train_data_dict['answers']))
+    return 
 
     config.emb_mat = emb_mat
     config.word_vocab_size = vocabulary_size
@@ -69,11 +77,6 @@ def _train(config):
     
 
     global_step = 0
-
-
-    train_data = DataSet(train_data_dict)
-    train_data.init_with_ans_file('''/home/zhangs/RC/data/Repo_for_transfer/ans_train_nonblank_indics.json''', config.batch_size, 'train')
-
 
 
     train_writer = tf.summary.FileWriter('/home/zhangs/RC/data/FINAL', sess.graph)
