@@ -63,9 +63,6 @@ def do_get_phrase():
         for instance in list_extracted:
             ex_file.write(instance+'\n')
 def _train(config):
-    
-    do_get_phrase()
-    return
 
     train_data_dict = read_metadata('''/home/zhangs/RC/data/train_v1.1.json''', 'train')
     passage_for_train, queries_for_train = get_ridof_blank(train_data_dict)
