@@ -57,7 +57,7 @@ def do_get_phrase():
                 except:
                     print(i)
                     print(para)
-                    
+                    print(span)
                     return
     with open(path_span_test, 'w') as ex_file:
         for instance in list_extracted:
