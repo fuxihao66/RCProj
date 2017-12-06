@@ -219,8 +219,12 @@ def get_phrase(context, words, span):
         char_idx += len(word)
         if word_idx == flat_stop - 1:
             char_stop = char_idx
-    assert char_start is not None
-    assert char_stop is not None
+    try:
+        assert char_start is not None
+        assert char_stop is not None
+    except:
+        print(context)
+        print(words)
     return context[char_start:char_stop]
 
 def get_y_index(y_after_softmax):
