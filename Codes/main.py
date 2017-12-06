@@ -52,7 +52,7 @@ def do_get_phrase():
             instance = json.loads(line)
             for i,span in enumerate(instance):
                 para = train_data_dict['passages'][i]
-                list_extracted.append(get_phrase_1d(para, Tokenize_without_sent(para), span))
+                list_extracted.append(get_phrase(para, Tokenize_without_sent(para), span))
     with open(path_span_test, 'w') as ex_file:
         for instance in list_extracted:
             ex_file.write(instance+'\n')
