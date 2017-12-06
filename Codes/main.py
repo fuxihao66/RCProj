@@ -39,8 +39,7 @@ def get_ridof_blank(train_data_dict):
     return passage_for_train, queries_for_train
 def do_get_phrase():
     train_data_dict = read_metadata('''/home/zhangs/RC/data/train_v1.1.json''', 'train')
-    print(train_data_dict['passages'][118])
-    return
+    print(train_data_dict['passages'][159])
     train_data_dict_backup = read_metadata('''/home/zhangs/RC/data/train_v1.1.json''', 'train')
     passage_for_train, queries_for_train = get_ridof_blank(train_data_dict)
     train_data_dict['passages'] = passage_for_train
