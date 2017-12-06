@@ -62,14 +62,15 @@ def _train(config):
     # return
 
     train_data_dict = read_metadata('''/home/zhangs/RC/data/train_v1.1.json''', 'train')
+    print(train_data_dict['passages'][0])
     passage_for_train, queries_for_train = get_ridof_blank(train_data_dict)
     train_data_dict['passages'] = passage_for_train
     train_data_dict['queries']  = queries_for_train
-    print(train_data_dict['passages'][0])
+    
 
 
     return
-    
+
     '''TODO: the char dict should also contain dev-set'''
     char2idx_dict, char_vocabulary_size = get_char2idx(train_data_dict)
     
