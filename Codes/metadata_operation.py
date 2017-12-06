@@ -23,7 +23,7 @@ def read_metadata(file_to_read, set_type):
             instance = json.loads(line)
 
             #some answers are blank
-            if instance['answers'] == []:
+            if instance['answers'] == [] and set_type=='train':
                 continue
 
             passage = ''
@@ -31,31 +31,32 @@ def read_metadata(file_to_read, set_type):
             selected_passage_indics = []
             passage_to_be_sort = []
 
-            for i, sentence in enumerate(instance['passages']):
+            for j, sentence in enumerate(instance['passages']):
                 if sentence['is_selected'] == 1:
-                    selected_passage.append(sentence['passage_text'])
-                    selected_passage_indics.append(i)
-            if selected_passage == []:
+                    selected_passage = sentence['passage_text'].replace("''", '"').replace("``", '"')
+                    break
+                    
+            if selected_passage == '' and set_type=='train':
                 continue
 
 
 
             '''add a temporary part to sort the passage'''
-            for sentence in instance['passages']:
-                passage_to_be_sort.append(sentence['passage_text'])
-            for i, idx in enumerate(selected_passage_indics):
-                if i == 0:
-                    passage = passage + passage_to_be_sort[idx]
-                else:
-                    passage = passage + ' ' + passage_to_be_sort[idx]
-            for idx in range(len(instance['passages'])):
-                if idx not in selected_passage_indics:
-                    passage = passage + ' ' + passage_to_be_sort[idx]
-            # for i, sentence in enumerate(instance['passages']):
-            #     if i != 0:
-            #         passage = passage + ' ' + sentence['passage_text']
+            # for sentence in instance['passages']:
+            #     passage_to_be_sort.append(sentence['passage_text'])
+            # for i, idx in enumerate(selected_passage_indics):
+            #     if i == 0:
+            #         passage = passage + passage_to_be_sort[idx]
             #     else:
-            #         passage = passage + sentence['passage_text']   
+            #         passage = passage + ' ' + passage_to_be_sort[idx]
+            # for idx in range(len(instance['passages'])):
+            #     if idx not in selected_passage_indics:
+            #         passage = passage + ' ' + passage_to_be_sort[idx]
+            for i, sentence in enumerate(instance['passages']):
+                if i != 0:
+                    passage = passage + ' ' + sentence['passage_text']
+                else:
+                    passage = passage + sentence['passage_text']   
 
 
 
