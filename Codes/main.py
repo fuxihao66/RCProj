@@ -44,6 +44,11 @@ def _train(config):
     train_data_dict['passages'] = passage_for_train
     train_data_dict['queries']  = queries_for_train
 
+
+    print(len(train_data_dict['passages']))
+    print(len(train_data_dict['queries']))
+    print(len(train_data_dict['answers']))
+
     '''TODO: the char dict should also contain dev-set'''
     char2idx_dict, char_vocabulary_size = get_char2idx(train_data_dict)
     
@@ -55,9 +60,7 @@ def _train(config):
 
 
 
-    print(len(train_data_dict['passages']))
-    print(len(train_data_dict['queries']))
-    print(len(train_data_dict['answers']))
+    
     return 
 
     config.emb_mat = emb_mat
