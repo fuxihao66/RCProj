@@ -56,6 +56,8 @@ def do_get_phrase():
                     list_extracted.append(get_phrase(para, Tokenize_without_sent(para), span))
                 except:
                     print(i)
+                    print(para)
+                    
                     return
     with open(path_span_test, 'w') as ex_file:
         for instance in list_extracted:
