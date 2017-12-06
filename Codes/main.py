@@ -37,8 +37,30 @@ def get_ridof_blank(train_data_dict):
                 passage_for_train.append(para)
                 queries_for_train.append(train_data_dict['queries'][i])
     return passage_for_train, queries_for_train
+def do_get_phrase():
+    train_data_dict = read_metadata('''/home/zhangs/RC/data/train_v1.1.json''', 'train')
+    train_data_dict_backup = read_metadata('''/home/zhangs/RC/data/train_v1.1.json''', 'train')
+    passage_for_train, queries_for_train = get_ridof_blank(train_data_dict)
+    train_data_dict['passages'] = passage_for_train
+    train_data_dict['queries']  = queries_for_train
+    
+    path_ans_indics = '''/home/zhangs/RC/data/Repo_for_transfer/ans_train_nonblank_indics.json'''
+    path_span_test = '''/home/zhangs/RC/data/Repo_for_transfer/test.txt'''
+    list_extracted = []
+    with open(path_ans_indics, 'r') as span_file:
+        for line in span_file:
+            instance = json.loads(line)
+            for i,span in enumerate(instance):
+                para = train_data_dict['passages'][i]
+                list_extracted.append(get_phrase_1d(para, Tokenize_without_sent(para), span))
+    with open(path_span_test, 'w') as ex_file:
+        for instance in list_extracted:
+            ex_file.write(instance+'\n')
 def _train(config):
     
+    do_get_phrase()
+    return
+
     train_data_dict = read_metadata('''/home/zhangs/RC/data/train_v1.1.json''', 'train')
     passage_for_train, queries_for_train = get_ridof_blank(train_data_dict)
     train_data_dict['passages'] = passage_for_train
@@ -52,10 +74,8 @@ def _train(config):
     word2idx_dict, emb_mat, vocabulary_size = get_word2idx_and_embmat('''/home/zhangs/RC/data/glove.6B.100d.txt''')
     
     train_data = DataSet(train_data_dict)
-    
     train_data.init_with_ans_file('''/home/zhangs/RC/data/Repo_for_transfer/ans_train_nonblank_indics.json''', config.batch_size, 'train')
-    print(len(train_data.data['ans_start_stop_idx']))
-    return 
+    
 
     config.emb_mat = emb_mat
     config.word_vocab_size = vocabulary_size
