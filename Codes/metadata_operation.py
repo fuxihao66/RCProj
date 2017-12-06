@@ -30,7 +30,7 @@ def read_metadata(file_to_read, set_type):
             # selected_passage = []
             # selected_passage_indics = []
             # passage_to_be_sort = []
-            selected_passage == ''
+            selected_passage = ''
             for j, sentence in enumerate(instance['passages']):
                 if sentence['is_selected'] == 1:
                     selected_passage = sentence['passage_text'].replace("''", '"').replace("``", '"')
