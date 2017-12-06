@@ -52,24 +52,25 @@ def do_get_phrase():
             instance = json.loads(line)
             for i,span in enumerate(instance):
                 para = train_data_dict['passages'][i]
-                list_extracted.append(get_phrase(para, Tokenize_without_sent(para), span))
+                try:
+                    list_extracted.append(get_phrase(para, Tokenize_without_sent(para), span))
+                except:
+                    print(i)
+                    return
     with open(path_span_test, 'w') as ex_file:
         for instance in list_extracted:
             ex_file.write(instance+'\n')
 def _train(config):
     
-    # do_get_phrase()
-    # return
+    do_get_phrase()
+    return
 
     train_data_dict = read_metadata('''/home/zhangs/RC/data/train_v1.1.json''', 'train')
-    print(train_data_dict['passages'][0])
     passage_for_train, queries_for_train = get_ridof_blank(train_data_dict)
     train_data_dict['passages'] = passage_for_train
     train_data_dict['queries']  = queries_for_train
     
 
-
-    return
 
     '''TODO: the char dict should also contain dev-set'''
     char2idx_dict, char_vocabulary_size = get_char2idx(train_data_dict)
