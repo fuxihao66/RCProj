@@ -39,7 +39,10 @@ def get_ridof_blank(train_data_dict):
     return passage_for_train, queries_for_train
 def do_get_phrase():
     train_data_dict = read_metadata('''/home/zhangs/RC/data/train_v1.1.json''', 'train')
-    print(train_data_dict['passages'][159])
+    for i, para in enumerate(train_data_dict['passages']):
+        if '''Level 3 Bonding can be described as a biological process in which animals of the same or different''' in para:
+            print(i)
+    return 
     train_data_dict_backup = read_metadata('''/home/zhangs/RC/data/train_v1.1.json''', 'train')
     passage_for_train, queries_for_train = get_ridof_blank(train_data_dict)
     train_data_dict['passages'] = passage_for_train
