@@ -183,7 +183,7 @@ def _train(config):
     train_data_dict_backup = read_metadata('''/home/zhangs/RC/data/train_v1.1.json''', 'dev')
     train_data = DataSet(train_data_dict)
     train_data.init_without_ans(config.batch_size, 'dev')
-    train_batch = train_data.get_batch_list()
+    train_batches = train_data.get_batch_list()
 
     summaries = []
 
